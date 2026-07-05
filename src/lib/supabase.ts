@@ -1,8 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-
-// Generic types arrive in Phase 4 via:
-//   supabase gen types typescript --project-id <id> > src/types/database.ts
-// import type { Database } from '@/types/database'
+import type { Database } from '@/types/database'
 
 const url = import.meta.env.VITE_SUPABASE_URL
 // Supabase renamed the client-safe key from "anon key" to "publishable key" —
@@ -41,7 +38,7 @@ const rememberAwareStorage = {
 // createClient throws synchronously on an empty URL — and this module is
 // imported at the app root (AuthProvider), so an unconfigured .env must never
 // reach it, or the entire app (landing page included) white-screens on load.
-export const supabase = createClient(
+export const supabase = createClient<Database>(
   url || 'https://placeholder.supabase.co',
   anonKey || 'placeholder-key',
   {
