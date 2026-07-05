@@ -210,15 +210,59 @@ placeholder) — `lib/supabase.ts` uses `createClient<Database>(...)`.
 Remaining, not code-fixable: Supabase's leaked-password-protection (HaveIBeenPwned check)
 is off by default — flip it on in the dashboard under Authentication → Policies.
 
+## Artwork, Profile, Learning (Phase 5, step 2)
+
+`src/lib/storage.ts` — `uploadWithProgress()` talks to the Storage REST API directly via
+`XMLHttpRequest` instead of `supabase.storage.upload()`, because the JS client's upload is a
+single opaque fetch with no progress events. This is what makes upload progress bars, retry,
+and cancel *real* rather than simulated. `src/lib/image-optimize.ts` downscales/re-encodes
+images via `<canvas>` before upload (real byte reduction, not cosmetic).
+
+**Artwork** (`src/features/artwork/`): `api.ts` (list w/ pagination + search, get, create,
+update, delete — delete also cleans up Storage objects, recovering the path from the fixed
+`/object/public/{bucket}/` URL prefix), `hooks/use-upload-queue.ts` (per-file
+pending/uploading/done/error/cancelled state machine backing the multi-file upload dialog),
+`hooks/use-infinite-artworks.ts` (IntersectionObserver-driven pagination). `MasonryGrid` is
+CSS `columns` + `break-inside-avoid` — no JS layout measurement, no extra dependency.
+Visibility (`public`/`unlisted`/`private`) gates reads via RLS (see Phase 4b/DB-extension
+notes) — **not** Storage: the `artworks` bucket is public, so raw file URLs are
+"unlisted by obscurity" (unguessable UUID paths) rather than truly access-controlled. Real
+private storage would need signed URLs; deliberately scoped out for now.
+
+**Profile** (`src/features/profile/`): avatar/banner upload reuse the same Storage helpers.
+`accent_color` re-themes only the public profile page — set as an inline `--brand` CSS
+custom-property override on that page's root div, so it cascades to every `bg-brand`/
+`text-brand` usage *within that subtree* without touching the global design system. `xp` is
+**not** client-writable — see below.
+
+**Learning** (`src/features/learning/`): 9 paths / 18 units / 42 lessons seeded via
+migration. Linear unlock model (a lesson is `current` only once everything before it is
+`completed`; no generalized prerequisite graph). `complete_lesson(lesson_id)` is a Postgres
+RPC (`security definer`, search_path pinned, `EXECUTE` revoked from `anon`) that atomically
+marks progress, awards XP, and updates the streak (same-day = no-op, yesterday = +1,
+otherwise reset to 1) — and column-level grants (`revoke update on profiles from
+authenticated; grant update (username, ...) ...`) mean `xp` can **only** move through this
+function, not a direct client `PATCH /profiles`. This is the one place in the schema where
+RLS alone wasn't enough to stop cheating.
+
+**Studio dashboard**: rebuilt from the Phase 5-step-1 onboarding-only page into real widgets
+(streak, XP/level, continue-learning, recent artwork) that read live Supabase data, each
+with its own honest empty state — no fake activity anywhere.
+
+Known trade-off: the shared `index-*.js` chunk grew (~333kB gzip) because artwork/profile/
+learning API modules are imported by many lazy-loaded pages and Vite hoists shared deps into
+the common chunk — normal code-splitting behavior, not a regression, but a candidate for
+manual chunk tuning later if it matters.
+
 ## Phases
 
 1. **Architecture + scaffold** — done.
 2. **Design system** — done.
 3. **Landing page** — done.
 4. **Auth** (4a) + **Database** (4b) — done.
-5. **Core app** — app shell + onboarding done (step 1 above). Remaining: artwork upload,
-   Growth Timeline, and the rest of the nested `/app` pages get real functionality instead
-   of empty states.
+5. **Core app** — app shell + onboarding (step 1), artwork + profile + learning systems +
+   dashboard rebuild (step 2) — done. Remaining: Goals, Reddit-style Communities (posts,
+   comments, voting, moderation), Projects/kanban.
 
 Each phase ships polished before the next starts — no placeholder implementations left
 behind once a phase is marked done.

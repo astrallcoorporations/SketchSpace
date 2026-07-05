@@ -1,5 +1,6 @@
 import {
   Palette,
+  GraduationCap,
   TrendingUp,
   GalleryVertical,
   FolderKanban,
@@ -18,8 +19,9 @@ export type NavItem = {
 
 export const navItems: NavItem[] = [
   { label: 'Studio', href: '/app', icon: Palette },
-  { label: 'Growth', href: '/app/growth', icon: TrendingUp },
+  { label: 'Learning', href: '/app/learning', icon: GraduationCap },
   { label: 'Portfolio', href: '/app/portfolio', icon: GalleryVertical },
+  { label: 'Growth', href: '/app/growth', icon: TrendingUp },
   { label: 'Projects', href: '/app/projects', icon: FolderKanban },
   { label: 'Community', href: '/app/community', icon: Users2 },
   { label: 'Quests', href: '/app/quests', icon: Flame },
