@@ -9,7 +9,15 @@ const LoginPage = lazy(() => import('@/pages/login-page'))
 const SignupPage = lazy(() => import('@/pages/signup-page'))
 const ForgotPasswordPage = lazy(() => import('@/pages/forgot-password-page'))
 const ResetPasswordPage = lazy(() => import('@/pages/reset-password-page'))
-const AppPage = lazy(() => import('@/pages/app-page'))
+const AppShellLayout = lazy(() => import('@/pages/app-shell-layout'))
+const StudioPage = lazy(() => import('@/pages/studio-page'))
+const GrowthPage = lazy(() => import('@/pages/growth-page'))
+const PortfolioPage = lazy(() => import('@/pages/portfolio-page'))
+const ProjectsPage = lazy(() => import('@/pages/projects-page'))
+const CommunityPage = lazy(() => import('@/pages/community-page'))
+const QuestsPage = lazy(() => import('@/pages/quests-page'))
+const NotificationsPage = lazy(() => import('@/pages/notifications-page'))
+const SettingsPage = lazy(() => import('@/pages/settings-page'))
 const NotFoundPage = lazy(() => import('@/pages/not-found-page'))
 
 function withSuspense(node: React.ReactNode) {
@@ -26,9 +34,19 @@ const router = createBrowserRouter([
     path: '/app',
     element: withSuspense(
       <ProtectedRoute>
-        <AppPage />
+        <AppShellLayout />
       </ProtectedRoute>,
     ),
+    children: [
+      { index: true, element: withSuspense(<StudioPage />) },
+      { path: 'growth', element: withSuspense(<GrowthPage />) },
+      { path: 'portfolio', element: withSuspense(<PortfolioPage />) },
+      { path: 'projects', element: withSuspense(<ProjectsPage />) },
+      { path: 'community', element: withSuspense(<CommunityPage />) },
+      { path: 'quests', element: withSuspense(<QuestsPage />) },
+      { path: 'notifications', element: withSuspense(<NotificationsPage />) },
+      { path: 'settings', element: withSuspense(<SettingsPage />) },
+    ],
   },
   { path: '*', element: withSuspense(<NotFoundPage />) },
 ])
