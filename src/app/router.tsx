@@ -13,11 +13,16 @@ const AppShellLayout = lazy(() => import('@/pages/app-shell-layout'))
 const StudioPage = lazy(() => import('@/pages/studio-page'))
 const GrowthPage = lazy(() => import('@/pages/growth-page'))
 const PortfolioPage = lazy(() => import('@/pages/portfolio-page'))
+const ArtworkDetailPage = lazy(() => import('@/pages/artwork-detail-page'))
 const ProjectsPage = lazy(() => import('@/pages/projects-page'))
 const CommunityPage = lazy(() => import('@/pages/community-page'))
 const QuestsPage = lazy(() => import('@/pages/quests-page'))
+const LearningHomePage = lazy(() => import('@/pages/learning-home-page'))
+const LearningPathPage = lazy(() => import('@/pages/learning-path-page'))
+const LessonPage = lazy(() => import('@/pages/lesson-page'))
 const NotificationsPage = lazy(() => import('@/pages/notifications-page'))
 const SettingsPage = lazy(() => import('@/pages/settings-page'))
+const PublicProfilePage = lazy(() => import('@/pages/public-profile-page'))
 const NotFoundPage = lazy(() => import('@/pages/not-found-page'))
 
 function withSuspense(node: React.ReactNode) {
@@ -41,11 +46,16 @@ const router = createBrowserRouter([
       { index: true, element: withSuspense(<StudioPage />) },
       { path: 'growth', element: withSuspense(<GrowthPage />) },
       { path: 'portfolio', element: withSuspense(<PortfolioPage />) },
+      { path: 'artwork/:id', element: withSuspense(<ArtworkDetailPage />) },
       { path: 'projects', element: withSuspense(<ProjectsPage />) },
       { path: 'community', element: withSuspense(<CommunityPage />) },
       { path: 'quests', element: withSuspense(<QuestsPage />) },
+      { path: 'learning', element: withSuspense(<LearningHomePage />) },
+      { path: 'learning/:pathSlug', element: withSuspense(<LearningPathPage />) },
+      { path: 'learning/lesson/:lessonId', element: withSuspense(<LessonPage />) },
       { path: 'notifications', element: withSuspense(<NotificationsPage />) },
       { path: 'settings', element: withSuspense(<SettingsPage />) },
+      { path: 'u/:username', element: withSuspense(<PublicProfilePage />) },
     ],
   },
   { path: '*', element: withSuspense(<NotFoundPage />) },

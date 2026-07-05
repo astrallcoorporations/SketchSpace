@@ -9,6 +9,12 @@ const anonKey =
 
 const isConfigured = Boolean(url && anonKey)
 
+// Exposed for lib/storage.ts, which talks to the Storage REST API directly
+// (via XHR) to get real upload-progress events — the supabase-js client's
+// .upload() is a single opaque fetch with no progress callback.
+export const SUPABASE_URL = url || 'https://placeholder.supabase.co'
+export const SUPABASE_PUBLISHABLE_KEY = anonKey || 'placeholder-key'
+
 if (!isConfigured) {
   console.warn(
     '[supabase] Missing VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY — auth and data calls will fail until .env is configured.',
@@ -38,10 +44,6 @@ const rememberAwareStorage = {
 // createClient throws synchronously on an empty URL — and this module is
 // imported at the app root (AuthProvider), so an unconfigured .env must never
 // reach it, or the entire app (landing page included) white-screens on load.
-export const supabase = createClient<Database>(
-  url || 'https://placeholder.supabase.co',
-  anonKey || 'placeholder-key',
-  {
-    auth: { storage: rememberAwareStorage, persistSession: true, autoRefreshToken: true },
-  },
-)
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: { storage: rememberAwareStorage, persistSession: true, autoRefreshToken: true },
+})
