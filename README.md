@@ -72,6 +72,7 @@ src/
   features/
     landing/            # Landing page: hero (shader + particle field), sections
     auth/                # Login/signup/forgot/reset-password + auth components
+    shell/               # Authenticated app shell — sidebar, topbar, onboarding pages
   components/
     ui/                  # shadcn primitives
     layout/              # App shell pieces (header, protected route, route loader)

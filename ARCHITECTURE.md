@@ -157,16 +157,68 @@ layout, OAuth redirects, and form states actually look and behave right. OAuth a
 Google/GitHub providers configured in the Supabase dashboard before they'll do anything but
 error.
 
+## App shell + onboarding (Phase 5, step 1)
+
+`src/features/shell/`:
+- `nav-items.ts` — single source of truth for the 8 sidebar destinations (Studio, Growth,
+  Portfolio, Projects, Community, Quests, Notifications, Settings), consumed by both the
+  desktop sidebar and the mobile drawer so they can't drift out of sync.
+- `components/sidebar.tsx` — `SidebarNav` (the actual nav markup, active-state via
+  `NavLink`, user email + sign-out footer) is a separate export from `Sidebar` (the
+  persistent desktop `<aside>`) so the exact same nav renders inside the mobile `Sheet`
+  drawer in `topbar.tsx` with zero duplication.
+- `components/topbar.tsx` — search input (real state, no fake results since there's no
+  data yet), Quick Upload, notifications bell, account dropdown (shadcn `DropdownMenu`).
+- `components/app-shell.tsx` — layout route wrapper (`Outlet`) composing sidebar + topbar.
+- `components/empty-state.tsx` — the one shared "nothing here yet" component; every nav
+  destination except Studio/Settings is currently just this with different copy. No fake
+  data anywhere — actions that aren't built yet (upload, new project, quests) call
+  `sonner`'s `toast()` with an honest "coming soon" instead of doing nothing or faking
+  success.
+- `/app` is now a real nested layout route (`app/router.tsx`): `index` → Studio
+  (onboarding), then `growth` / `portfolio` / `projects` / `community` / `quests` /
+  `notifications` / `settings`. Replaces the Phase 4a temporary stub (deleted).
+
+## Database (Phase 4b)
+
+Applied directly to the linked Supabase project via migrations (`create_profiles`,
+`create_artworks`, `create_projects`, `create_quests`, `create_social`, `harden_functions`).
+RLS enabled on every table, no exceptions:
+
+- **profiles** — one row per `auth.users` row, auto-provisioned by a
+  `handle_new_user()` trigger (derives a unique username from the email, revoked from the
+  public RPC surface so it's only reachable via the trigger). Public read, owner-only
+  write.
+- **artworks** / **artwork_versions** — visibility (`public`/`unlisted`/`private`) gates
+  reads; only the owner can write. Versions inherit the parent artwork's visibility.
+- **projects** / **project_members** / **tasks** — membership-gated throughout: reads
+  require public visibility or membership, writes require ownership or membership.
+- **quests** — public read-only catalog, no client write policy at all (curated
+  server-side, not user-generated).
+- **quest_progress** — user reads/writes only their own row.
+- **comments** / **likes** — follow the parent artwork's visibility for reads; writes
+  scoped to the authenticated user as author.
+- **followers** — public read (follow graphs are public data), writes scoped to the
+  follower's own edges.
+- **notifications** / **activity_feed** — read-only from the client (own rows only); both
+  are meant to be written by triggers/service role later, not by users directly.
+
+`set_updated_at()` trigger function reused across every table with an `updated_at` column.
+`src/types/database.ts` is now the real generated Supabase types (not the Phase 1
+placeholder) — `lib/supabase.ts` uses `createClient<Database>(...)`.
+
+Remaining, not code-fixable: Supabase's leaked-password-protection (HaveIBeenPwned check)
+is off by default — flip it on in the dashboard under Authentication → Policies.
+
 ## Phases
 
-1. **Architecture + scaffold** — this document. Done.
-2. **Design system** — real typography/color tokens, spacing scale, motion primitives,
-   restyled shadcn components.
-3. **Landing page** — full scroll-storytelling build (hero w/ R3F scene, features, growth,
-   collaboration, community, testimonials, pricing, FAQ, footer).
-4. **Auth** — Supabase schema, RLS, storage buckets, real login/signup flows.
-5. **Core app** — dashboard, profile, artwork/editor, timeline, projects/kanban, messages,
-   notifications, discover, settings, admin.
+1. **Architecture + scaffold** — done.
+2. **Design system** — done.
+3. **Landing page** — done.
+4. **Auth** (4a) + **Database** (4b) — done.
+5. **Core app** — app shell + onboarding done (step 1 above). Remaining: artwork upload,
+   Growth Timeline, and the rest of the nested `/app` pages get real functionality instead
+   of empty states.
 
 Each phase ships polished before the next starts — no placeholder implementations left
 behind once a phase is marked done.
