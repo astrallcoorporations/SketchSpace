@@ -67,7 +67,7 @@ export function HeroSection() {
         <HeroScene morphProgress={morphProgress} />
       </Suspense>
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/15 to-background/40" />
 
       <div className="relative flex h-full flex-col items-center justify-center px-6 text-center">
         <motion.div
@@ -88,7 +88,9 @@ export function HeroSection() {
             improve together.
           </h1>
 
-          <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground text-balance">
+          <p
+            className="mx-auto mt-6 max-w-xl text-lg font-medium text-foreground/85 text-balance [text-shadow:0_2px_24px_var(--background),0_1px_3px_var(--background)]"
+          >
             Learning, projects, portfolios and community — in one place built for the way
             artists actually grow.
           </p>
