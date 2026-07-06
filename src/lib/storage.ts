@@ -75,7 +75,7 @@ export function uploadWithProgress(
           xhr.setRequestHeader('Authorization', `Bearer ${session.access_token}`)
           xhr.setRequestHeader('apikey', SUPABASE_PUBLISHABLE_KEY)
           xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream')
-          xhr.setRequestHeader('x-upsert', 'true')
+          xhr.setRequestHeader('x-upsert', 'false')
 
           xhr.upload.onprogress = (event) => {
             if (event.lengthComputable) {
