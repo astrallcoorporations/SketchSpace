@@ -15,7 +15,7 @@ export function UploadDropzone({ onFilesAdded }: { onFilesAdded: (files: File[])
     if (files.length) onFilesAdded(files)
   }
 
-  function handleDrop(event: DragEvent<HTMLDivElement>) {
+  function handleDrop(event: DragEvent<HTMLLabelElement>) {
     event.preventDefault()
     setIsDragging(false)
     acceptFiles(event.dataTransfer.files)

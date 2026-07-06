@@ -1,3 +1,4 @@
+import type { Session } from '@supabase/supabase-js'
 import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from '@/lib/supabase'
 
 export type UploadHandle = {
@@ -6,10 +7,46 @@ export type UploadHandle = {
   cancel: () => void
 }
 
+const TOKEN_REFRESH_WINDOW_MS = 60_000
+
+async function getUploadSession(): Promise<Session> {
+  const { data: cached, error: sessionError } = await supabase.auth.getSession()
+  if (sessionError) throw sessionError
+
+  const session = cached.session
+  if (!session) {
+    throw new Error('Sign in again before uploading.')
+  }
+
+  const expiresAt = session.expires_at ? session.expires_at * 1000 : 0
+  if (expiresAt && expiresAt - Date.now() > TOKEN_REFRESH_WINDOW_MS) {
+    return session
+  }
+
+  const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession()
+  if (refreshError) throw refreshError
+  if (!refreshed.session) {
+    throw new Error('Your sign-in expired. Sign in again before uploading.')
+  }
+
+  return refreshed.session
+}
+
+function encodeStoragePath(path: string) {
+  return path.split('/').map(encodeURIComponent).join('/')
+}
+
+function validateStorageOwner(path: string, session: Session) {
+  const ownerId = path.split('/')[0]
+  if (!ownerId || ownerId !== session.user.id) {
+    throw new Error('This upload path does not match the signed-in user.')
+  }
+}
+
 /**
- * Uploads a file to Supabase Storage with real byte-level progress via XHR —
+ * Uploads a file to Supabase Storage with real byte-level progress via XHR.
  * supabase-js's own `.upload()` is a single opaque fetch with no progress
- * events, which would make a "real" progress bar impossible.
+ * events, which would make a real progress bar impossible.
  */
 export function uploadWithProgress(
   bucket: string,
@@ -18,59 +55,61 @@ export function uploadWithProgress(
   onProgress: (percent: number) => void,
 ): UploadHandle {
   const xhr = new XMLHttpRequest()
+  let cancelled = false
 
   const done = new Promise<string>((resolve, reject) => {
-    // getSession() returns the *cached* session which may carry a stale
-    // access_token if the auto-refresh hasn't run yet.  Force a refresh
-    // first so the XHR — which bypasses supabase-js's interceptors —
-    // always sends a valid JWT.  Falls back to the cached token when the
-    // refresh itself fails (e.g. offline).
-    supabase.auth.getSession().then(async ({ data: cached }) => {
-      let token = cached.session?.access_token
-      if (token) {
+    getUploadSession().then(
+      (session) => {
         try {
-          const { data: refreshed } = await supabase.auth.refreshSession()
-          if (refreshed.session?.access_token) {
-            token = refreshed.session.access_token
+          if (cancelled) {
+            reject(new DOMException('Upload cancelled', 'AbortError'))
+            return
           }
-        } catch {
-          // Keep the cached token — better than nothing.
+
+          validateStorageOwner(path, session)
+
+          xhr.open(
+            'POST',
+            `${SUPABASE_URL}/storage/v1/object/${encodeURIComponent(bucket)}/${encodeStoragePath(path)}`,
+          )
+          xhr.setRequestHeader('Authorization', `Bearer ${session.access_token}`)
+          xhr.setRequestHeader('apikey', SUPABASE_PUBLISHABLE_KEY)
+          xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream')
+          xhr.setRequestHeader('x-upsert', 'true')
+
+          xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+              onProgress(Math.round((event.loaded / event.total) * 100))
+            }
+          }
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(path)
+            } else {
+              reject(new Error(`Upload failed (${xhr.status}): ${xhr.responseText}`))
+            }
+          }
+
+          xhr.onerror = () => reject(new Error('Upload failed - network error.'))
+          xhr.onabort = () => reject(new DOMException('Upload cancelled', 'AbortError'))
+
+          xhr.send(file)
+        } catch (error) {
+          reject(error)
         }
-      }
-
-      if (!token) {
-        reject(new Error('Not signed in.'))
-        return
-      }
-
-      xhr.open('POST', `${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`)
-      xhr.setRequestHeader('Authorization', `Bearer ${token}`)
-      xhr.setRequestHeader('apikey', SUPABASE_PUBLISHABLE_KEY)
-      xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream')
-      xhr.setRequestHeader('x-upsert', 'true')
-
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          onProgress(Math.round((event.loaded / event.total) * 100))
-        }
-      }
-
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          resolve(path)
-        } else {
-          reject(new Error(`Upload failed (${xhr.status}): ${xhr.responseText}`))
-        }
-      }
-
-      xhr.onerror = () => reject(new Error('Upload failed — network error.'))
-      xhr.onabort = () => reject(new DOMException('Upload cancelled', 'AbortError'))
-
-      xhr.send(file)
-    }, reject)
+      },
+      reject,
+    )
   })
 
-  return { done, cancel: () => xhr.abort() }
+  return {
+    done,
+    cancel: () => {
+      cancelled = true
+      xhr.abort()
+    },
+  }
 }
 
 export function getPublicUrl(bucket: string, path: string): string {

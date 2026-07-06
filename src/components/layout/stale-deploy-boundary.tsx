@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 /** SessionStorage key tracking whether we already auto-reloaded once. */
 const RETRIED_KEY = 'sketchspace:stale-deploy-retried'
 
-function isDynamicImportError(error: unknown): boolean {
+function isDynamicImportError(error: unknown): error is TypeError {
   if (error instanceof TypeError) {
     const msg = error.message ?? ''
     return (
