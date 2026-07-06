@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { CheckSquare, Search, UploadCloud, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -45,16 +45,16 @@ export function PortfolioPage() {
     !!search || filters.visibility !== 'all' || filters.medium !== 'all' || filters.collectionId !== 'all'
   const isEmpty = !loading && items.length === 0 && !hasActiveFilters
 
+  const refreshCollections = useCallback(() => {
+    if (!user) return Promise.resolve()
+    return listCollections(user.id).then(setCollections)
+  }, [user])
+
   useEffect(() => {
     if (!user) return
     void getOwnerFacets(user.id).then(({ mediums: m }) => setMediums(m))
     void refreshCollections()
-  }, [user])
-
-  function refreshCollections() {
-    if (!user) return Promise.resolve()
-    return listCollections(user.id).then(setCollections)
-  }
+  }, [user, refreshCollections])
 
   function handleSearchChange(value: string) {
     setSearch(value)

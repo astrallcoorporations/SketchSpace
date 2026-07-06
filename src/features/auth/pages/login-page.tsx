@@ -1,15 +1,16 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { AuthLayout } from '@/features/auth/components/auth-layout'
+import { AuthErrorAlert } from '@/features/auth/components/auth-error-alert'
 import { PasswordInput } from '@/features/auth/components/password-input'
 import { OAuthButtons } from '@/features/auth/components/oauth-buttons'
 import { signInWithPassword } from '@/lib/auth'
 import { setRememberMe as persistRememberMe } from '@/lib/supabase'
+import { describeAuthError, type AuthErrorDescription } from '@/lib/auth-errors'
 
 export function LoginPage() {
   const navigate = useNavigate()
@@ -18,7 +19,7 @@ export function LoginPage() {
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(true)
   const [status, setStatus] = useState<'idle' | 'loading'>('idle')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<AuthErrorDescription | null>(null)
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
@@ -26,20 +27,21 @@ export function LoginPage() {
     setStatus('loading')
     persistRememberMe(rememberMe)
 
-    const { error: signInError } = await signInWithPassword(email, password)
+    try {
+      const { error: signInError } = await signInWithPassword(email, password)
 
-    if (signInError) {
-      setError(
-        signInError.message === 'Invalid login credentials'
-          ? 'Incorrect email or password.'
-          : signInError.message,
-      )
+      if (signInError) {
+        setError(describeAuthError(signInError))
+        setStatus('idle')
+        return
+      }
+
+      const from = (location.state as { from?: string } | null)?.from ?? '/app'
+      navigate(from, { replace: true })
+    } catch (err) {
+      setError(describeAuthError(err))
       setStatus('idle')
-      return
     }
-
-    const from = (location.state as { from?: string } | null)?.from ?? '/app'
-    navigate(from, { replace: true })
   }
 
   return (
@@ -56,15 +58,7 @@ export function LoginPage() {
           <div className="absolute inset-x-0 top-1/2 border-t border-border" />
         </div>
 
-        {error && (
-          <div
-            role="alert"
-            className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
-          >
-            <AlertCircle className="mt-0.5 size-4 shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
+        {error && <AuthErrorAlert error={error} />}
 
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>

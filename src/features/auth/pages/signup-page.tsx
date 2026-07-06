@@ -1,16 +1,18 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { AlertCircle, MailCheck } from 'lucide-react'
+import { MailCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AuthLayout } from '@/features/auth/components/auth-layout'
+import { AuthErrorAlert } from '@/features/auth/components/auth-error-alert'
 import { PasswordInput } from '@/features/auth/components/password-input'
 import { PasswordStrengthMeter } from '@/features/auth/components/password-strength-meter'
 import { OAuthButtons } from '@/features/auth/components/oauth-buttons'
 import { signUpWithPassword } from '@/lib/auth'
 import { getPasswordStrength } from '@/lib/password-strength'
+import { describeAuthError, type AuthErrorDescription } from '@/lib/auth-errors'
 
 export function SignupPage() {
   const navigate = useNavigate()
@@ -18,32 +20,37 @@ export function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<AuthErrorDescription | null>(null)
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
     setError(null)
 
     if (getPasswordStrength(password).score < 1) {
-      setError('Use at least 8 characters.')
+      setError({ kind: 'weak-password', message: 'Use at least 8 characters.' })
       return
     }
 
     setStatus('loading')
-    const { data, error: signUpError } = await signUpWithPassword(email, password, name)
+    try {
+      const { data, error: signUpError } = await signUpWithPassword(email, password, name)
 
-    if (signUpError) {
-      setError(signUpError.message)
+      if (signUpError) {
+        setError(describeAuthError(signUpError))
+        setStatus('idle')
+        return
+      }
+
+      if (data.session) {
+        navigate('/app', { replace: true })
+        return
+      }
+
+      setStatus('success')
+    } catch (err) {
+      setError(describeAuthError(err))
       setStatus('idle')
-      return
     }
-
-    if (data.session) {
-      navigate('/app', { replace: true })
-      return
-    }
-
-    setStatus('success')
   }
 
   return (
@@ -85,15 +92,7 @@ export function SignupPage() {
               <div className="absolute inset-x-0 top-1/2 border-t border-border" />
             </div>
 
-            {error && (
-              <div
-                role="alert"
-                className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
-              >
-                <AlertCircle className="mt-0.5 size-4 shrink-0" />
-                <span>{error}</span>
-              </div>
-            )}
+            {error && <AuthErrorAlert error={error} />}
 
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>

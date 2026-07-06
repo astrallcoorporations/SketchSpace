@@ -9,6 +9,12 @@ const anonKey =
 
 const isConfigured = Boolean(url && anonKey)
 
+/** True once real Supabase env vars are present — false means every auth/data
+ *  call is talking to the placeholder client and will never succeed. */
+export function isSupabaseConfigured() {
+  return isConfigured
+}
+
 // Exposed for lib/storage.ts, which talks to the Storage REST API directly
 // (via XHR) to get real upload-progress events — the supabase-js client's
 // .upload() is a single opaque fetch with no progress callback.
