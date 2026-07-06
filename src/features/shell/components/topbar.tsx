@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Bell, Menu, Search, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { SidebarNav } from '@/features/shell/components/sidebar'
+import { UploadDialog } from '@/features/artwork/components/upload-dialog'
 import { useAuth } from '@/hooks/use-auth'
 import { signOut } from '@/lib/auth'
 
@@ -20,6 +21,13 @@ export function Topbar() {
   const { user } = useAuth()
   const [query, setQuery] = useState('')
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [uploadOpen, setUploadOpen] = useState(false)
+
+  function handleSearchSubmit(e: FormEvent) {
+    e.preventDefault()
+    const term = query.trim()
+    navigate(term ? `/app/portfolio?q=${encodeURIComponent(term)}` : '/app/portfolio')
+  }
 
   return (
     <header className="flex items-center gap-3 border-b border-border bg-background px-4 py-3 lg:px-6">
@@ -39,19 +47,19 @@ export function Topbar() {
         </SheetContent>
       </Sheet>
 
-      <div className="relative max-w-sm flex-1">
+      <form onSubmit={handleSearchSubmit} className="relative max-w-sm flex-1">
         <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search SketchSpace…"
+          placeholder="Search your artwork…"
           aria-label="Search"
           className="pl-9"
         />
-      </div>
+      </form>
 
       <div className="ml-auto flex items-center gap-2">
-        <Button variant="brand" size="sm" className="gap-1.5" onClick={() => navigate('/app')}>
+        <Button variant="brand" size="sm" className="gap-1.5" onClick={() => setUploadOpen(true)}>
           <Upload className="size-4" />
           <span className="hidden sm:inline">Quick upload</span>
         </Button>
@@ -87,6 +95,12 @@ export function Topbar() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <UploadDialog
+        open={uploadOpen}
+        onOpenChange={setUploadOpen}
+        onUploaded={() => navigate('/app/portfolio')}
+      />
     </header>
   )
 }

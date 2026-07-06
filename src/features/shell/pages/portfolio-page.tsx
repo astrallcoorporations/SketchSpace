@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Search, UploadCloud } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,8 +15,14 @@ import { motion } from 'framer-motion'
 
 export function PortfolioPage() {
   const { user } = useAuth()
-  const [search, setSearch] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [search, setSearch] = useState(() => searchParams.get('q') ?? '')
   const [uploadOpen, setUploadOpen] = useState(false)
+
+  function handleSearchChange(value: string) {
+    setSearch(value)
+    setSearchParams(value ? { q: value } : {}, { replace: true })
+  }
   const { items, hasMore, loading, loadMore, refresh } = useInfiniteArtworks({
     ownerId: user?.id,
     search: search || undefined,
@@ -33,7 +40,7 @@ export function PortfolioPage() {
             <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Search your artwork…"
               className="w-56 pl-9"
             />

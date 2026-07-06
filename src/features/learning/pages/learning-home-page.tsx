@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Flame, Sparkles } from 'lucide-react'
+import { Flame, GraduationCap, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { StaggerGroup, staggerItem, Reveal } from '@/components/motion/reveal'
 import { motion } from 'framer-motion'
 import { RouteLoader } from '@/components/layout/route-loader'
+import { EmptyState } from '@/features/shell/components/empty-state'
 import { useAuth } from '@/hooks/use-auth'
 import { listPathsWithProgress, getStreak, getContinueLearningTarget } from '@/features/learning/api'
 import { PathCard } from '@/features/learning/components/path-card'
@@ -76,13 +77,21 @@ export function LearningHomePage() {
         </Reveal>
       )}
 
-      <StaggerGroup className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {paths.map((path) => (
-          <motion.div key={path.id} variants={staggerItem}>
-            <PathCard path={path} />
-          </motion.div>
-        ))}
-      </StaggerGroup>
+      {paths.length === 0 ? (
+        <EmptyState
+          icon={<GraduationCap className="size-6" />}
+          title="Learning paths are on their way"
+          description="Structured, Duolingo-style paths for every medium are being seeded in. Check back shortly."
+        />
+      ) : (
+        <StaggerGroup className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {paths.map((path) => (
+            <motion.div key={path.id} variants={staggerItem}>
+              <PathCard path={path} />
+            </motion.div>
+          ))}
+        </StaggerGroup>
+      )}
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { RouteLoader } from '@/components/layout/route-loader'
 import { Reveal } from '@/components/motion/reveal'
 import { useAuth } from '@/hooks/use-auth'
@@ -13,25 +14,44 @@ const zigzagOffsets = [0, 40, 0, -40]
 
 export function LearningPathPage() {
   const { pathSlug } = useParams<{ pathSlug: string }>()
+  const navigate = useNavigate()
   const { user } = useAuth()
   const [path, setPath] = useState<LearningPath | null>(null)
   const [units, setUnits] = useState<UnitWithLessons[]>([])
   const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
 
   const load = useCallback(async () => {
     if (!pathSlug) return
     setLoading(true)
-    const result = await getPathDetail(pathSlug, user?.id)
-    setPath(result.path)
-    setUnits(result.units)
-    setLoading(false)
+    setNotFound(false)
+    try {
+      const result = await getPathDetail(pathSlug, user?.id)
+      setPath(result.path)
+      setUnits(result.units)
+    } catch {
+      setNotFound(true)
+    } finally {
+      setLoading(false)
+    }
   }, [pathSlug, user?.id])
 
   useEffect(() => {
     void load()
   }, [load])
 
-  if (loading || !path) return <RouteLoader />
+  if (loading) return <RouteLoader />
+
+  if (notFound || !path) {
+    return (
+      <div className="mx-auto max-w-2xl px-6 py-24 text-center">
+        <p className="text-muted-foreground">This learning path doesn't exist.</p>
+        <Button variant="outline" className="mt-4" onClick={() => navigate('/app/learning')}>
+          Back to learning
+        </Button>
+      </div>
+    )
+  }
 
   return (
     <div className="mx-auto w-full max-w-2xl px-6 py-10">

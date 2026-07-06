@@ -47,6 +47,7 @@ export function ArtworkDetailPage() {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [addingVersion, setAddingVersion] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const load = useCallback(async () => {
@@ -83,10 +84,16 @@ export function ArtworkDetailPage() {
   const visibility = visibilityMeta[artwork.visibility as keyof typeof visibilityMeta]
 
   async function handleDelete() {
-    if (!user) return
-    await deleteArtwork(artwork!.id, user.id)
-    toast('Artwork deleted.')
-    navigate('/app/portfolio')
+    if (!user || !artwork) return
+    setDeleting(true)
+    try {
+      await deleteArtwork(artwork.id, user.id)
+      toast('Artwork deleted.')
+      navigate('/app/portfolio')
+    } catch {
+      toast.error('Could not delete this artwork. Try again.')
+      setDeleting(false)
+    }
   }
 
   async function handleAddVersion(file: File) {
@@ -242,12 +249,16 @@ export function ArtworkDetailPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={handleDelete}
+              disabled={deleting}
+              onClick={(e) => {
+                e.preventDefault()
+                void handleDelete()
+              }}
             >
-              Delete
+              {deleting ? 'Deleting…' : 'Delete'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

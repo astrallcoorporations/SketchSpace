@@ -20,26 +20,44 @@ export function LessonPage() {
   const [lesson, setLesson] = useState<Awaited<ReturnType<typeof getLessonDetail>> | null>(null)
   const [alreadyCompleted, setAlreadyCompleted] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
   const [completing, setCompleting] = useState(false)
   const [justCompleted, setJustCompleted] = useState(false)
 
   useEffect(() => {
     if (!lessonId || !user) return
     let cancelled = false
-    void Promise.all([getLessonDetail(lessonId), getLessonProgress(user.id, lessonId)]).then(
-      ([lessonData, progress]) => {
+    setLoading(true)
+    setNotFound(false)
+    void Promise.all([getLessonDetail(lessonId), getLessonProgress(user.id, lessonId)])
+      .then(([lessonData, progress]) => {
         if (cancelled) return
         setLesson(lessonData)
         setAlreadyCompleted(progress?.status === 'completed')
         setLoading(false)
-      },
-    )
+      })
+      .catch(() => {
+        if (cancelled) return
+        setNotFound(true)
+        setLoading(false)
+      })
     return () => {
       cancelled = true
     }
   }, [lessonId, user])
 
-  if (loading || !lesson) return <RouteLoader />
+  if (loading) return <RouteLoader />
+
+  if (notFound || !lesson) {
+    return (
+      <div className="mx-auto max-w-2xl px-6 py-24 text-center">
+        <p className="text-muted-foreground">This lesson doesn't exist.</p>
+        <Button variant="outline" className="mt-4" onClick={() => navigate('/app/learning')}>
+          Back to learning
+        </Button>
+      </div>
+    )
+  }
 
   const unit = lesson.unit as { title: string; path: { slug: string; title: string } } | null
 

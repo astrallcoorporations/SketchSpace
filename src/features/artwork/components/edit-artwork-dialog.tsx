@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { toast } from 'sonner'
 import { TagInput } from '@/components/shared/tag-input'
 import { updateArtwork } from '@/features/artwork/api'
 import type { Artwork, ArtworkVisibility } from '@/features/artwork/types'
@@ -52,6 +53,8 @@ export function EditArtworkDialog({
       })
       onSaved(updated)
       onOpenChange(false)
+    } catch {
+      toast.error('Could not save changes. Try again.')
     } finally {
       setSaving(false)
     }
