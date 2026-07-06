@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -47,10 +48,24 @@ export function LoginPage() {
   }
 
   async function handleResendEmail() {
-    if (!email) return
+    if (!email.trim()) {
+      toast.error('Enter your email first.')
+      return
+    }
+
     setResending(true)
-    await resendConfirmationEmail(email)
-    setResending(false)
+    try {
+      const { error: resendError } = await resendConfirmationEmail(email.trim())
+      if (resendError) {
+        setError(describeAuthError(resendError))
+        return
+      }
+      toast.success('Confirmation email sent.')
+    } catch (err) {
+      setError(describeAuthError(err))
+    } finally {
+      setResending(false)
+    }
   }
 
   return (
@@ -68,20 +83,19 @@ export function LoginPage() {
         </div>
 
         {error && <AuthErrorAlert error={error} />}
-            {error && error.kind === 'supabase' && error.message.includes('Confirm your email') && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full"
-                disabled={resending}
-                onClick={handleResendEmail}
-              >
-                {resending ? (
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                ) : null}
-                Resend confirmation email
-              </Button>
-            )}
+        {error && error.kind === 'supabase' && error.message.includes('Confirm your email') && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="w-full"
+            disabled={resending}
+            onClick={handleResendEmail}
+          >
+            {resending ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
+            Resend confirmation email
+          </Button>
+        )}
 
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
@@ -114,7 +128,7 @@ export function LoginPage() {
         </div>
 
         <Button type="submit" variant="brand" className="w-full" disabled={status === 'loading'}>
-          {status === 'loading' ? 'Signing in…' : 'Sign in'}
+          {status === 'loading' ? 'Signing in...' : 'Sign in'}
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">
