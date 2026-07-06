@@ -56,10 +56,24 @@ export function SignupPage() {
   }
 
   async function handleResendEmail() {
-    if (!email) return
+    if (!email.trim()) {
+      toast.error('Enter your email first.')
+      return
+    }
+
     setResending(true)
-    await resendConfirmationEmail(email)
-    setResending(false)
+    try {
+      const { error: resendError } = await resendConfirmationEmail(email.trim())
+      if (resendError) {
+        toast.error(describeAuthError(resendError).message)
+        return
+      }
+      toast.success('Confirmation email sent.')
+    } catch (err) {
+      toast.error(describeAuthError(err).message)
+    } finally {
+      setResending(false)
+    }
   }
 
   return (
