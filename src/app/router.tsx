@@ -5,6 +5,9 @@ import { ProtectedRoute } from '@/components/layout/protected-route'
 
 // Route-level code splitting: every top-level page is its own chunk.
 const LandingPage = lazy(() => import('@/pages/landing-page'))
+const FeaturesPage = lazy(() => import('@/pages/features-page'))
+const MarketingCommunityPage = lazy(() => import('@/pages/marketing-community-page'))
+const PricingPage = lazy(() => import('@/pages/pricing-page'))
 const LoginPage = lazy(() => import('@/pages/login-page'))
 const SignupPage = lazy(() => import('@/pages/signup-page'))
 const ForgotPasswordPage = lazy(() => import('@/pages/forgot-password-page'))
@@ -31,6 +34,9 @@ function withSuspense(node: React.ReactNode) {
 
 const router = createBrowserRouter([
   { path: '/', element: withSuspense(<LandingPage />) },
+  { path: '/features', element: withSuspense(<FeaturesPage />) },
+  { path: '/community', element: withSuspense(<MarketingCommunityPage />) },
+  { path: '/pricing', element: withSuspense(<PricingPage />) },
   { path: '/login', element: withSuspense(<LoginPage />) },
   { path: '/signup', element: withSuspense(<SignupPage />) },
   { path: '/forgot-password', element: withSuspense(<ForgotPasswordPage />) },

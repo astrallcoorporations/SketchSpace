@@ -4,9 +4,9 @@ import { Magnetic } from '@/components/motion/magnetic'
 import { Button } from '@/components/ui/button'
 
 const navLinks = [
-  { label: 'Features', href: '#features' },
-  { label: 'Community', href: '#community' },
-  { label: 'Pricing', href: '#pricing' },
+  { label: 'Features', href: '/features' },
+  { label: 'Community', href: '/community' },
+  { label: 'Pricing', href: '/pricing' },
 ] as const
 
 export function SiteHeader() {
@@ -36,13 +36,13 @@ export function SiteHeader() {
 
         <div className="hidden items-center gap-8 sm:flex">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
-              href={link.href}
+              to={link.href}
               className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </div>
 

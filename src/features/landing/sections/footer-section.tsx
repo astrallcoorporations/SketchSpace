@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Code2, Send, Camera } from 'lucide-react'
 import { Magnetic } from '@/components/motion/magnetic'
 import { Input } from '@/components/ui/input'
@@ -6,15 +7,28 @@ import { Button } from '@/components/ui/button'
 const columns = [
   {
     title: 'Product',
-    links: ['Features', 'Community quests', 'Portfolio builder', 'Pricing'],
+    links: [
+      { label: 'Features', href: '/features' },
+      { label: 'Community quests', href: '/community' },
+      { label: 'Portfolio builder', href: '#' },
+      { label: 'Pricing', href: '/pricing' },
+    ],
   },
   {
     title: 'Company',
-    links: ['About', 'Blog', 'Careers'],
+    links: [
+      { label: 'About', href: '#' },
+      { label: 'Blog', href: '#' },
+      { label: 'Careers', href: '#' },
+    ],
   },
   {
     title: 'Resources',
-    links: ['Help center', 'Guidelines', 'Status'],
+    links: [
+      { label: 'Help center', href: '#' },
+      { label: 'Guidelines', href: '#' },
+      { label: 'Status', href: '#' },
+    ],
   },
 ] as const
 
@@ -49,16 +63,22 @@ export function FooterSection() {
             <div key={column.title}>
               <h3 className="text-sm font-medium">{column.title}</h3>
               <ul className="mt-4 space-y-3">
-                {column.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {link}
-                    </a>
-                  </li>
-                ))}
+                {column.links.map((link) =>
+                  link.href === '#' ? (
+                    <li key={link.label}>
+                      <span className="text-sm text-muted-foreground/60">{link.label}</span>
+                    </li>
+                  ) : (
+                    <li key={link.label}>
+                      <Link
+                        to={link.href}
+                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ),
+                )}
               </ul>
             </div>
           ))}
