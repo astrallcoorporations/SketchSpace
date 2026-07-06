@@ -100,15 +100,14 @@ export function SignupPage() {
               Follow it to finish setting up your account.
             </p>
             <Button
+              type="button"
               variant="outline"
               size="sm"
               className="mt-1"
               disabled={resending}
               onClick={handleResendEmail}
             >
-              {resending ? (
-                <Loader2 className="mr-2 size-4 animate-spin" />
-              ) : null}
+              {resending ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
               Resend confirmation email
             </Button>
           </motion.div>
@@ -164,7 +163,7 @@ export function SignupPage() {
             </div>
 
             <Button type="submit" variant="brand" className="w-full" disabled={status === 'loading'}>
-              {status === 'loading' ? 'Creating account…' : 'Create account'}
+              {status === 'loading' ? 'Creating account...' : 'Create account'}
             </Button>
 
             <p className="text-center text-xs text-muted-foreground">
