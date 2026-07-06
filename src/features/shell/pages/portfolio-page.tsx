@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search, UploadCloud } from 'lucide-react'
+import { CheckSquare, Search, UploadCloud, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { EmptyState } from '@/features/shell/components/empty-state'
@@ -10,6 +10,10 @@ import { useIntersectionObserver } from '@/hooks/use-intersection-observer'
 import { MasonryGrid, MasonryItem } from '@/features/artwork/components/masonry-grid'
 import { ArtworkCard, ArtworkCardSkeleton } from '@/features/artwork/components/artwork-card'
 import { UploadDialog } from '@/features/artwork/components/upload-dialog'
+import { BulkActionBar } from '@/features/artwork/components/bulk-action-bar'
+import { FilterBar, type PortfolioFilters } from '@/features/artwork/components/filter-bar'
+import { getOwnerFacets, listCollections } from '@/features/artwork/api'
+import type { Collection } from '@/features/artwork/types'
 import { StaggerGroup, staggerItem } from '@/components/motion/reveal'
 import { motion } from 'framer-motion'
 
@@ -18,18 +22,53 @@ export function PortfolioPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [search, setSearch] = useState(() => searchParams.get('q') ?? '')
   const [uploadOpen, setUploadOpen] = useState(false)
+  const [filters, setFilters] = useState<PortfolioFilters>({
+    visibility: 'all',
+    medium: 'all',
+    collectionId: 'all',
+  })
+  const [selecting, setSelecting] = useState(false)
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [mediums, setMediums] = useState<string[]>([])
+  const [collections, setCollections] = useState<Collection[]>([])
+
+  const { items, hasMore, loading, loadMore, refresh } = useInfiniteArtworks({
+    ownerId: user?.id,
+    search: search || undefined,
+    visibility: filters.visibility === 'all' ? undefined : filters.visibility,
+    medium: filters.medium === 'all' ? undefined : filters.medium,
+    collectionId: filters.collectionId === 'all' ? undefined : filters.collectionId,
+  })
+
+  const sentinelRef = useIntersectionObserver(loadMore, hasMore && !loading)
+  const hasActiveFilters =
+    !!search || filters.visibility !== 'all' || filters.medium !== 'all' || filters.collectionId !== 'all'
+  const isEmpty = !loading && items.length === 0 && !hasActiveFilters
+
+  useEffect(() => {
+    if (!user) return
+    void getOwnerFacets(user.id).then(({ mediums: m }) => setMediums(m))
+    void refreshCollections()
+  }, [user])
+
+  function refreshCollections() {
+    if (!user) return Promise.resolve()
+    return listCollections(user.id).then(setCollections)
+  }
 
   function handleSearchChange(value: string) {
     setSearch(value)
     setSearchParams(value ? { q: value } : {}, { replace: true })
   }
-  const { items, hasMore, loading, loadMore, refresh } = useInfiniteArtworks({
-    ownerId: user?.id,
-    search: search || undefined,
-  })
 
-  const sentinelRef = useIntersectionObserver(loadMore, hasMore && !loading)
-  const isEmpty = !loading && items.length === 0 && !search
+  function toggleSelecting() {
+    setSelecting((prev) => !prev)
+    setSelectedIds([])
+  }
+
+  function toggleSelect(id: string) {
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]))
+  }
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-10">
@@ -45,12 +84,26 @@ export function PortfolioPage() {
               className="w-56 pl-9"
             />
           </div>
+          <Button
+            variant={selecting ? 'secondary' : 'outline'}
+            size="icon"
+            aria-label={selecting ? 'Exit selection mode' : 'Select artwork'}
+            onClick={toggleSelecting}
+          >
+            {selecting ? <X className="size-4" /> : <CheckSquare className="size-4" />}
+          </Button>
           <Button variant="brand" className="gap-1.5" onClick={() => setUploadOpen(true)}>
             <UploadCloud className="size-4" />
             Upload
           </Button>
         </div>
       </div>
+
+      {!isEmpty && (
+        <div className="mt-4">
+          <FilterBar filters={filters} onChange={setFilters} mediums={mediums} collections={collections} />
+        </div>
+      )}
 
       <div className="mt-8">
         {isEmpty ? (
@@ -66,7 +119,7 @@ export function PortfolioPage() {
           />
         ) : items.length === 0 && !loading ? (
           <p className="py-16 text-center text-sm text-muted-foreground">
-            No artwork matches "{search}".
+            No artwork matches these filters.
           </p>
         ) : (
           <StaggerGroup>
@@ -74,7 +127,12 @@ export function PortfolioPage() {
               {items.map((artwork) => (
                 <MasonryItem key={artwork.id}>
                   <motion.div variants={staggerItem}>
-                    <ArtworkCard artwork={artwork} />
+                    <ArtworkCard
+                      artwork={artwork}
+                      selectable={selecting}
+                      selected={selectedIds.includes(artwork.id)}
+                      onToggleSelect={() => toggleSelect(artwork.id)}
+                    />
                   </motion.div>
                 </MasonryItem>
               ))}
@@ -91,6 +149,18 @@ export function PortfolioPage() {
       </div>
 
       <UploadDialog open={uploadOpen} onOpenChange={setUploadOpen} onUploaded={refresh} />
+
+      {user && (
+        <BulkActionBar
+          ownerId={user.id}
+          selectedIds={selectedIds}
+          onClear={() => setSelectedIds([])}
+          onChanged={() => {
+            refresh()
+            void refreshCollections()
+          }}
+        />
+      )}
     </div>
   )
 }

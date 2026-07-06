@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, Lock, EyeOff, Pencil, Trash2, Plus, X } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Lock, EyeOff, Pencil, Trash2, Plus, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -46,6 +46,7 @@ export function ArtworkDetailPage() {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
   const [addingVersion, setAddingVersion] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -67,6 +68,17 @@ export function ArtworkDetailPage() {
   useEffect(() => {
     void load()
   }, [load])
+
+  useEffect(() => {
+    if (!lightboxOpen) return
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setLightboxOpen(false)
+      else if (e.key === 'ArrowRight') setLightboxIndex((i) => Math.min(i + 1, versions.length - 1))
+      else if (e.key === 'ArrowLeft') setLightboxIndex((i) => Math.max(i - 1, 0))
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [lightboxOpen, versions.length])
 
   if (loading) return <RouteLoader />
   if (!artwork) {
@@ -126,7 +138,10 @@ export function ArtworkDetailPage() {
           {artwork.cover_image_url && (
             <button
               type="button"
-              onClick={() => setLightboxOpen(true)}
+              onClick={() => {
+                setLightboxIndex(0)
+                setLightboxOpen(true)
+              }}
               className="block w-full cursor-zoom-in"
               aria-label="Open full image"
             >
@@ -217,8 +232,17 @@ export function ArtworkDetailPage() {
           </div>
 
           <div className="mt-4 flex gap-3 overflow-x-auto pb-2">
-            {versions.map((version) => (
-              <div key={version.id} className="w-28 shrink-0">
+            {versions.map((version, i) => (
+              <button
+                key={version.id}
+                type="button"
+                className="w-28 shrink-0 cursor-zoom-in text-left"
+                onClick={() => {
+                  setLightboxIndex(i)
+                  setLightboxOpen(true)
+                }}
+                aria-label={`Open version ${version.version_number}`}
+              >
                 <img
                   src={version.image_url}
                   alt={`Version ${version.version_number}`}
@@ -226,8 +250,9 @@ export function ArtworkDetailPage() {
                 />
                 <p className="mt-1 text-center text-xs text-muted-foreground">
                   v{version.version_number}
+                  {version.note ? ` · ${version.note}` : ''}
                 </p>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -265,7 +290,7 @@ export function ArtworkDetailPage() {
       </AlertDialog>
 
       <AnimatePresence>
-        {lightboxOpen && artwork.cover_image_url && (
+        {lightboxOpen && versions.length > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -281,14 +306,50 @@ export function ArtworkDetailPage() {
             >
               <X className="size-6" />
             </button>
+
+            {lightboxIndex < versions.length - 1 && (
+              <button
+                type="button"
+                aria-label="Older version"
+                className="absolute left-4 flex size-10 items-center justify-center rounded-full bg-black/40 text-white/80 hover:text-white sm:left-8"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setLightboxIndex((i) => Math.min(i + 1, versions.length - 1))
+                }}
+              >
+                <ChevronLeft className="size-6" />
+              </button>
+            )}
+            {lightboxIndex > 0 && (
+              <button
+                type="button"
+                aria-label="Newer version"
+                className="absolute right-4 flex size-10 items-center justify-center rounded-full bg-black/40 text-white/80 hover:text-white sm:right-8"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setLightboxIndex((i) => Math.max(i - 1, 0))
+                }}
+              >
+                <ChevronRight className="size-6" />
+              </button>
+            )}
+
             <motion.img
-              initial={{ scale: 0.96 }}
-              animate={{ scale: 1 }}
-              src={artwork.cover_image_url}
-              alt={artwork.title}
+              key={versions[lightboxIndex].id}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.15 }}
+              src={versions[lightboxIndex].image_url}
+              alt={`${artwork.title} — version ${versions[lightboxIndex].version_number}`}
               className="max-h-full max-w-full rounded-lg object-contain"
               onClick={(e) => e.stopPropagation()}
             />
+
+            {versions.length > 1 && (
+              <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sm text-white/70">
+                v{versions[lightboxIndex].version_number} · {lightboxIndex + 1} of {versions.length}
+              </p>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

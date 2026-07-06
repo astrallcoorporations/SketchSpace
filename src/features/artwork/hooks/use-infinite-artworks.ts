@@ -6,9 +6,12 @@ type Params = {
   ownerId?: string
   visibility?: ArtworkVisibility
   search?: string
+  medium?: string
+  tag?: string
+  collectionId?: string
 }
 
-export function useInfiniteArtworks({ ownerId, visibility, search }: Params) {
+export function useInfiniteArtworks({ ownerId, visibility, search, medium, tag, collectionId }: Params) {
   const [items, setItems] = useState<ArtworkWithOwner[]>([])
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
@@ -24,6 +27,9 @@ export function useInfiniteArtworks({ ownerId, visibility, search }: Params) {
           ownerId,
           visibility,
           search,
+          medium,
+          tag,
+          collectionId,
           page: nextPage,
         })
         if (id !== requestId.current) return // stale response — filters changed mid-flight
@@ -34,7 +40,7 @@ export function useInfiniteArtworks({ ownerId, visibility, search }: Params) {
         if (id === requestId.current) setLoading(false)
       }
     },
-    [ownerId, visibility, search],
+    [ownerId, visibility, search, medium, tag, collectionId],
   )
 
   // Reset and reload whenever the filters change.

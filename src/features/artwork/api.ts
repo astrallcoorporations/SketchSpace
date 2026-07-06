@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase'
 import { buildStoragePath, deleteFromStorage, getPublicUrl, uploadWithProgress } from '@/lib/storage'
 import { optimizeImage } from '@/lib/image-optimize'
 import type { TablesInsert, TablesUpdate } from '@/types/database'
-import type { ArtworkWithOwner, ArtworkVisibility } from './types'
+import type { ArtworkWithOwner, ArtworkVisibility, Collection } from './types'
 
 const ARTWORK_BUCKET = 'artworks'
 const OWNER_SELECT = 'profiles!artworks_owner_id_fkey(id, username, display_name, avatar_url)'
@@ -13,21 +13,39 @@ type ListArtworksParams = {
   ownerId?: string
   visibility?: ArtworkVisibility
   search?: string
+  medium?: string
+  tag?: string
+  collectionId?: string
   page: number
 }
 
-export async function listArtworks({ ownerId, visibility, search, page }: ListArtworksParams) {
+export async function listArtworks({
+  ownerId,
+  visibility,
+  search,
+  medium,
+  tag,
+  collectionId,
+  page,
+}: ListArtworksParams) {
   const from = page * PAGE_SIZE
   const to = from + PAGE_SIZE - 1
 
+  const embed = collectionId
+    ? `*, ${OWNER_SELECT}, artwork_collections!inner(collection_id)`
+    : `*, ${OWNER_SELECT}`
+
   let query = supabase
     .from('artworks')
-    .select(`*, ${OWNER_SELECT}`)
+    .select(embed)
     .order('created_at', { ascending: false })
     .range(from, to)
 
   if (ownerId) query = query.eq('owner_id', ownerId)
   if (visibility) query = query.eq('visibility', visibility)
+  if (medium) query = query.eq('medium', medium)
+  if (tag) query = query.contains('tags', [tag])
+  if (collectionId) query = query.eq('artwork_collections.collection_id', collectionId)
   if (search?.trim()) {
     const term = search.trim()
     query = query.or(`title.ilike.%${term}%,tags.cs.{${term}}`)
@@ -36,6 +54,78 @@ export async function listArtworks({ ownerId, visibility, search, page }: ListAr
   const { data, error } = await query
   if (error) throw error
   return { items: (data ?? []) as unknown as ArtworkWithOwner[], hasMore: (data?.length ?? 0) === PAGE_SIZE }
+}
+
+/** Distinct mediums/tags across an owner's own artwork, for building real filter facets. */
+export async function getOwnerFacets(ownerId: string) {
+  const { data, error } = await supabase.from('artworks').select('medium, tags').eq('owner_id', ownerId)
+  if (error) throw error
+  const mediums = new Set<string>()
+  const tags = new Set<string>()
+  for (const row of data ?? []) {
+    if (row.medium) mediums.add(row.medium)
+    for (const tag of row.tags ?? []) tags.add(tag)
+  }
+  return { mediums: [...mediums].sort(), tags: [...tags].sort() }
+}
+
+export async function listCollections(ownerId: string) {
+  const { data, error } = await supabase
+    .from('collections')
+    .select('*')
+    .eq('owner_id', ownerId)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data as Collection[]
+}
+
+export async function createCollection(ownerId: string, name: string, description?: string) {
+  const { data, error } = await supabase
+    .from('collections')
+    .insert({ owner_id: ownerId, name, description: description || null })
+    .select()
+    .single()
+  if (error) throw error
+  return data as Collection
+}
+
+export async function deleteCollection(id: string) {
+  const { error } = await supabase.from('collections').delete().eq('id', id)
+  if (error) throw error
+}
+
+export async function getArtworkCollectionIds(artworkId: string) {
+  const { data, error } = await supabase
+    .from('artwork_collections')
+    .select('collection_id')
+    .eq('artwork_id', artworkId)
+  if (error) throw error
+  return (data ?? []).map((r) => r.collection_id)
+}
+
+export async function addArtworksToCollection(artworkIds: string[], collectionId: string) {
+  const rows = artworkIds.map((artwork_id) => ({ artwork_id, collection_id: collectionId }))
+  const { error } = await supabase
+    .from('artwork_collections')
+    .upsert(rows, { onConflict: 'artwork_id,collection_id', ignoreDuplicates: true })
+  if (error) throw error
+}
+
+export async function setArtworkCollections(artworkId: string, collectionIds: string[]) {
+  await supabase.from('artwork_collections').delete().eq('artwork_id', artworkId)
+  if (collectionIds.length === 0) return
+  const rows = collectionIds.map((collection_id) => ({ artwork_id: artworkId, collection_id }))
+  const { error } = await supabase.from('artwork_collections').insert(rows)
+  if (error) throw error
+}
+
+export async function bulkUpdateVisibility(ids: string[], visibility: ArtworkVisibility) {
+  const { error } = await supabase.from('artworks').update({ visibility }).in('id', ids)
+  if (error) throw error
+}
+
+export async function bulkDeleteArtworks(ids: string[], ownerId: string) {
+  await Promise.all(ids.map((id) => deleteArtwork(id, ownerId)))
 }
 
 export async function getArtwork(id: string) {
