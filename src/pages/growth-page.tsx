@@ -1,1 +1,1 @@
-export { GrowthPage as default } from '@/features/shell/pages/growth-page'
+export { GrowthPage as default } from '@/features/growth/pages/growth-page'
