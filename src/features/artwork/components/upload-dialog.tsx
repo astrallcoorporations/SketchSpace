@@ -3,6 +3,7 @@ import { AlertCircle, Check, RotateCw, X } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogDescription,
@@ -61,16 +62,16 @@ export function UploadDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-h-[85vh] max-w-lg overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="grid max-h-[calc(100svh-2rem)] max-w-[calc(100vw-1rem)] grid-rows-[auto_minmax(0,1fr)_auto] gap-0 overflow-hidden p-0 sm:max-w-lg">
+        <DialogHeader className="px-4 pt-4 pb-3 pr-12">
           <DialogTitle>Upload artwork</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="break-words text-pretty">
             Drop one or more images. Each becomes its own artwork — you can retitle and
             organize them afterward.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="min-h-0 space-y-4 overflow-y-auto overflow-x-hidden px-4 py-3">
           <UploadDropzone onFilesAdded={addFiles} />
 
           {items.length > 0 && (
@@ -78,7 +79,7 @@ export function UploadDialog({
               {items.map((item) => (
                 <li
                   key={item.id}
-                  className="flex items-center gap-3 rounded-lg border border-border p-2.5"
+                  className="flex min-w-0 items-center gap-3 rounded-lg border border-border p-2.5"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{item.file.name}</p>
@@ -92,8 +93,11 @@ export function UploadDialog({
                       />
                     </div>
                     {item.status === 'error' && (
-                      <p className="mt-1 flex items-center gap-1 text-xs text-destructive">
-                        <AlertCircle className="size-3" /> {item.error ?? 'Upload failed'}
+                      <p className="mt-1 flex min-w-0 items-start gap-1 text-xs text-destructive">
+                        <AlertCircle className="mt-0.5 size-3 shrink-0" />
+                        <span className="min-w-0 break-words">
+                          {item.error ?? 'Upload failed'}
+                        </span>
                       </p>
                     )}
                   </div>
@@ -163,6 +167,9 @@ export function UploadDialog({
             <TagInput value={tags} onChange={setTags} placeholder="Add tags…" />
           </div>
 
+        </div>
+
+        <DialogFooter className="mt-0 grid grid-cols-1 gap-2">
           {allDone ? (
             <Button
               variant="brand"
@@ -184,7 +191,7 @@ export function UploadDialog({
               {submitting ? 'Uploading…' : `Upload ${items.length || ''} artwork${items.length === 1 ? '' : 's'}`}
             </Button>
           )}
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
