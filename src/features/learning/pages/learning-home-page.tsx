@@ -4,7 +4,7 @@ import { Flame, GraduationCap, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { StaggerGroup, staggerItem, Reveal } from '@/components/motion/reveal'
 import { motion } from 'framer-motion'
-import { RouteLoader } from '@/components/layout/route-loader'
+import { Skeleton } from '@/components/ui/skeleton'
 import { EmptyState } from '@/features/shell/components/empty-state'
 import { useAuth } from '@/hooks/use-auth'
 import { listPathsWithProgress, getStreak, getContinueLearningTarget } from '@/features/learning/api'
@@ -39,7 +39,22 @@ export function LearningHomePage() {
     }
   }, [user])
 
-  if (loading) return <RouteLoader />
+  if (loading) {
+    return (
+      <div className="mx-auto w-full max-w-6xl px-6 py-10">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-7 w-32" />
+          <Skeleton className="h-5 w-24" />
+        </div>
+        <Skeleton className="mt-6 h-24 w-full rounded-2xl" />
+        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <Skeleton className="h-40 rounded-2xl" />
+          <Skeleton className="h-40 rounded-2xl" />
+          <Skeleton className="h-40 rounded-2xl" />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-10">

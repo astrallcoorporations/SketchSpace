@@ -22,7 +22,8 @@ export function UploadDropzone({ onFilesAdded }: { onFilesAdded: (files: File[])
   }
 
   return (
-    <div
+    <label
+      htmlFor={inputId}
       onDragOver={(e) => {
         e.preventDefault()
         setIsDragging(true)
@@ -30,15 +31,13 @@ export function UploadDropzone({ onFilesAdded }: { onFilesAdded: (files: File[])
       onDragLeave={() => setIsDragging(false)}
       onDrop={handleDrop}
       className={cn(
-        'flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-10 text-center transition-colors',
+        'flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-10 text-center transition-colors has-[input:focus-visible]:ring-3 has-[input:focus-visible]:ring-ring/50',
         isDragging ? 'border-brand bg-brand-muted' : 'border-border hover:border-brand/50',
       )}
     >
       <UploadCloud className={cn('size-8', isDragging ? 'text-brand' : 'text-muted-foreground')} />
       <div>
-        <label htmlFor={inputId} className="cursor-pointer font-medium text-brand hover:underline">
-          Choose files
-        </label>
+        <span className="font-medium text-brand hover:underline">Choose files</span>
         <span className="text-muted-foreground"> or drag and drop — PNG, JPEG, WebP</span>
       </div>
       <input
@@ -53,6 +52,6 @@ export function UploadDropzone({ onFilesAdded }: { onFilesAdded: (files: File[])
           e.target.value = ''
         }}
       />
-    </div>
+    </label>
   )
 }

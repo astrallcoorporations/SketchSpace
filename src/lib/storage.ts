@@ -20,8 +20,24 @@ export function uploadWithProgress(
   const xhr = new XMLHttpRequest()
 
   const done = new Promise<string>((resolve, reject) => {
-    supabase.auth.getSession().then(({ data }) => {
-      const token = data.session?.access_token
+    // getSession() returns the *cached* session which may carry a stale
+    // access_token if the auto-refresh hasn't run yet.  Force a refresh
+    // first so the XHR — which bypasses supabase-js's interceptors —
+    // always sends a valid JWT.  Falls back to the cached token when the
+    // refresh itself fails (e.g. offline).
+    supabase.auth.getSession().then(async ({ data: cached }) => {
+      let token = cached.session?.access_token
+      if (token) {
+        try {
+          const { data: refreshed } = await supabase.auth.refreshSession()
+          if (refreshed.session?.access_token) {
+            token = refreshed.session.access_token
+          }
+        } catch {
+          // Keep the cached token — better than nothing.
+        }
+      }
+
       if (!token) {
         reject(new Error('Not signed in.'))
         return

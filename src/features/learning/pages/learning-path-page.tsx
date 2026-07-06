@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { RouteLoader } from '@/components/layout/route-loader'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Reveal } from '@/components/motion/reveal'
 import { useAuth } from '@/hooks/use-auth'
 import { getPathDetail } from '@/features/learning/api'
@@ -40,7 +40,25 @@ export function LearningPathPage() {
     void load()
   }, [load])
 
-  if (loading) return <RouteLoader />
+  if (loading) {
+    return (
+      <div className="mx-auto w-full max-w-2xl px-6 py-10">
+        <Skeleton className="h-4 w-20" />
+        <div className="mt-6 flex items-center gap-4">
+          <Skeleton className="size-14 rounded-2xl" />
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-4 w-56" />
+          </div>
+        </div>
+        <div className="mt-12 flex flex-col items-center gap-8">
+          <Skeleton className="size-16 rounded-full" />
+          <Skeleton className="size-16 rounded-full" />
+          <Skeleton className="size-16 rounded-full" />
+        </div>
+      </div>
+    )
+  }
 
   if (notFound || !path) {
     return (

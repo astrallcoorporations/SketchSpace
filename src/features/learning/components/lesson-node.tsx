@@ -38,9 +38,20 @@ export function LessonNode({ lesson, offset }: { lesson: LessonWithStatus; offse
       style={{ marginLeft: `${offset}px`, marginRight: `${-offset}px` }}
     >
       {isLocked ? (
-        node
+        <div
+          role="img"
+          aria-label={`${lesson.title} — locked`}
+          className="outline-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:rounded-full"
+          tabIndex={0}
+        >
+          {node}
+        </div>
       ) : (
-        <Link to={`/app/learning/lesson/${lesson.id}`} aria-label={lesson.title}>
+        <Link
+          to={`/app/learning/lesson/${lesson.id}`}
+          aria-label={lesson.title}
+          className="rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
           {node}
         </Link>
       )}

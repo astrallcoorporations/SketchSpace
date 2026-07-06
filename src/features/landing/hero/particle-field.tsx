@@ -1,6 +1,6 @@
 import { useMemo, useRef, type RefObject } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import * as THREE from 'three'
+import { AdditiveBlending, BufferAttribute, BufferGeometry, MathUtils, Vector2 } from 'three'
 
 type Edge = [number, number]
 
@@ -95,13 +95,17 @@ export function ParticleField({ morphProgress, count = 480, reduceMotion }: Part
   const positions = useMemo(() => new Float32Array(scatter), [scatter])
   const linePositions = useMemo(() => new Float32Array(edges.length * 2 * 3), [edges])
 
-  const pointsGeometryRef = useRef<THREE.BufferGeometry>(null)
-  const linesGeometryRef = useRef<THREE.BufferGeometry>(null)
-  const pointerWorld = useRef(new THREE.Vector2(0, 0))
+  const pointsGeometryRef = useRef<BufferGeometry>(null)
+  const linesGeometryRef = useRef<BufferGeometry>(null)
+  const pointerWorld = useRef(new Vector2(0, 0))
+  // Track elapsed time ourselves to avoid the deprecated THREE.Clock that
+  // R3F's useFrame state.clock wraps.
+  const elapsed = useRef(0)
 
   useFrame((state, delta) => {
     const progress = morphProgress.current ?? 0
-    const time = reduceMotion ? 0 : state.clock.elapsedTime
+    if (!reduceMotion) elapsed.current += delta
+    const time = elapsed.current
 
     pointerWorld.current.x += (state.pointer.x * width * 0.5 - pointerWorld.current.x) * Math.min(delta * 4, 1)
     pointerWorld.current.y += (state.pointer.y * height * 0.5 - pointerWorld.current.y) * Math.min(delta * 4, 1)
@@ -112,9 +116,9 @@ export function ParticleField({ morphProgress, count = 480, reduceMotion }: Part
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3
-      const baseX = THREE.MathUtils.lerp(scatter[i3], spiral[i3], progress)
-      const baseY = THREE.MathUtils.lerp(scatter[i3 + 1], spiral[i3 + 1], progress)
-      const baseZ = THREE.MathUtils.lerp(scatter[i3 + 2], spiral[i3 + 2], progress)
+      const baseX = MathUtils.lerp(scatter[i3], spiral[i3], progress)
+      const baseY = MathUtils.lerp(scatter[i3 + 1], spiral[i3 + 1], progress)
+      const baseZ = MathUtils.lerp(scatter[i3 + 2], spiral[i3 + 2], progress)
 
       const seed = seeds[i]
       let x = baseX + Math.sin(time * 0.4 + seed) * driftStrength
@@ -137,7 +141,7 @@ export function ParticleField({ morphProgress, count = 480, reduceMotion }: Part
     }
 
     const pointsAttr = pointsGeometryRef.current?.attributes.position as
-      | THREE.BufferAttribute
+      | BufferAttribute
       | undefined
     if (pointsAttr) pointsAttr.needsUpdate = true
 
@@ -152,7 +156,7 @@ export function ParticleField({ morphProgress, count = 480, reduceMotion }: Part
         linePositions[cursor++] = positions[b * 3 + 1]
         linePositions[cursor++] = positions[b * 3 + 2]
       }
-      const linesAttr = linesGeometry.attributes.position as THREE.BufferAttribute
+      const linesAttr = linesGeometry.attributes.position as BufferAttribute
       linesAttr.needsUpdate = true
     }
   })
@@ -169,7 +173,7 @@ export function ParticleField({ morphProgress, count = 480, reduceMotion }: Part
           transparent
           opacity={0.8}
           sizeAttenuation
-          blending={THREE.AdditiveBlending}
+          blending={AdditiveBlending}
           depthWrite={false}
         />
       </points>
@@ -181,7 +185,7 @@ export function ParticleField({ morphProgress, count = 480, reduceMotion }: Part
           color="#8b5cf6"
           transparent
           opacity={0.1}
-          blending={THREE.AdditiveBlending}
+          blending={AdditiveBlending}
           depthWrite={false}
         />
       </lineSegments>

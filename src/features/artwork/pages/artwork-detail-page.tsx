@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Reveal } from '@/components/motion/reveal'
-import { RouteLoader } from '@/components/layout/route-loader'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/hooks/use-auth'
 import {
   addArtworkVersion,
@@ -80,7 +80,24 @@ export function ArtworkDetailPage() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [lightboxOpen, versions.length])
 
-  if (loading) return <RouteLoader />
+  if (loading) {
+    return (
+      <div className="mx-auto w-full max-w-4xl px-6 py-10">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="mt-6 aspect-video w-full rounded-2xl" />
+        <div className="mt-6 flex items-center justify-between">
+          <Skeleton className="h-7 w-48" />
+          <Skeleton className="h-8 w-32" />
+        </div>
+        <Skeleton className="mt-4 h-4 w-2/3" />
+        <div className="mt-10 flex gap-3 border-t border-border pt-6">
+          <Skeleton className="h-28 w-28 rounded-lg" />
+          <Skeleton className="h-28 w-28 rounded-lg" />
+          <Skeleton className="h-28 w-28 rounded-lg" />
+        </div>
+      </div>
+    )
+  }
   if (!artwork) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-24 text-center">

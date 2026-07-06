@@ -78,7 +78,7 @@ export function Topbar() {
             <button
               type="button"
               aria-label="Account menu"
-              className="flex size-8 items-center justify-center rounded-full bg-brand-muted text-xs font-medium text-brand-muted-foreground"
+              className="flex size-8 items-center justify-center rounded-full bg-brand-muted text-xs font-medium text-brand-muted-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
             >
               {user?.email?.[0]?.toUpperCase() ?? '?'}
             </button>

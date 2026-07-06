@@ -30,7 +30,7 @@ export function AvatarUpload({
     <button
       type="button"
       onClick={() => inputRef.current?.click()}
-      className="group relative shrink-0 overflow-hidden rounded-full border-4 border-background bg-brand-muted shadow-[var(--shadow-md)]"
+      className="group relative shrink-0 overflow-hidden rounded-full border-4 border-background bg-brand-muted shadow-[var(--shadow-md)] outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
       style={{ width: size, height: size }}
       aria-label="Change avatar"
     >

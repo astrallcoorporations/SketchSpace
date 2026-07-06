@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
 import { TagInput } from '@/components/shared/tag-input'
-import { RouteLoader } from '@/components/layout/route-loader'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/hooks/use-auth'
 import { signOut } from '@/lib/auth'
 import { useOwnProfile } from '@/features/profile/hooks/use-own-profile'
@@ -50,7 +50,22 @@ export function SettingsPage() {
     setAccentColor(profile.accent_color)
   }, [profile])
 
-  if (loading || !profile || !user) return <RouteLoader />
+  if (loading || !profile || !user) {
+    return (
+      <div className="mx-auto w-full max-w-2xl px-6 py-10">
+        <Skeleton className="h-7 w-28" />
+        <div className="mt-6 rounded-2xl border border-border p-6">
+          <Skeleton className="h-40 w-full rounded-xl" />
+          <Skeleton className="-mt-10 ml-2 size-20 rounded-full border-4 border-background" />
+          <div className="mt-8 grid grid-cols-2 gap-4">
+            <Skeleton className="h-9 w-full" />
+            <Skeleton className="h-9 w-full" />
+          </div>
+          <Skeleton className="mt-4 h-20 w-full" />
+        </div>
+      </div>
+    )
+  }
 
   async function handleSave() {
     if (!user) return

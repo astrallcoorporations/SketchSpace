@@ -5,7 +5,7 @@ import { ArrowLeft, CheckCircle2, PartyPopper } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { RouteLoader } from '@/components/layout/route-loader'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Reveal } from '@/components/motion/reveal'
 import { useAuth } from '@/hooks/use-auth'
 import { completeLesson, getLessonDetail, getLessonProgress } from '@/features/learning/api'
@@ -46,7 +46,23 @@ export function LessonPage() {
     }
   }, [lessonId, user])
 
-  if (loading) return <RouteLoader />
+  if (loading) {
+    return (
+      <div className="mx-auto w-full max-w-2xl px-6 py-10">
+        <Skeleton className="h-4 w-24" />
+        <div className="mt-6 space-y-3">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-7 w-72" />
+          <div className="flex gap-2">
+            <Skeleton className="h-5 w-20 rounded-full" />
+            <Skeleton className="h-5 w-16 rounded-full" />
+          </div>
+        </div>
+        <Skeleton className="mt-6 h-24 w-full rounded-xl" />
+        <Skeleton className="mt-8 h-10 w-full rounded-lg" />
+      </div>
+    )
+  }
 
   if (notFound || !lesson) {
     return (

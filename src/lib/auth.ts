@@ -34,6 +34,10 @@ export function updatePassword(password: string) {
   return supabase.auth.updateUser({ password })
 }
 
+export function resendConfirmationEmail(email: string) {
+  return supabase.auth.resend({ type: 'signup', email })
+}
+
 export function signOut() {
   return supabase.auth.signOut()
 }

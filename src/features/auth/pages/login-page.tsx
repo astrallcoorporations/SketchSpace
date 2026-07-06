@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -8,7 +9,7 @@ import { AuthLayout } from '@/features/auth/components/auth-layout'
 import { AuthErrorAlert } from '@/features/auth/components/auth-error-alert'
 import { PasswordInput } from '@/features/auth/components/password-input'
 import { OAuthButtons } from '@/features/auth/components/oauth-buttons'
-import { signInWithPassword } from '@/lib/auth'
+import { resendConfirmationEmail, signInWithPassword } from '@/lib/auth'
 import { setRememberMe as persistRememberMe } from '@/lib/supabase'
 import { describeAuthError, type AuthErrorDescription } from '@/lib/auth-errors'
 
@@ -20,6 +21,7 @@ export function LoginPage() {
   const [rememberMe, setRememberMe] = useState(true)
   const [status, setStatus] = useState<'idle' | 'loading'>('idle')
   const [error, setError] = useState<AuthErrorDescription | null>(null)
+  const [resending, setResending] = useState(false)
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
@@ -44,6 +46,13 @@ export function LoginPage() {
     }
   }
 
+  async function handleResendEmail() {
+    if (!email) return
+    setResending(true)
+    await resendConfirmationEmail(email)
+    setResending(false)
+  }
+
   return (
     <AuthLayout
       eyebrow="Welcome back"
@@ -59,6 +68,20 @@ export function LoginPage() {
         </div>
 
         {error && <AuthErrorAlert error={error} />}
+            {error && error.kind === 'supabase' && error.message.includes('Confirm your email') && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                disabled={resending}
+                onClick={handleResendEmail}
+              >
+                {resending ? (
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                ) : null}
+                Resend confirmation email
+              </Button>
+            )}
 
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>

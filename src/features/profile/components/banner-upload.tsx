@@ -26,7 +26,7 @@ export function BannerUpload({
       type="button"
       onClick={() => inputRef.current?.click()}
       aria-label="Change banner"
-      className="group relative block h-40 w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-brand-muted via-background to-background sm:h-52"
+      className="group relative block h-40 w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-brand-muted via-background to-background outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:h-52"
     >
       {bannerUrl && <img src={bannerUrl} alt="" className="size-full object-cover" />}
       <span className="absolute inset-0 flex items-center justify-center gap-2 bg-black/0 text-white opacity-0 transition-all group-hover:bg-black/40 group-hover:opacity-100">

@@ -8,7 +8,7 @@ export function AppShellLayout() {
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar />
-        <main className="flex flex-1 flex-col">
+        <main className="flex min-w-0 flex-1 flex-col overflow-x-hidden">
           <Outlet />
         </main>
       </div>

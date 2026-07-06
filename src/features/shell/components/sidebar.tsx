@@ -43,7 +43,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
           type="button"
           aria-label="Sign out"
           onClick={() => signOut()}
-          className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors outline-none hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
         >
           <LogOut className="size-4" />
         </button>

@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { MailCheck } from 'lucide-react'
+import { Loader2, MailCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -10,7 +10,7 @@ import { AuthErrorAlert } from '@/features/auth/components/auth-error-alert'
 import { PasswordInput } from '@/features/auth/components/password-input'
 import { PasswordStrengthMeter } from '@/features/auth/components/password-strength-meter'
 import { OAuthButtons } from '@/features/auth/components/oauth-buttons'
-import { signUpWithPassword } from '@/lib/auth'
+import { resendConfirmationEmail, signUpWithPassword } from '@/lib/auth'
 import { getPasswordStrength } from '@/lib/password-strength'
 import { describeAuthError, type AuthErrorDescription } from '@/lib/auth-errors'
 
@@ -21,6 +21,7 @@ export function SignupPage() {
   const [password, setPassword] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle')
   const [error, setError] = useState<AuthErrorDescription | null>(null)
+  const [resending, setResending] = useState(false)
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
@@ -53,6 +54,13 @@ export function SignupPage() {
     }
   }
 
+  async function handleResendEmail() {
+    if (!email) return
+    setResending(true)
+    await resendConfirmationEmail(email)
+    setResending(false)
+  }
+
   return (
     <AuthLayout
       eyebrow="Get started"
@@ -76,6 +84,18 @@ export function SignupPage() {
               We sent a confirmation link to <span className="text-foreground">{email}</span>.
               Follow it to finish setting up your account.
             </p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-1"
+              disabled={resending}
+              onClick={handleResendEmail}
+            >
+              {resending ? (
+                <Loader2 className="mr-2 size-4 animate-spin" />
+              ) : null}
+              Resend confirmation email
+            </Button>
           </motion.div>
         ) : (
           <motion.form
