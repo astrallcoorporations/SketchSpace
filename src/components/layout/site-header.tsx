@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Magnetic } from '@/components/motion/magnetic'
+import { ThemeToggle } from '@/components/shared/theme-toggle'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hooks/use-auth'
 
 const navLinks = [
   { label: 'Features', href: '/features' },
@@ -11,18 +13,17 @@ const navLinks = [
 
 export function SiteHeader() {
   const { scrollY } = useScroll()
-  const background = useTransform(
-    scrollY,
-    [0, 80],
-    ['rgba(255,255,255,0)', 'var(--background)'],
-  )
+  const bgOpacity = useTransform(scrollY, [0, 80], [0, 1])
   const borderOpacity = useTransform(scrollY, [0, 80], [0, 1])
+  const { session, loading } = useAuth()
 
   return (
-    <motion.header
-      style={{ background }}
-      className="fixed inset-x-0 top-0 z-50 border-b"
-    >
+    <motion.header className="fixed inset-x-0 top-0 z-50">
+      {/* Scroll-driven opaque background — uses the theme's --background color */}
+      <motion.div
+        style={{ opacity: bgOpacity }}
+        className="absolute inset-0 -z-10 bg-background"
+      />
       <motion.div
         style={{ opacity: borderOpacity }}
         className="absolute inset-0 -z-10 border-b border-border"
@@ -47,14 +48,27 @@ export function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button asChild variant="ghost" size="sm">
-            <Link to="/login">Sign in</Link>
-          </Button>
-          <Magnetic strength={6}>
-            <Button asChild variant="brand" size="sm">
-              <Link to="/signup">Get started</Link>
-            </Button>
-          </Magnetic>
+          <ThemeToggle />
+          {!loading && (
+            session ? (
+              <Magnetic strength={6}>
+                <Button asChild variant="brand" size="sm">
+                  <Link to="/app">Open Studio</Link>
+                </Button>
+              </Magnetic>
+            ) : (
+              <>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/login">Sign in</Link>
+                </Button>
+                <Magnetic strength={6}>
+                  <Button asChild variant="brand" size="sm">
+                    <Link to="/signup">Get started</Link>
+                  </Button>
+                </Magnetic>
+              </>
+            )
+          )}
         </div>
       </nav>
     </motion.header>

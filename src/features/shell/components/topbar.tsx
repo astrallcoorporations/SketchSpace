@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { SidebarNav } from '@/features/shell/components/sidebar'
 import { UploadDialog } from '@/features/artwork/components/upload-dialog'
+import { ThemeToggle } from '@/components/shared/theme-toggle'
 import { useAuth } from '@/hooks/use-auth'
 import { signOut } from '@/lib/auth'
 
@@ -72,6 +73,8 @@ export function Topbar() {
         >
           <Bell className="size-4.5" />
         </Button>
+
+        <ThemeToggle />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
