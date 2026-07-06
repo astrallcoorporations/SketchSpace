@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { Flame, Sparkles, TrendingUp, UploadCloud } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
-import { RouteLoader } from '@/components/layout/route-loader'
 import { useAuth } from '@/hooks/use-auth'
 import { useOwnProfile } from '@/features/profile/hooks/use-own-profile'
 import { listArtworks } from '@/features/artwork/api'
@@ -43,8 +43,6 @@ export function StudioPage() {
     void loadWidgets()
   }, [loadWidgets])
 
-  if (loading) return <RouteLoader />
-
   const level = Math.floor((profile?.xp ?? 0) / 100) + 1
   const xpIntoLevel = (profile?.xp ?? 0) % 100
 
@@ -57,6 +55,13 @@ export function StudioPage() {
         <p className="mt-1 text-muted-foreground">Here's where your practice stands today.</p>
       </Reveal>
 
+      {loading ? (
+        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <Skeleton className="h-24 rounded-2xl" />
+          <Skeleton className="h-24 rounded-2xl" />
+          <Skeleton className="h-24 rounded-2xl sm:col-span-2" />
+        </div>
+      ) : (
       <StaggerGroup className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <motion.div
           variants={staggerItem}
@@ -112,6 +117,7 @@ export function StudioPage() {
           )}
         </motion.div>
       </StaggerGroup>
+      )}
 
       <div className="mt-10">
         <div className="flex items-center justify-between">
@@ -121,7 +127,13 @@ export function StudioPage() {
           </Button>
         </div>
 
-        {artworks.length === 0 ? (
+        {loading ? (
+          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="aspect-square rounded-xl" />
+            ))}
+          </div>
+        ) : artworks.length === 0 ? (
           <div className="mt-4 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-14 text-center">
             <UploadCloud className="size-6 text-muted-foreground" />
             <p className="text-sm text-muted-foreground">
