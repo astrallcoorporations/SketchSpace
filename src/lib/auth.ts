@@ -30,7 +30,7 @@ export function signUpWithPassword(
 export function signInWithOAuth(provider: 'google' | 'github') {
   return supabase.auth.signInWithOAuth({
     provider,
-    options: { redirectTo: `${redirectOrigin()}/` },
+    options: { redirectTo: `${redirectOrigin()}/studio` },
   })
 }
 

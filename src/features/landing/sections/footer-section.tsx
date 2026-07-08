@@ -19,7 +19,7 @@ const columns = [
     links: [
       { label: 'About', href: '#' },
       { label: 'Blog', href: '#' },
-      { label: 'Careers', href: '#' },
+      { label: 'Contact', href: '/contact' },
     ],
   },
   {

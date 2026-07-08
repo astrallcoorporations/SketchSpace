@@ -9,6 +9,7 @@ const navLinks = [
   { label: 'Features', href: '/features' },
   { label: 'Community', href: '/community' },
   { label: 'Pricing', href: '/pricing' },
+  { label: 'Contact', href: '/contact' },
 ] as const
 
 export function SiteHeader() {
@@ -51,9 +52,9 @@ export function SiteHeader() {
           {!loading && (
             session ? (
               <Magnetic strength={6}>
-                <Button asChild variant="brand" size="sm">
-                  <Link to="/">Open Studio</Link>
-                </Button>
+                  <Button asChild variant="brand" size="sm">
+                    <Link to="/studio">Open Studio</Link>
+                  </Button>
               </Magnetic>
             ) : (
               <>

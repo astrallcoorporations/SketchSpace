@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -114,13 +115,13 @@ export function HeroSection() {
             className="mt-10 flex items-center justify-center gap-4"
           >
             <Magnetic>
-              <Button variant="brand" size="lg" className="h-12 px-8 text-base btn-glow animate-glow-pulse">
-                Start creating
+              <Button asChild variant="brand" size="lg" className="h-12 px-8 text-base btn-glow animate-glow-pulse">
+                <Link to="/signup">Start creating</Link>
               </Button>
             </Magnetic>
             <Magnetic>
-              <Button variant="outline" size="lg" className="h-12 px-8 text-base">
-                See how it works
+              <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base">
+                <Link to="/features">See how it works</Link>
               </Button>
             </Magnetic>
           </motion.div>

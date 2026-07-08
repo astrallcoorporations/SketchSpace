@@ -48,7 +48,7 @@ export function LoginPage() {
         return
       }
 
-      const from = (location.state as { from?: string } | null)?.from ?? '/'
+      const from = (location.state as { from?: string } | null)?.from ?? '/studio'
       navigate(from, { replace: true })
     } catch (err) {
       setError(describeAuthError(err))

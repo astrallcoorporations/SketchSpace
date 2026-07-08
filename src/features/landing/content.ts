@@ -113,8 +113,8 @@ export const pricingTiers = [
   },
   {
     name: 'Pro',
-    monthly: 12,
-    yearly: 9,
+    monthly: 200,
+    yearly: 150,
     description: 'For artists building a serious portfolio and team practice.',
     features: [
       'Everything in Studio',
@@ -126,8 +126,8 @@ export const pricingTiers = [
   },
   {
     name: 'Collective',
-    monthly: 29,
-    yearly: 24,
+    monthly: 1000,
+    yearly: 750,
     description: 'For studios and creative collectives running real production.',
     features: [
       'Everything in Pro',

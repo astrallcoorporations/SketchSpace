@@ -122,8 +122,8 @@ export const marketingPricingTiers: PricingTier[] = [
   },
   {
     name: 'Pro',
-    monthly: 12,
-    yearly: 9,
+    monthly: 200,
+    yearly: 150,
     description: 'For artists building a serious portfolio and daily practice.',
     features: [
       'Everything in Free',
@@ -137,8 +137,8 @@ export const marketingPricingTiers: PricingTier[] = [
   },
   {
     name: 'Teams',
-    monthly: 29,
-    yearly: 24,
+    monthly: 1000,
+    yearly: 750,
     description: 'For studios and creative collectives running real production.',
     features: [
       'Everything in Pro',
