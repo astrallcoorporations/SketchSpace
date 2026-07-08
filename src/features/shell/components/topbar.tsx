@@ -27,11 +27,11 @@ export function Topbar() {
   function handleSearchSubmit(e: FormEvent) {
     e.preventDefault()
     const term = query.trim()
-    navigate(term ? `/app/portfolio?q=${encodeURIComponent(term)}` : '/app/portfolio')
+    navigate(term ? `/portfolio?q=${encodeURIComponent(term)}` : '/portfolio')
   }
 
   return (
-    <header className="flex items-center gap-3 border-b border-border bg-background px-4 py-3 lg:px-6">
+    <header className="flex items-center gap-3 border-b border-border bg-background/80 backdrop-blur-sm px-4 py-3 lg:px-6">
       <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
         <Button
           variant="ghost"
@@ -55,7 +55,7 @@ export function Topbar() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search your artwork…"
           aria-label="Search"
-          className="pl-9"
+          className="pl-9 input-focus-glow"
         />
       </form>
 
@@ -69,7 +69,8 @@ export function Topbar() {
           variant="ghost"
           size="icon"
           aria-label="Notifications"
-          onClick={() => navigate('/app/notifications')}
+          onClick={() => navigate('/notifications')}
+          className="transition-colors duration-200"
         >
           <Bell className="size-4.5" />
         </Button>
@@ -81,7 +82,7 @@ export function Topbar() {
             <button
               type="button"
               aria-label="Account menu"
-              className="flex size-8 items-center justify-center rounded-full bg-brand-muted text-xs font-medium text-brand-muted-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="flex size-8 items-center justify-center rounded-full bg-brand-muted text-xs font-medium text-brand-muted-foreground outline-none transition-transform duration-200 hover:scale-105 focus-visible:ring-3 focus-visible:ring-ring/50"
             >
               {user?.email?.[0]?.toUpperCase() ?? '?'}
             </button>
@@ -91,7 +92,7 @@ export function Topbar() {
               {user?.email}
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => navigate('/app/settings')}>
+            <DropdownMenuItem onSelect={() => navigate('/settings')}>
               Settings
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => signOut()}>Sign out</DropdownMenuItem>
@@ -102,7 +103,7 @@ export function Topbar() {
       <UploadDialog
         open={uploadOpen}
         onOpenChange={setUploadOpen}
-        onUploaded={() => navigate('/app/portfolio')}
+        onUploaded={() => navigate('/portfolio')}
       />
     </header>
   )

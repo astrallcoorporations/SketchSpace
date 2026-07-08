@@ -1,5 +1,6 @@
 import { SmoothScrollProvider } from '@/components/layout/smooth-scroll-provider'
 import { SiteHeader } from '@/components/layout/site-header'
+import { Seo } from '@/components/shared/seo'
 import { HeroSection } from '@/features/landing/sections/hero-section'
 import { FeaturesSection } from '@/features/landing/sections/features-section'
 import { GrowthSection } from '@/features/landing/sections/growth-section'
@@ -14,6 +15,11 @@ import { FooterSection } from '@/features/landing/sections/footer-section'
 export function LandingPage() {
   return (
     <SmoothScrollProvider>
+      <Seo
+        title="SketchSpace"
+        description="The creative operating system where artists improve together. Track your growth, build a portfolio, and join a community of real artists."
+        canonical="/"
+      />
       <SiteHeader />
       <main>
         <HeroSection />

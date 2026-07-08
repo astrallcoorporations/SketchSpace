@@ -1,7 +1,26 @@
+import { useRef } from 'react'
 import { Plus, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import type { SocialLink } from '@/features/profile/types'
+
+type Entry = SocialLink & { _key: string }
+
+/**
+ * Maps each SocialLink to a stable random key so React can track
+ * additions / removals without using array indices.
+ */
+function useStableKeys(value: SocialLink[]): Entry[] {
+  const keysRef = useRef<string[]>([])
+  const keys = keysRef.current
+
+  // Grow the key array when new items are appended
+  while (keys.length < value.length) {
+    keys.push(crypto.randomUUID())
+  }
+
+  return value.map((link, i) => ({ ...link, _key: keys[i] }))
+}
 
 export function SocialLinksEditor({
   value,
@@ -10,23 +29,25 @@ export function SocialLinksEditor({
   value: SocialLink[]
   onChange: (links: SocialLink[]) => void
 }) {
-  function update(index: number, patch: Partial<SocialLink>) {
-    onChange(value.map((link, i) => (i === index ? { ...link, ...patch } : link)))
+  const entries = useStableKeys(value)
+
+  function update(key: string, patch: Partial<SocialLink>) {
+    onChange(entries.map((e) => (e._key === key ? { ...e, ...patch } : e)))
   }
 
   return (
     <div className="space-y-2">
-      {value.map((link, index) => (
-        <div key={index} className="flex gap-2">
+      {entries.map((link) => (
+        <div key={link._key} className="flex gap-2">
           <Input
             value={link.label}
-            onChange={(e) => update(index, { label: e.target.value })}
+            onChange={(e) => update(link._key, { label: e.target.value })}
             placeholder="Instagram"
             className="w-32 shrink-0"
           />
           <Input
             value={link.url}
-            onChange={(e) => update(index, { url: e.target.value })}
+            onChange={(e) => update(link._key, { url: e.target.value })}
             placeholder="https://…"
             className="flex-1"
           />
@@ -35,7 +56,7 @@ export function SocialLinksEditor({
             variant="ghost"
             size="icon"
             aria-label="Remove link"
-            onClick={() => onChange(value.filter((_, i) => i !== index))}
+            onClick={() => onChange(entries.filter((e) => e._key !== link._key))}
           >
             <X className="size-4" />
           </Button>

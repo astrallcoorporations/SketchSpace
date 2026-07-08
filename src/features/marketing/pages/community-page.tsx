@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Magnetic } from '@/components/motion/magnetic'
 import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
 import { MarketingLayout } from '@/features/marketing/components/marketing-layout'
+import { Seo } from '@/components/shared/seo'
 import { getCommunityShowcase, type ShowcaseArtist } from '@/features/marketing/api'
 
 function ArtistCardSkeleton() {
@@ -32,6 +33,11 @@ export function CommunityPage() {
 
   return (
     <MarketingLayout>
+      <Seo
+        title="Community"
+        description="Discover real artists, real profiles, and real progress. Join SketchSpace and start building your following."
+        canonical="/community"
+      />
       <section className="mx-auto max-w-4xl px-6 py-16 text-center sm:py-24">
         <Reveal>
           <p className="text-sm font-medium tracking-wide text-brand uppercase">Community</p>

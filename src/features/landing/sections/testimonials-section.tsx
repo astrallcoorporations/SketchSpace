@@ -3,7 +3,7 @@ import { testimonials } from '@/features/landing/content'
 
 function TestimonialCard({ quote, name, role }: (typeof testimonials)[number]) {
   return (
-    <figure className="w-[min(85vw,22rem)] shrink-0 rounded-2xl border border-border bg-background p-6">
+    <figure className="group w-[min(85vw,22rem)] shrink-0 rounded-2xl border border-border bg-background p-6 transition-all duration-300 hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5">
       <blockquote className="text-sm text-foreground">"{quote}"</blockquote>
       <figcaption className="mt-4 text-xs text-muted-foreground">
         <span className="font-medium text-foreground">{name}</span> — {role}

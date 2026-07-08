@@ -107,7 +107,7 @@ export function GrowthPage() {
           description="Every artwork you add becomes a point on your timeline — versions, monthly progress, streaks. Upload your first piece from the Studio to begin it."
           action={
             <Button asChild variant="brand">
-              <Link to="/app/portfolio">Upload artwork</Link>
+              <Link to="/portfolio">Upload artwork</Link>
             </Button>
           }
         />
@@ -260,7 +260,7 @@ export function GrowthPage() {
             .map((artwork) => (
               <Link
                 key={artwork.id}
-                to={`/app/artwork/${artwork.id}`}
+                to={`/artwork/${artwork.id}`}
                 className="group flex items-center gap-4 rounded-xl border border-border bg-background p-3 transition-colors hover:border-brand/40"
               >
                 <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-muted">

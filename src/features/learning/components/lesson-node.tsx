@@ -48,7 +48,7 @@ export function LessonNode({ lesson, offset }: { lesson: LessonWithStatus; offse
         </div>
       ) : (
         <Link
-          to={`/app/learning/lesson/${lesson.id}`}
+          to={`/learning/lesson/${lesson.id}`}
           aria-label={lesson.title}
           className="rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
         >

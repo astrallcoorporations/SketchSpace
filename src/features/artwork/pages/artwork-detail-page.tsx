@@ -102,7 +102,7 @@ export function ArtworkDetailPage() {
     return (
       <div className="mx-auto max-w-2xl px-6 py-24 text-center">
         <p className="text-muted-foreground">This artwork doesn't exist or isn't visible to you.</p>
-        <Button variant="outline" className="mt-4" onClick={() => navigate('/app/portfolio')}>
+        <Button variant="outline" className="mt-4" onClick={() => navigate('/portfolio')}>
           Back to portfolio
         </Button>
       </div>
@@ -118,7 +118,7 @@ export function ArtworkDetailPage() {
     try {
       await deleteArtwork(artwork.id, user.id)
       toast('Artwork deleted.')
-      navigate('/app/portfolio')
+      navigate('/portfolio')
     } catch {
       toast.error('Could not delete this artwork. Try again.')
       setDeleting(false)
@@ -144,7 +144,7 @@ export function ArtworkDetailPage() {
   return (
     <div className="mx-auto w-full max-w-4xl px-6 py-10">
       <Link
-        to="/app/portfolio"
+        to="/portfolio"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4" /> Portfolio
@@ -179,7 +179,7 @@ export function ArtworkDetailPage() {
             </div>
             {artwork.profiles && (
               <Link
-                to={`/app/u/${artwork.profiles.username}`}
+                to={`/u/${artwork.profiles.username}`}
                 className="mt-1 inline-block text-sm text-muted-foreground hover:text-foreground"
               >
                 by {artwork.profiles.display_name || artwork.profiles.username}

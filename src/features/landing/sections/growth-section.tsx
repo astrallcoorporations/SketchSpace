@@ -40,9 +40,9 @@ export function GrowthSection() {
           </Reveal>
 
           <div className="mt-10 grid grid-cols-3 gap-6">
-            {growthStats.map((stat) => (
-              <Reveal key={stat.label} delay={0.15}>
-                <div>
+            {growthStats.map((stat, i) => (
+              <Reveal key={stat.label} delay={0.15 + i * 0.05}>
+                <div className="transition-transform duration-200 hover:scale-105">
                   <CountUp
                     value={stat.value}
                     suffix={stat.suffix}

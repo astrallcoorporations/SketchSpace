@@ -45,8 +45,8 @@ export function CommunitySection() {
           <motion.div
             key={title}
             variants={staggerItem}
-            whileHover={{ y: -4 }}
-            className="rounded-2xl border border-border bg-background p-7 shadow-[var(--shadow-sm)] transition-shadow hover:shadow-[var(--shadow-md)]"
+            whileHover={{ y: -4, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } }}
+            className="group rounded-2xl border border-border bg-background p-7 shadow-[var(--shadow-sm)] transition-all duration-300 hover:shadow-[var(--shadow-md)]"
           >
             <div className="flex items-center gap-4">
               <div className="relative flex size-16 shrink-0 items-center justify-center">
@@ -71,10 +71,10 @@ export function CommunitySection() {
                     initial={{ strokeDashoffset: circumference }}
                     whileInView={{ strokeDashoffset: circumference * (1 - progress) }}
                     viewport={{ once: true, margin: '-10% 0px' }}
-                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
                   />
                 </svg>
-                <Icon className="size-5 text-brand" strokeWidth={1.75} />
+                <Icon className="size-5 text-brand transition-transform duration-300 group-hover:scale-110" strokeWidth={1.75} />
               </div>
               <div>
                 <h3 className="text-sm font-medium">{title}</h3>

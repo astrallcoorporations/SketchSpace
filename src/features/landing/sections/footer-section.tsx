@@ -52,7 +52,12 @@ export function FooterSection() {
               className="mt-6 flex max-w-sm gap-2"
               onSubmit={(event) => event.preventDefault()}
             >
-              <Input type="email" placeholder="you@example.com" aria-label="Email address" />
+              <Input
+                type="email"
+                placeholder="you@example.com"
+                aria-label="Email address"
+                className="input-focus-glow"
+              />
               <Button type="submit" variant="brand" className="shrink-0">
                 Notify me
               </Button>
@@ -72,7 +77,7 @@ export function FooterSection() {
                     <li key={link.label}>
                       <Link
                         to={link.href}
-                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                        className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground nav-link-hover"
                       >
                         {link.label}
                       </Link>
@@ -94,7 +99,7 @@ export function FooterSection() {
                 <a
                   href="#"
                   aria-label={label}
-                  className="flex size-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-brand hover:text-brand"
+                  className="flex size-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-all duration-300 hover:border-brand hover:text-brand hover:shadow-[0_0_16px_-4px_var(--brand)]"
                 >
                   <Icon className="size-4" />
                 </a>

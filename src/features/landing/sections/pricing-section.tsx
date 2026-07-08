@@ -29,7 +29,7 @@ export function PricingSection() {
                 type="button"
                 onClick={() => setYearly(option === 'yearly')}
                 className={cn(
-                  'rounded-full px-4 py-1.5 text-sm font-medium capitalize transition-colors',
+                  'rounded-full px-4 py-1.5 text-sm font-medium capitalize transition-all duration-300',
                   (option === 'yearly') === yearly
                     ? 'bg-background text-foreground shadow-[var(--shadow-sm)]'
                     : 'text-muted-foreground hover:text-foreground',
@@ -50,11 +50,12 @@ export function PricingSection() {
           <motion.div
             key={tier.name}
             variants={staggerItem}
+            whileHover={{ y: -4, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } }}
             className={cn(
-              'flex flex-col rounded-2xl border p-8',
+              'flex flex-col rounded-2xl border p-8 transition-shadow duration-300',
               tier.featured
-                ? 'border-brand bg-foreground text-background shadow-[var(--shadow-lg)]'
-                : 'border-border bg-background',
+                ? 'border-brand bg-foreground text-background shadow-[var(--shadow-lg)] pricing-featured-glow'
+                : 'border-border bg-background hover:shadow-[var(--shadow-md)]',
             )}
           >
             <h3 className="text-lg font-medium">{tier.name}</h3>
@@ -104,7 +105,10 @@ export function PricingSection() {
 
             <Button
               variant={tier.featured ? 'brand' : 'outline'}
-              className={cn('mt-8', tier.featured && 'bg-background text-foreground hover:bg-background/90')}
+              className={cn(
+                'mt-8',
+                tier.featured && 'bg-background text-foreground hover:bg-background/90',
+              )}
             >
               {tier.monthly === 0 ? 'Start free' : `Choose ${tier.name}`}
             </Button>

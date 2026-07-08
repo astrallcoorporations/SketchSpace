@@ -61,9 +61,9 @@ export function CollaborationSection() {
           {collaborationShowcase.map((step, i) => (
             <div
               key={step.title}
-              className="flex w-[min(80vw,24rem)] shrink-0 flex-col justify-between rounded-2xl border border-background/15 bg-background/5 p-8 backdrop-blur-sm"
+              className="group flex w-[min(80vw,24rem)] shrink-0 flex-col justify-between rounded-2xl border border-background/15 bg-background/5 p-8 backdrop-blur-sm transition-all duration-300 hover:border-background/25 hover:bg-background/8"
             >
-              <span className="font-display text-4xl text-brand">
+              <span className="font-display text-4xl text-brand transition-transform duration-300 group-hover:scale-110 group-hover:origin-left">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <div className="mt-16">

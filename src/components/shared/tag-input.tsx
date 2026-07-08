@@ -10,7 +10,7 @@ type TagInputProps = {
   maxTags?: number
 }
 
-/** Chip-style tag input — Enter or comma commits a tag, backspace on empty removes the last. */
+/** Chip-style tag input — Enter, comma, or paste commits a tag, backspace on empty removes the last. */
 export function TagInput({ value, onChange, placeholder, maxTags = 12 }: TagInputProps) {
   const [draft, setDraft] = useState('')
 
@@ -28,6 +28,20 @@ export function TagInput({ value, onChange, placeholder, maxTags = 12 }: TagInpu
     } else if (event.key === 'Backspace' && draft === '' && value.length > 0) {
       onChange(value.slice(0, -1))
     }
+  }
+
+  function handlePaste(event: React.ClipboardEvent<HTMLInputElement>) {
+    const text = event.clipboardData.getData('text')
+    if (!text.includes(',') && !text.includes('\n')) return
+
+    event.preventDefault()
+    const tags = text.split(/[,\n]+/).map((t) => t.trim().toLowerCase()).filter(Boolean)
+    const next = [...value]
+    for (const tag of tags) {
+      if (!next.includes(tag) && next.length < maxTags) next.push(tag)
+    }
+    onChange(next)
+    setDraft('')
   }
 
   return (
@@ -49,6 +63,7 @@ export function TagInput({ value, onChange, placeholder, maxTags = 12 }: TagInpu
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         onKeyDown={handleKeyDown}
+        onPaste={handlePaste}
         onBlur={() => {
           commit(draft)
           setDraft('')

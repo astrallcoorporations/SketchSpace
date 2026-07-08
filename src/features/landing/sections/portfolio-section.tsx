@@ -8,7 +8,7 @@ import { GalleryVertical } from 'lucide-react'
 import { getPublicArtworkShowcase, type ShowcaseArtwork } from '@/features/marketing/api'
 
 function PieceSkeleton() {
-  return <div className="aspect-[4/5] animate-pulse rounded-2xl border border-border bg-muted" />
+  return <div className="aspect-[4/5] animate-skeleton rounded-2xl border border-border" />
 }
 
 export function PortfolioSection() {
@@ -76,17 +76,18 @@ export function PortfolioSection() {
         <StaggerGroup className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-3">
           {pieces.map((piece) => (
             <motion.div key={piece.id} variants={staggerItem}>
-              <Link to={`/app/artwork/${piece.id}`}>
+              <Link to={`/artwork/${piece.id}`}>
                 <TiltCard className="group relative aspect-[4/5] overflow-hidden rounded-2xl border border-border bg-muted">
                   {piece.cover_image_url && (
                     <img
                       src={piece.cover_image_url}
                       alt={piece.title}
                       loading="lazy"
-                      className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     />
                   )}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 to-transparent p-5">
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/90 to-transparent p-5 transition-transform duration-300 group-hover:translate-y-[-4px]">
                     <h3 className="text-sm font-medium">{piece.title}</h3>
                     <p className="text-xs text-muted-foreground">
                       {piece.medium ?? 'Artwork'}

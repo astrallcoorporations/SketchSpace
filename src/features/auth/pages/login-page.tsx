@@ -10,9 +10,13 @@ import { AuthLayout } from '@/features/auth/components/auth-layout'
 import { AuthErrorAlert } from '@/features/auth/components/auth-error-alert'
 import { PasswordInput } from '@/features/auth/components/password-input'
 import { OAuthButtons } from '@/features/auth/components/oauth-buttons'
+import { Turnstile } from '@/components/shared/turnstile'
+import { Seo } from '@/components/shared/seo'
 import { resendConfirmationEmail, signInWithPassword } from '@/lib/auth'
 import { setRememberMe as persistRememberMe } from '@/lib/supabase'
 import { describeAuthError, type AuthErrorDescription } from '@/lib/auth-errors'
+
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined
 
 export function LoginPage() {
   const navigate = useNavigate()
@@ -23,6 +27,7 @@ export function LoginPage() {
   const [status, setStatus] = useState<'idle' | 'loading'>('idle')
   const [error, setError] = useState<AuthErrorDescription | null>(null)
   const [resending, setResending] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
@@ -31,7 +36,11 @@ export function LoginPage() {
     persistRememberMe(rememberMe)
 
     try {
-      const { error: signInError } = await signInWithPassword(email, password)
+      const { error: signInError } = await signInWithPassword(
+        email,
+        password,
+        captchaToken ?? undefined,
+      )
 
       if (signInError) {
         setError(describeAuthError(signInError))
@@ -39,7 +48,7 @@ export function LoginPage() {
         return
       }
 
-      const from = (location.state as { from?: string } | null)?.from ?? '/app'
+      const from = (location.state as { from?: string } | null)?.from ?? '/'
       navigate(from, { replace: true })
     } catch (err) {
       setError(describeAuthError(err))
@@ -74,6 +83,7 @@ export function LoginPage() {
       title="Sign in to SketchSpace"
       visualCopy="Every piece keeps its history. Come see how far you've come."
     >
+      <Seo title="Sign in" canonical="/login" />
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         <OAuthButtons onError={setError} />
 
@@ -116,6 +126,14 @@ export function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+
+        {TURNSTILE_SITE_KEY && (
+          <Turnstile
+            siteKey={TURNSTILE_SITE_KEY}
+            onVerify={setCaptchaToken}
+            onExpire={() => setCaptchaToken(null)}
+          />
+        )}
 
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-2 text-sm text-muted-foreground">

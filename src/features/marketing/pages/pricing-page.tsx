@@ -5,6 +5,7 @@ import { Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
 import { MarketingLayout } from '@/features/marketing/components/marketing-layout'
+import { Seo } from '@/components/shared/seo'
 import { marketingPricingTiers, pricingFaqs } from '@/features/marketing/content'
 import { cn } from '@/lib/utils'
 
@@ -13,6 +14,11 @@ export function PricingPage() {
 
   return (
     <MarketingLayout>
+      <Seo
+        title="Pricing"
+        description="Start free. Upgrade when your team depends on it. Simple plans for solo artists and studios."
+        canonical="/pricing"
+      />
       <section className="mx-auto max-w-4xl px-6 py-16 text-center sm:py-24">
         <Reveal>
           <p className="text-sm font-medium tracking-wide text-brand uppercase">Pricing</p>

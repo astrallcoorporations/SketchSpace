@@ -42,7 +42,7 @@ export function ResetPasswordPage() {
         return
       }
 
-      navigate('/app', { replace: true })
+      navigate('/', { replace: true })
     } catch (err) {
       setError(describeAuthError(err))
       setStatus('idle')

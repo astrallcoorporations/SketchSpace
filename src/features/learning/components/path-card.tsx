@@ -8,7 +8,7 @@ export function PathCard({ path }: { path: PathProgress }) {
   const isComplete = path.totalLessons > 0 && path.completedLessons === path.totalLessons
 
   return (
-    <Link to={`/app/learning/${path.slug}`}>
+    <Link to={`/learning/${path.slug}`}>
       <motion.div
         whileHover={{ y: -4 }}
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}

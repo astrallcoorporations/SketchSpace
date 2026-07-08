@@ -64,7 +64,7 @@ export function LearningPathPage() {
     return (
       <div className="mx-auto max-w-2xl px-6 py-24 text-center">
         <p className="text-muted-foreground">This learning path doesn't exist.</p>
-        <Button variant="outline" className="mt-4" onClick={() => navigate('/app/learning')}>
+        <Button variant="outline" className="mt-4" onClick={() => navigate('/learning')}>
           Back to learning
         </Button>
       </div>
@@ -74,7 +74,7 @@ export function LearningPathPage() {
   return (
     <div className="mx-auto w-full max-w-2xl px-6 py-10">
       <Link
-        to="/app/learning"
+        to="/learning"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4" /> Learning

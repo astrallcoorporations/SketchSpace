@@ -84,7 +84,7 @@ export function LearningHomePage() {
               </p>
             </div>
             <Button asChild variant="brand" className="shrink-0 gap-1.5">
-              <Link to={`/app/learning/lesson/${continueTarget.lesson.id}`}>
+              <Link to={`/learning/lesson/${continueTarget.lesson.id}`}>
                 <Sparkles className="size-4" /> Continue
               </Link>
             </Button>

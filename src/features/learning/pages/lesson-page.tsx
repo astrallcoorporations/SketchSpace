@@ -68,7 +68,7 @@ export function LessonPage() {
     return (
       <div className="mx-auto max-w-2xl px-6 py-24 text-center">
         <p className="text-muted-foreground">This lesson doesn't exist.</p>
-        <Button variant="outline" className="mt-4" onClick={() => navigate('/app/learning')}>
+        <Button variant="outline" className="mt-4" onClick={() => navigate('/learning')}>
           Back to learning
         </Button>
       </div>
@@ -94,7 +94,7 @@ export function LessonPage() {
   return (
     <div className="mx-auto w-full max-w-2xl px-6 py-10">
       <Link
-        to={unit ? `/app/learning/${unit.path.slug}` : '/app/learning'}
+        to={unit ? `/learning/${unit.path.slug}` : '/learning'}
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4" /> {unit?.path.title ?? 'Learning'}
@@ -119,10 +119,10 @@ export function LessonPage() {
             <h2 className="font-display text-2xl font-medium">Lesson complete!</h2>
             <p className="text-brand-muted-foreground">+{lesson.xp_reward} XP earned</p>
             <div className="flex gap-3">
-              <Button variant="outline" onClick={() => navigate(`/app/learning/${unit?.path.slug}`)}>
+              <Button variant="outline" onClick={() => navigate(`/learning/${unit?.path.slug}`)}>
                 Back to path
               </Button>
-              <Button variant="brand" onClick={() => navigate('/app/learning')}>
+              <Button variant="brand" onClick={() => navigate('/learning')}>
                 Keep learning
               </Button>
             </div>

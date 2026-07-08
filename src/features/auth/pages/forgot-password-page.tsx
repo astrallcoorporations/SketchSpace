@@ -7,13 +7,18 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AuthLayout } from '@/features/auth/components/auth-layout'
 import { AuthErrorAlert } from '@/features/auth/components/auth-error-alert'
+import { Turnstile } from '@/components/shared/turnstile'
+import { Seo } from '@/components/shared/seo'
 import { sendPasswordReset } from '@/lib/auth'
 import { describeAuthError, type AuthErrorDescription } from '@/lib/auth-errors'
+
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'sent'>('idle')
   const [error, setError] = useState<AuthErrorDescription | null>(null)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
@@ -21,7 +26,7 @@ export function ForgotPasswordPage() {
     setStatus('loading')
 
     try {
-      const { error: resetError } = await sendPasswordReset(email)
+      const { error: resetError } = await sendPasswordReset(email, captchaToken ?? undefined)
 
       if (resetError) {
         setError(describeAuthError(resetError))
@@ -42,6 +47,7 @@ export function ForgotPasswordPage() {
       title="Reset your password"
       visualCopy="Locked out happens. Your work is still exactly where you left it."
     >
+      <Seo title="Reset password" canonical="/forgot-password" />
       <AnimatePresence mode="wait">
         {status === 'sent' ? (
           <motion.div
@@ -78,6 +84,14 @@ export function ForgotPasswordPage() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+
+            {TURNSTILE_SITE_KEY && (
+              <Turnstile
+                siteKey={TURNSTILE_SITE_KEY}
+                onVerify={setCaptchaToken}
+                onExpire={() => setCaptchaToken(null)}
+              />
+            )}
 
             <Button type="submit" variant="brand" className="w-full" disabled={status === 'loading'}>
               {status === 'loading' ? 'Sending link…' : 'Send reset link'}

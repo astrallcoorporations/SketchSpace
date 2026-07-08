@@ -26,8 +26,8 @@ export function FaqSection() {
       <Reveal delay={0.1}>
         <Accordion type="single" collapsible className="mt-12">
           {faqs.map((faq) => (
-            <AccordionItem key={faq.question} value={faq.question}>
-              <AccordionTrigger className="text-left text-base">
+            <AccordionItem key={faq.question} value={faq.question} className="border-border/50">
+              <AccordionTrigger className="text-left text-base transition-colors duration-200 hover:text-brand">
                 {faq.question}
               </AccordionTrigger>
               <AccordionContent className="text-muted-foreground">

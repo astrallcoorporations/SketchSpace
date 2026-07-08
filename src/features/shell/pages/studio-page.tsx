@@ -65,7 +65,8 @@ export function StudioPage() {
       <StaggerGroup className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <motion.div
           variants={staggerItem}
-          className="rounded-2xl border border-border bg-background p-5"
+          whileHover={{ y: -2 }}
+          className="rounded-2xl border border-border bg-background p-5 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]"
         >
           <div className="flex items-center gap-2 text-muted-foreground">
             <Flame className={streak && streak.current_streak > 0 ? 'size-4 text-amber-500' : 'size-4'} />
@@ -77,7 +78,8 @@ export function StudioPage() {
 
         <motion.div
           variants={staggerItem}
-          className="rounded-2xl border border-border bg-background p-5"
+          whileHover={{ y: -2 }}
+          className="rounded-2xl border border-border bg-background p-5 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]"
         >
           <div className="flex items-center gap-2 text-muted-foreground">
             <Sparkles className="size-4 text-brand" />
@@ -85,13 +87,19 @@ export function StudioPage() {
           </div>
           <p className="mt-2 font-display text-3xl font-medium">{profile?.xp ?? 0} XP</p>
           <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-            <div className="h-full rounded-full bg-brand" style={{ width: `${xpIntoLevel}%` }} />
+            <motion.div
+              className="h-full rounded-full bg-brand"
+              initial={{ width: 0 }}
+              animate={{ width: `${xpIntoLevel}%` }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            />
           </div>
         </motion.div>
 
         <motion.div
           variants={staggerItem}
-          className="rounded-2xl border border-border bg-background p-5 sm:col-span-2"
+          whileHover={{ y: -2 }}
+          className="rounded-2xl border border-border bg-background p-5 sm:col-span-2 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]"
         >
           <div className="flex items-center gap-2 text-muted-foreground">
             <TrendingUp className="size-4" />
@@ -104,14 +112,14 @@ export function StudioPage() {
                 {continueTarget.path.title} · {continueTarget.unit.title}
               </p>
               <Button asChild variant="brand" size="sm" className="mt-3">
-                <Link to={`/app/learning/lesson/${continueTarget.lesson.id}`}>Continue</Link>
+                <Link to={`/learning/lesson/${continueTarget.lesson.id}`}>Continue</Link>
               </Button>
             </>
           ) : (
             <>
               <p className="mt-2 text-sm text-muted-foreground">All caught up on lessons.</p>
               <Button asChild variant="outline" size="sm" className="mt-3">
-                <Link to="/app/learning">Browse paths</Link>
+                <Link to="/learning">Browse paths</Link>
               </Button>
             </>
           )}

@@ -19,10 +19,9 @@ export function SiteHeader() {
 
   return (
     <motion.header className="fixed inset-x-0 top-0 z-50">
-      {/* Scroll-driven opaque background — uses the theme's --background color */}
       <motion.div
         style={{ opacity: bgOpacity }}
-        className="absolute inset-0 -z-10 bg-background"
+        className="absolute inset-0 -z-10 bg-background backdrop-blur-sm"
       />
       <motion.div
         style={{ opacity: borderOpacity }}
@@ -30,7 +29,7 @@ export function SiteHeader() {
       />
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Magnetic strength={8}>
-          <Link to="/" className="font-display text-lg font-medium">
+          <Link to="/" className="font-display text-lg font-medium transition-opacity duration-200 hover:opacity-80">
             SketchSpace
           </Link>
         </Magnetic>
@@ -40,7 +39,7 @@ export function SiteHeader() {
             <Link
               key={link.href}
               to={link.href}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="relative text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground nav-link-hover"
             >
               {link.label}
             </Link>
@@ -53,12 +52,12 @@ export function SiteHeader() {
             session ? (
               <Magnetic strength={6}>
                 <Button asChild variant="brand" size="sm">
-                  <Link to="/app">Open Studio</Link>
+                  <Link to="/">Open Studio</Link>
                 </Button>
               </Magnetic>
             ) : (
               <>
-                <Button asChild variant="ghost" size="sm">
+                <Button asChild variant="ghost" size="sm" className="transition-colors duration-200">
                   <Link to="/login">Sign in</Link>
                 </Button>
                 <Magnetic strength={6}>

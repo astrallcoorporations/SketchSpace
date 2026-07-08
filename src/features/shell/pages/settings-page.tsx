@@ -92,10 +92,10 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-6 py-10">
+    <div className="mx-auto w-full max-w-2xl px-6 py-10 page-enter">
       <h1 className="font-display text-2xl font-medium">Settings</h1>
 
-      <Card className="mt-6">
+      <Card className="mt-6 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]">
         <CardHeader>
           <CardTitle className="text-base">Profile</CardTitle>
         </CardHeader>
@@ -122,7 +122,7 @@ export function SettingsPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
-              <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+              <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} className="input-focus-glow" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="display-name">Display name</Label>
@@ -130,13 +130,14 @@ export function SettingsPage() {
                 id="display-name"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
+                className="input-focus-glow"
               />
             </div>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="bio">Bio</Label>
-            <Textarea id="bio" rows={3} value={bio} onChange={(e) => setBio(e.target.value)} />
+            <Textarea id="bio" rows={3} value={bio} onChange={(e) => setBio(e.target.value)} className="input-focus-glow" />
           </div>
 
           <div className="space-y-2">
@@ -170,7 +171,7 @@ export function SettingsPage() {
 
       <AppearanceCard />
 
-      <Card className="mt-6">
+      <Card className="mt-6 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]">
         <CardHeader>
           <CardTitle className="text-base">Account</CardTitle>
         </CardHeader>
@@ -188,8 +189,6 @@ export function SettingsPage() {
     </div>
   )
 }
-
-/* ── Appearance card ── */
 
 const themeOptions = [
   {
@@ -216,11 +215,10 @@ function AppearanceCard() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
-  // next-themes needs a mount cycle to read the actual theme
   useEffect(() => setMounted(true), [])
 
   return (
-    <Card className="mt-6">
+    <Card className="mt-6 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]">
       <CardHeader>
         <CardTitle className="text-base">Appearance</CardTitle>
       </CardHeader>
@@ -240,16 +238,16 @@ function AppearanceCard() {
                 key={opt.value}
                 type="button"
                 onClick={() => setTheme(opt.value)}
-                className={`group flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all ${
+                className={`group flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all duration-300 ${
                   isActive
                     ? 'border-brand bg-brand-muted shadow-sm'
-                    : 'border-border bg-card hover:border-muted-foreground/30 hover:bg-muted'
+                    : 'border-border bg-card hover:border-muted-foreground/30 hover:bg-muted hover:-translate-y-0.5'
                 }`}
               >
                 <div
-                  className={`flex size-10 items-center justify-center rounded-lg transition-colors ${
+                  className={`flex size-10 items-center justify-center rounded-lg transition-all duration-300 ${
                     isActive
-                      ? 'bg-brand text-brand-foreground'
+                      ? 'bg-brand text-brand-foreground shadow-[0_0_16px_-4px_var(--brand)]'
                       : 'bg-muted text-muted-foreground group-hover:text-foreground'
                   }`}
                 >

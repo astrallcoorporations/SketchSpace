@@ -197,7 +197,7 @@ export function PublicProfilePage() {
             {isOwnProfile ? (
               <Magnetic strength={5}>
                 <Button asChild variant="outline" size="lg" className="rounded-full shadow-sm">
-                  <Link to="/app/settings">Edit Profile</Link>
+                  <Link to="/settings">Edit Profile</Link>
                 </Button>
               </Magnetic>
             ) : (

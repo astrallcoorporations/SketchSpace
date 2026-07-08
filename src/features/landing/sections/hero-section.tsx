@@ -6,8 +6,6 @@ import { Magnetic } from '@/components/motion/magnetic'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
 import { usePrefersReducedMotion } from '@/hooks/use-media-query'
 
-// three/@react-three/fiber/drei are heavy — keep them out of the main landing
-// chunk and let the scene stream in without blocking hero typography.
 const HeroScene = lazy(() =>
   import('@/features/landing/hero/hero-scene').then((m) => ({ default: m.HeroScene })),
 )
@@ -19,17 +17,19 @@ export function HeroSection() {
 
   const pointerX = useMotionValue(0)
   const pointerY = useMotionValue(0)
-  const parallaxX = useSpring(useTransform(pointerX, [-1, 1], [-10, 10]), {
-    stiffness: 120,
-    damping: 20,
+  const parallaxX = useSpring(useTransform(pointerX, [-1, 1], [-12, 12]), {
+    stiffness: 100,
+    damping: 15,
   })
-  const parallaxY = useSpring(useTransform(pointerY, [-1, 1], [-8, 8]), {
-    stiffness: 120,
-    damping: 20,
+  const parallaxY = useSpring(useTransform(pointerY, [-1, 1], [-10, 10]), {
+    stiffness: 100,
+    damping: 15,
   })
 
   const { scrollY } = useScroll()
   const indicatorOpacity = useTransform(scrollY, [0, 160], [1, 0])
+  const heroScale = useTransform(scrollY, [0, 400], [1, 0.97])
+  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.6])
 
   useEffect(() => {
     if (reduceMotion || !sectionRef.current) return
@@ -69,46 +69,63 @@ export function HeroSection() {
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/15 to-background/40" />
 
-      <div className="relative flex h-full flex-col items-center justify-center px-6 text-center">
+      <motion.div
+        style={{ scale: heroScale, opacity: heroOpacity }}
+        className="relative flex h-full flex-col items-center justify-center px-6 text-center"
+      >
         <motion.div
           style={{ x: parallaxX, y: parallaxY }}
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/60 px-4 py-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase backdrop-blur-sm">
+          <motion.span
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/60 px-4 py-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase backdrop-blur-sm"
+          >
+            <span className="size-1.5 rounded-full bg-brand animate-pulse" />
             A creative operating system
-          </span>
+          </motion.span>
 
           <h1 className="max-w-4xl text-balance font-display text-5xl leading-[1.05] font-medium sm:text-7xl">
             The home where{' '}
-            <span className="bg-gradient-to-r from-brand to-foreground bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-brand via-brand-muted-foreground to-brand bg-clip-text text-transparent animate-gradient-shimmer">
               artists
             </span>{' '}
             improve together.
           </h1>
 
-          <p
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
             className="mx-auto mt-6 max-w-xl text-lg font-medium text-foreground/85 text-balance [text-shadow:0_2px_24px_var(--background),0_1px_3px_var(--background)]"
           >
             Learning, projects, portfolios and community — in one place built for the way
             artists actually grow.
-          </p>
+          </motion.p>
 
-          <div className="mt-10 flex items-center justify-center gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="mt-10 flex items-center justify-center gap-4"
+          >
             <Magnetic>
-              <Button variant="brand" size="lg" className="h-11 px-6 text-base">
+              <Button variant="brand" size="lg" className="h-12 px-8 text-base btn-glow animate-glow-pulse">
                 Start creating
               </Button>
             </Magnetic>
             <Magnetic>
-              <Button variant="outline" size="lg" className="h-11 px-6 text-base">
+              <Button variant="outline" size="lg" className="h-12 px-8 text-base">
                 See how it works
               </Button>
             </Magnetic>
-          </div>
+          </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
 
       <motion.div
         style={{ opacity: indicatorOpacity }}

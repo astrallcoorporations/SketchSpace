@@ -5,12 +5,18 @@ import { Button } from '@/components/ui/button'
 import { Magnetic } from '@/components/motion/magnetic'
 import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
 import { MarketingLayout } from '@/features/marketing/components/marketing-layout'
+import { Seo } from '@/components/shared/seo'
 import { featureDetails } from '@/features/marketing/content'
 import { cn } from '@/lib/utils'
 
 export function FeaturesPage() {
   return (
     <MarketingLayout>
+      <Seo
+        title="Features"
+        description="Growth tracking, portfolio, learning paths, and collaboration — everything artists need to improve, in one place."
+        canonical="/features"
+      />
       <section className="mx-auto max-w-4xl px-6 py-16 text-center sm:py-24">
         <Reveal>
           <p className="text-sm font-medium tracking-wide text-brand uppercase">Everything, built in</p>

@@ -11,9 +11,13 @@ import { AuthErrorAlert } from '@/features/auth/components/auth-error-alert'
 import { PasswordInput } from '@/features/auth/components/password-input'
 import { PasswordStrengthMeter } from '@/features/auth/components/password-strength-meter'
 import { OAuthButtons } from '@/features/auth/components/oauth-buttons'
+import { Turnstile } from '@/components/shared/turnstile'
+import { Seo } from '@/components/shared/seo'
 import { resendConfirmationEmail, signUpWithPassword } from '@/lib/auth'
 import { getPasswordStrength } from '@/lib/password-strength'
 import { describeAuthError, type AuthErrorDescription } from '@/lib/auth-errors'
+
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined
 
 export function SignupPage() {
   const navigate = useNavigate()
@@ -23,6 +27,7 @@ export function SignupPage() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle')
   const [error, setError] = useState<AuthErrorDescription | null>(null)
   const [resending, setResending] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
@@ -35,7 +40,12 @@ export function SignupPage() {
 
     setStatus('loading')
     try {
-      const { data, error: signUpError } = await signUpWithPassword(email, password, name)
+      const { data, error: signUpError } = await signUpWithPassword(
+        email,
+        password,
+        name,
+        captchaToken ?? undefined,
+      )
 
       if (signUpError) {
         setError(describeAuthError(signUpError))
@@ -44,7 +54,7 @@ export function SignupPage() {
       }
 
       if (data.session) {
-        navigate('/app', { replace: true })
+        navigate('/', { replace: true })
         return
       }
 
@@ -82,6 +92,7 @@ export function SignupPage() {
       title="Create your account"
       visualCopy="A creative operating system, not another feed to scroll."
     >
+      <Seo title="Create account" canonical="/signup" />
       <AnimatePresence mode="wait">
         {status === 'success' ? (
           <motion.div
@@ -161,6 +172,14 @@ export function SignupPage() {
               />
               <PasswordStrengthMeter password={password} />
             </div>
+
+            {TURNSTILE_SITE_KEY && (
+              <Turnstile
+                siteKey={TURNSTILE_SITE_KEY}
+                onVerify={setCaptchaToken}
+                onExpire={() => setCaptchaToken(null)}
+              />
+            )}
 
             <Button type="submit" variant="brand" className="w-full" disabled={status === 'loading'}>
               {status === 'loading' ? 'Creating account...' : 'Create account'}

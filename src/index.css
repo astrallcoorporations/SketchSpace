@@ -174,6 +174,7 @@
 
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
   }
 
   ::selection {
@@ -187,36 +188,195 @@
   font-feature-settings: 'ss01' 1, 'ss02' 1;
 }
 
-/* Subtle fractal-noise overlay — "paper grain". Layer over any section:
-   <div className="relative"><div className="bg-noise absolute inset-0" /> ... */
+/* ── Marquee ── */
 @keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 @utility animate-marquee {
   animation: marquee 42s linear infinite;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
+  @media (prefers-reduced-motion: reduce) { animation: none; }
 }
 
 @utility animate-marquee-reverse {
   animation: marquee 42s linear infinite reverse;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
+  @media (prefers-reduced-motion: reduce) { animation: none; }
 }
 
+/* ── Noise texture ── */
 @utility bg-noise {
   pointer-events: none;
   opacity: 0.035;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Premium microinteraction utilities ── */
+
+/* Gradient text shimmer */
+@keyframes gradient-shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@utility animate-gradient-shimmer {
+  background-size: 200% 200%;
+  animation: gradient-shimmer 6s ease-in-out infinite;
+}
+
+/* Glow pulse */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px -4px var(--brand); }
+  50% { box-shadow: 0 0 32px -2px var(--brand); }
+}
+
+@utility animate-glow-pulse {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+/* Subtle float */
+@keyframes subtle-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@utility animate-float {
+  animation: subtle-float 4s ease-in-out infinite;
+}
+
+/* Skeleton shimmer */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@utility animate-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--muted) 0%,
+    color-mix(in oklch, var(--muted), var(--background) 40%) 50%,
+    var(--muted) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.8s ease-in-out infinite;
+}
+
+/* Card premium hover */
+@utility card-hover {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease;
+}
+
+@utility card-hover-lift {
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/* Button premium effects */
+@utility btn-glow {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--brand), color-mix(in oklch, var(--brand), white 20%));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+    filter: blur(8px);
+  }
+  &:hover::before {
+    opacity: 0.5;
+  }
+}
+
+/* Input focus glow */
+@utility input-focus-glow {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  &:focus-within {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--brand), transparent 80%);
+  }
+}
+
+/* Smooth page transitions */
+@utility page-enter {
+  animation: page-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger children animation */
+@utility stagger-children {
+  > * {
+    opacity: 0;
+    animation: page-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  > *:nth-child(1) { animation-delay: 0ms; }
+  > *:nth-child(2) { animation-delay: 60ms; }
+  > *:nth-child(3) { animation-delay: 120ms; }
+  > *:nth-child(4) { animation-delay: 180ms; }
+  > *:nth-child(5) { animation-delay: 240ms; }
+  > *:nth-child(6) { animation-delay: 300ms; }
+  > *:nth-child(7) { animation-delay: 360ms; }
+  > *:nth-child(8) { animation-delay: 420ms; }
+}
+
+/* Navbar link hover underline */
+@utility nav-link-hover {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1.5px;
+    background: var(--brand);
+    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+/* Focus ring animation */
+@keyframes focus-ring {
+  0% { box-shadow: 0 0 0 0px color-mix(in oklch, var(--brand), transparent 60%); }
+  100% { box-shadow: 0 0 0 3px color-mix(in oklch, var(--brand), transparent 60%); }
+}
+
+@utility focus-ring-animated {
+  &:focus-visible {
+    animation: focus-ring 0.2s ease forwards;
+  }
+}
+
+/* Pricing card glow for featured */
+@utility pricing-featured-glow {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--brand), color-mix(in oklch, var(--brand), white 30%), var(--brand));
+    z-index: -1;
+    opacity: 0.6;
+    filter: blur(12px);
+  }
 }

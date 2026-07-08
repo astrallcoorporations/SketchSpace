@@ -8,6 +8,7 @@ import {
   Flame,
   Bell,
   Settings,
+  FileUp,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -18,13 +19,14 @@ export type NavItem = {
 }
 
 export const navItems: NavItem[] = [
-  { label: 'Studio', href: '/app', icon: Palette },
-  { label: 'Learning', href: '/app/learning', icon: GraduationCap },
-  { label: 'Portfolio', href: '/app/portfolio', icon: GalleryVertical },
-  { label: 'Growth', href: '/app/growth', icon: TrendingUp },
-  { label: 'Projects', href: '/app/projects', icon: FolderKanban },
-  { label: 'Community', href: '/app/community', icon: Users2 },
-  { label: 'Quests', href: '/app/quests', icon: Flame },
-  { label: 'Notifications', href: '/app/notifications', icon: Bell },
-  { label: 'Settings', href: '/app/settings', icon: Settings },
+  { label: 'Studio', href: '/', icon: Palette },
+  { label: 'Homepage', href: '/homepage', icon: Users2 },
+  { label: 'Learning', href: '/learning', icon: GraduationCap },
+  { label: 'Portfolio', href: '/portfolio', icon: GalleryVertical },
+  { label: 'Growth', href: '/growth', icon: TrendingUp },
+  { label: 'Projects', href: '/projects', icon: FolderKanban },
+  { label: 'Shared Files', href: '/shared-files', icon: FileUp },
+  { label: 'Quests', href: '/quests', icon: Flame },
+  { label: 'Notifications', href: '/notifications', icon: Bell },
+  { label: 'Settings', href: '/settings', icon: Settings },
 ]

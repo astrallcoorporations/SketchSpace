@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { getPasswordStrength } from '@/lib/password-strength'
 import { cn } from '@/lib/utils'
 
-const barColor = ['bg-destructive', 'bg-destructive', 'bg-amber-500', 'bg-brand', 'bg-emerald-500']
+const barColor = ['bg-muted', 'bg-destructive', 'bg-amber-500', 'bg-brand', 'bg-emerald-500']
 
 export function PasswordStrengthMeter({ password }: { password: string }) {
   if (!password) return null
