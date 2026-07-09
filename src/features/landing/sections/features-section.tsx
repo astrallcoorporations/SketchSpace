@@ -1,20 +1,21 @@
 import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
+import { TextReveal } from '@/components/motion/text-reveal'
 import { motion } from 'framer-motion'
 import { features } from '@/features/landing/content'
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="mx-auto max-w-6xl px-6 py-28 sm:py-36">
+    <section id="features" className="mx-auto max-w-6xl px-6 py-40 sm:py-52">
       <Reveal>
-        <p className="text-sm font-medium tracking-wide text-brand uppercase">What you get</p>
+        <p className="eyebrow">What you get</p>
       </Reveal>
-      <Reveal delay={0.05}>
-        <h2 className="mt-3 max-w-2xl font-display text-3xl font-medium text-balance sm:text-5xl">
-          Everything scattered across five other tools, actually connected.
-        </h2>
-      </Reveal>
+      <TextReveal
+        as="h2"
+        text="Everything scattered across five other tools, actually connected."
+        className="mt-4 max-w-2xl font-display text-4xl font-medium text-balance sm:text-6xl"
+      />
 
-      <StaggerGroup className="mt-16 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+      <StaggerGroup className="mt-20 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
         {features.map(({ icon: Icon, title, description }) => (
           <motion.div
             key={title}

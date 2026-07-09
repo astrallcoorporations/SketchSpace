@@ -122,7 +122,7 @@ function createParticleField(count: number, viewport: { width: number; height: n
     pointsGeometry,
     new THREE.PointsMaterial({
       size: scale * 0.006,
-      color: '#8b5cf6',
+      color: '#d4a656',
       transparent: true,
       opacity: 0.8,
       sizeAttenuation: true,
@@ -134,7 +134,7 @@ function createParticleField(count: number, viewport: { width: number; height: n
   const lines = new THREE.LineSegments(
     lineGeometry,
     new THREE.LineBasicMaterial({
-      color: '#8b5cf6',
+      color: '#d4a656',
       transparent: true,
       opacity: 0.1,
       blending: THREE.AdditiveBlending,

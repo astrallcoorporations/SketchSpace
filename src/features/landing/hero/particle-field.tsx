@@ -169,7 +169,7 @@ export function ParticleField({ morphProgress, count = 480, reduceMotion }: Part
         </bufferGeometry>
         <pointsMaterial
           size={scale * 0.006}
-          color="#8b5cf6"
+          color="#d4a656"
           transparent
           opacity={0.8}
           sizeAttenuation
@@ -182,7 +182,7 @@ export function ParticleField({ morphProgress, count = 480, reduceMotion }: Part
           <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
         </bufferGeometry>
         <lineBasicMaterial
-          color="#8b5cf6"
+          color="#d4a656"
           transparent
           opacity={0.1}
           blending={AdditiveBlending}

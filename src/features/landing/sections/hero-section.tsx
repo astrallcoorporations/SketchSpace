@@ -81,18 +81,21 @@ export function HeroSection() {
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
           <motion.span
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/60 px-4 py-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase backdrop-blur-sm"
+            className="eyebrow mb-8 justify-center"
           >
             <span className="size-1.5 rounded-full bg-brand animate-pulse" />
             A creative operating system
           </motion.span>
 
-          <h1 className="max-w-4xl text-balance font-display text-5xl leading-[1.05] font-medium sm:text-7xl">
+          <h1 className="max-w-5xl text-balance font-display text-[clamp(3rem,9vw,8rem)] leading-[0.98] font-medium tracking-tight">
             The home where{' '}
-            <span className="bg-gradient-to-r from-brand via-brand-muted-foreground to-brand bg-clip-text text-transparent animate-gradient-shimmer">
+            <span
+              className="italic bg-gradient-to-r from-brand via-brand-muted-foreground to-brand bg-clip-text text-transparent animate-gradient-shimmer"
+              style={{ fontOpticalSizing: 'auto' }}
+            >
               artists
             </span>{' '}
             improve together.
@@ -102,7 +105,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="mx-auto mt-6 max-w-xl text-lg font-medium text-foreground/85 text-balance [text-shadow:0_2px_24px_var(--background),0_1px_3px_var(--background)]"
+            className="mx-auto mt-8 max-w-xl text-lg font-medium text-foreground/85 text-balance [text-shadow:0_2px_24px_var(--background),0_1px_3px_var(--background)]"
           >
             Learning, projects, portfolios and community — in one place built for the way
             artists actually grow.
@@ -112,7 +115,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="mt-10 flex items-center justify-center gap-4"
+            className="mt-12 flex items-center justify-center gap-4"
           >
             <Magnetic>
               <Button asChild variant="brand" size="lg" className="h-12 px-8 text-base btn-glow animate-glow-pulse">

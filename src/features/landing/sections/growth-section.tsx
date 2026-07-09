@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Reveal } from '@/components/motion/reveal'
+import { TextReveal } from '@/components/motion/text-reveal'
 import { CountUp } from '@/components/motion/count-up'
 import { growthStats } from '@/features/landing/content'
 
@@ -20,18 +21,16 @@ const areaPath = `${linePath} L420,190 L0,190 Z`
 export function GrowthSection() {
   return (
     <section className="border-y border-border bg-muted/30">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 px-6 py-28 sm:py-36 lg:grid-cols-2">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 px-6 py-40 sm:py-52 lg:grid-cols-2">
         <div>
           <Reveal>
-            <p className="text-sm font-medium tracking-wide text-brand uppercase">
-              Artist growth
-            </p>
+            <p className="eyebrow">Artist growth</p>
           </Reveal>
-          <Reveal delay={0.05}>
-            <h2 className="mt-3 font-display text-3xl font-medium text-balance sm:text-5xl">
-              See yourself getting better. Literally.
-            </h2>
-          </Reveal>
+          <TextReveal
+            as="h2"
+            text="See yourself getting better. Literally."
+            className="mt-4 font-display text-4xl font-medium text-balance sm:text-6xl"
+          />
           <Reveal delay={0.1}>
             <p className="mt-5 max-w-md text-muted-foreground">
               Every upload plots against your own history. No comparison to strangers — just

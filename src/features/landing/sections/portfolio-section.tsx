@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
+import { TextReveal } from '@/components/motion/text-reveal'
+import { MaskReveal } from '@/components/motion/mask-reveal'
 import { TiltCard } from '@/components/motion/tilt-card'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
@@ -29,22 +31,20 @@ export function PortfolioSection() {
   }, [])
 
   return (
-    <section className="mx-auto max-w-6xl px-6 py-28 sm:py-36">
+    <section className="mx-auto max-w-6xl px-6 py-40 sm:py-52">
       <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
         <div>
           <Reveal>
-            <p className="text-sm font-medium tracking-wide text-brand uppercase">
-              Portfolio builder
-            </p>
+            <p className="eyebrow">Portfolio builder</p>
           </Reveal>
-          <Reveal delay={0.05}>
-            <h2 className="mt-3 max-w-lg font-display text-3xl font-medium text-balance sm:text-5xl">
-              A portfolio that builds itself from your best work.
-            </h2>
-          </Reveal>
+          <TextReveal
+            as="h2"
+            text="A portfolio that builds itself from your best work."
+            className="mt-4 max-w-lg font-display text-4xl font-medium text-balance sm:text-6xl"
+          />
         </div>
         <Reveal delay={0.1}>
-          <p className="max-w-xs text-sm text-muted-foreground">
+          <p className="max-w-xs text-sm text-muted-foreground sm:text-right">
             No drag-and-drop template. SketchSpace assembles your strongest, most recent pieces
             automatically — you just keep making work.
           </p>
@@ -52,7 +52,7 @@ export function PortfolioSection() {
       </div>
 
       {pieces === null ? (
-        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-3">
           <PieceSkeleton />
           <PieceSkeleton />
           <PieceSkeleton />

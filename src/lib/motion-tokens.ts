@@ -4,18 +4,20 @@
  */
 
 export const duration = {
-  micro: 0.15, // hover/press feedback
+  micro: 0.15, // hover/press feedback — stays snappy, not luxury-slow
   fast: 0.25, // small UI transitions
-  base: 0.4, // default enter animation
-  slow: 0.6, // hero / scroll-story beats
-  glacial: 1.2, // large scene transitions
+  base: 0.5, // default enter animation
+  slow: 0.75, // hero / scroll-story beats
+  glacial: 1.5, // large scene transitions
 } as const
 
 export const easing = {
-  // Framer Motion cubic-bezier arrays
+  // Framer Motion cubic-bezier arrays — luxury decelerate, used everywhere an
+  // element enters (was split across out/in/inOut; editorial motion favors
+  // one considered curve over snappy asymmetric ones).
   out: [0.16, 1, 0.3, 1] as const, // decelerate — entering elements
   in: [0.7, 0, 0.84, 0] as const, // accelerate — exiting elements
-  inOut: [0.65, 0, 0.35, 1] as const, // symmetric — layout/shared-element
+  inOut: [0.16, 1, 0.3, 1] as const, // symmetric — layout/shared-element
   // GSAP string equivalents
   gsapOut: 'power4.out',
   gsapIn: 'power4.in',

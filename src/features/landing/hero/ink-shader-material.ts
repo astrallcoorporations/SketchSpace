@@ -137,9 +137,9 @@ export function createInkShaderMaterial(): InkShaderMaterial {
     uniforms: {
       uTime: { value: 0 },
       uPointer: { value: new THREE.Vector2(0.5, 0.5) },
-      uPaper: { value: new THREE.Color('#fdfdfd') },
-      uBrand: { value: new THREE.Color('#8b5cf6') },
-      uInk: { value: new THREE.Color('#18181b') },
+      uPaper: { value: new THREE.Color('#f7f2e7') },
+      uBrand: { value: new THREE.Color('#a8763a') },
+      uInk: { value: new THREE.Color('#1a1613') },
     },
     depthWrite: false,
   }) as InkShaderMaterial

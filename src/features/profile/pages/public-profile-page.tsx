@@ -169,7 +169,7 @@ export function PublicProfilePage() {
               variants={itemUpVariants}
               whileHover={{ scale: 1.05 }}
               transition={spring.bouncy}
-              className="relative z-20 flex size-32 shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-background bg-background shadow-2xl sm:size-40"
+              className="relative z-20 flex size-32 shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-background bg-background shadow-[var(--shadow-lg)] sm:size-40"
             >
               {profile.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="size-full object-cover" />
@@ -221,7 +221,7 @@ export function PublicProfilePage() {
         {/* ── Stats & Bio Panel ── */}
         <motion.div
           variants={itemUpVariants}
-          className="mt-10 flex flex-col gap-8 rounded-3xl border border-border/50 bg-card/40 p-8 shadow-xl backdrop-blur-md sm:flex-row sm:items-start sm:p-10"
+          className="mt-10 flex flex-col gap-8 rounded-3xl border border-border/50 bg-card/40 p-8 shadow-[var(--shadow-md)] backdrop-blur-md sm:flex-row sm:items-start sm:p-10"
         >
           {/* Left: Bio & Tags */}
           <div className="flex-1 space-y-6">

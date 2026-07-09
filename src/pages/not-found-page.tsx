@@ -9,12 +9,12 @@ import { duration, easing, spring } from '@/lib/motion-tokens'
 
 const SPLATTER_COLORS = [
   'var(--brand)',
-  '#a78bfa',
-  '#c4b5fd',
-  '#7c3aed',
-  '#ddd6fe',
-  '#ede9fe',
-  '#f5f3ff',
+  'color-mix(in oklch, var(--brand), white 25%)',
+  'color-mix(in oklch, var(--brand), white 50%)',
+  'color-mix(in oklch, var(--brand), black 25%)',
+  'var(--brand-muted)',
+  'color-mix(in oklch, var(--brand-muted), var(--brand) 35%)',
+  'color-mix(in oklch, var(--brand), transparent 35%)',
 ]
 
 type Splatter = {
@@ -207,7 +207,7 @@ export default function NotFoundPage() {
             className="block select-none font-display text-[10rem] leading-none font-black tracking-tighter sm:text-[14rem]"
             style={{
               background:
-                'linear-gradient(135deg, var(--brand) 0%, #a78bfa 40%, #c4b5fd 70%, var(--brand) 100%)',
+                'linear-gradient(135deg, var(--brand) 0%, color-mix(in oklch, var(--brand), white 35%) 40%, color-mix(in oklch, var(--brand), white 60%) 70%, var(--brand) 100%)',
               backgroundSize: '200% 200%',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -224,7 +224,7 @@ export default function NotFoundPage() {
           {/* glitch echo layers */}
           <motion.span
             className="pointer-events-none absolute inset-0 block select-none font-display text-[10rem] leading-none font-black tracking-tighter opacity-20 sm:text-[14rem]"
-            style={{ color: '#7c3aed', mixBlendMode: 'screen' }}
+            style={{ color: 'color-mix(in oklch, var(--brand), black 15%)', mixBlendMode: 'screen' }}
             animate={{ x: [0, -3, 3, -1, 0], y: [0, 2, -2, 1, 0] }}
             transition={{
               duration: 0.4,
@@ -237,7 +237,7 @@ export default function NotFoundPage() {
           </motion.span>
           <motion.span
             className="pointer-events-none absolute inset-0 block select-none font-display text-[10rem] leading-none font-black tracking-tighter opacity-10 sm:text-[14rem]"
-            style={{ color: '#c4b5fd', mixBlendMode: 'screen' }}
+            style={{ color: 'color-mix(in oklch, var(--brand), white 45%)', mixBlendMode: 'screen' }}
             animate={{ x: [0, 4, -4, 2, 0], y: [0, -3, 3, -1, 0] }}
             transition={{
               duration: 0.4,
