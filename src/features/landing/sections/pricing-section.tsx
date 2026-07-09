@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, ChevronDown } from 'lucide-react'
 import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
+import { TextReveal } from '@/components/motion/text-reveal'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { pricingTiers } from '@/features/landing/content'
@@ -34,19 +35,19 @@ export function PricingSection() {
   const currentCurrency = currencies.find((c) => c.code === currency) ?? currencies[0]
 
   return (
-    <section id="pricing" className="mx-auto max-w-6xl px-6 py-28 sm:py-36">
+    <section id="pricing" className="mx-auto max-w-6xl px-6 py-40 sm:py-52">
       <div className="text-center">
         <Reveal>
-          <p className="text-sm font-medium tracking-wide text-brand uppercase">Pricing</p>
+          <p className="eyebrow justify-center">Pricing</p>
         </Reveal>
-        <Reveal delay={0.05}>
-          <h2 className="mt-3 font-display text-3xl font-medium text-balance sm:text-5xl">
-            Start free. Upgrade when a team depends on it.
-          </h2>
-        </Reveal>
+        <TextReveal
+          as="h2"
+          text="Start free. Upgrade when a team depends on it."
+          className="mx-auto mt-4 max-w-2xl font-display text-4xl font-medium text-balance sm:text-6xl"
+        />
 
         <Reveal delay={0.1}>
-          <div className="mt-8 flex items-center justify-center gap-3">
+          <div className="mt-10 flex items-center justify-center gap-3">
             <div className="inline-flex items-center gap-1 rounded-full border border-border bg-muted p-1">
               {(['monthly', 'yearly'] as const).map((option) => (
                 <button
@@ -101,7 +102,7 @@ export function PricingSection() {
         </Reveal>
       </div>
 
-      <StaggerGroup className="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <StaggerGroup className="mt-20 grid grid-cols-1 gap-6 lg:grid-cols-3">
         {pricingTiers.map((tier) => {
           const price = convertPrice(yearly ? tier.yearly : tier.monthly, currency)
           return (

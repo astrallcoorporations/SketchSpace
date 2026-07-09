@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Check, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
+import { TextReveal } from '@/components/motion/text-reveal'
 import { MarketingLayout } from '@/features/marketing/components/marketing-layout'
 import { Seo } from '@/components/shared/seo'
 import { marketingPricingTiers, pricingFaqs } from '@/features/marketing/content'
@@ -42,18 +43,18 @@ export function PricingPage() {
         description="Start free. Upgrade when your team depends on it. Simple plans for solo artists and studios."
         canonical="/pricing"
       />
-      <section className="mx-auto max-w-4xl px-6 py-16 text-center sm:py-24">
+      <section className="mx-auto max-w-4xl px-6 py-24 text-center sm:py-36">
         <Reveal>
-          <p className="text-sm font-medium tracking-wide text-brand uppercase">Pricing</p>
+          <p className="eyebrow justify-center">Pricing</p>
         </Reveal>
-        <Reveal delay={0.05}>
-          <h1 className="mt-3 text-balance font-display text-4xl font-medium sm:text-6xl">
-            Start free. Upgrade when a team depends on it.
-          </h1>
-        </Reveal>
+        <TextReveal
+          as="h1"
+          text="Start free. Upgrade when a team depends on it."
+          className="mx-auto mt-4 max-w-3xl text-balance font-display text-5xl font-medium sm:text-7xl"
+        />
 
         <Reveal delay={0.1}>
-          <div className="mt-8 flex items-center justify-center gap-3">
+          <div className="mt-10 flex items-center justify-center gap-3">
             <div className="inline-flex items-center gap-1 rounded-full border border-border bg-muted p-1">
               {(['monthly', 'yearly'] as const).map((option) => (
                 <button

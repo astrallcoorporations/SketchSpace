@@ -4,6 +4,7 @@ import { ArrowRight, Check, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Magnetic } from '@/components/motion/magnetic'
 import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
+import { TextReveal } from '@/components/motion/text-reveal'
 import { MarketingLayout } from '@/features/marketing/components/marketing-layout'
 import { Seo } from '@/components/shared/seo'
 import { featureDetails } from '@/features/marketing/content'
@@ -17,17 +18,17 @@ export function FeaturesPage() {
         description="Growth tracking, portfolio, learning paths, and collaboration — everything artists need to improve, in one place."
         canonical="/features"
       />
-      <section className="mx-auto max-w-4xl px-6 py-16 text-center sm:py-24">
+      <section className="mx-auto max-w-4xl px-6 py-24 text-center sm:py-36">
         <Reveal>
-          <p className="text-sm font-medium tracking-wide text-brand uppercase">Everything, built in</p>
+          <p className="eyebrow justify-center">Everything, built in</p>
         </Reveal>
-        <Reveal delay={0.05}>
-          <h1 className="mt-3 text-balance font-display text-4xl font-medium sm:text-6xl">
-            One system for actually getting better, not five tabs pretending to be one.
-          </h1>
-        </Reveal>
+        <TextReveal
+          as="h1"
+          text="One system for actually getting better, not five tabs pretending to be one."
+          className="mx-auto mt-4 max-w-3xl text-balance font-display text-5xl font-medium sm:text-7xl"
+        />
         <Reveal delay={0.1}>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground text-balance">
+          <p className="mx-auto mt-8 max-w-2xl text-lg text-muted-foreground text-balance">
             Every feature below is either live in the product today or in active development —
             marked clearly, no vaporware.
           </p>
@@ -49,9 +50,7 @@ export function FeaturesPage() {
                     <div className="flex size-11 items-center justify-center rounded-xl bg-brand-muted text-brand-muted-foreground">
                       <feature.icon className="size-5" strokeWidth={1.75} />
                     </div>
-                    <span className="text-sm font-medium tracking-wide text-brand uppercase">
-                      {feature.eyebrow}
-                    </span>
+                    <span className="eyebrow">{feature.eyebrow}</span>
                     {feature.status === 'in-progress' && (
                       <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2.5 py-0.5 text-xs text-muted-foreground">
                         <Clock className="size-3" /> In development

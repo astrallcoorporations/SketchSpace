@@ -38,7 +38,7 @@ export function AuthLayout({ children, eyebrow, title, visualCopy }: AuthLayoutP
         </Link>
 
         <div className="relative max-w-md">
-          <p className="font-display text-2xl leading-snug font-medium text-balance sm:text-3xl">
+          <p className="font-display text-3xl leading-[1.1] font-medium italic text-balance sm:text-4xl">
             {visualCopy}
           </p>
         </div>
@@ -46,9 +46,9 @@ export function AuthLayout({ children, eyebrow, title, visualCopy }: AuthLayoutP
 
       <div className="flex items-center justify-center px-6 py-16 sm:px-12">
         <Reveal className="w-full max-w-sm" direction="none">
-          <p className="text-sm font-medium tracking-wide text-brand uppercase">{eyebrow}</p>
-          <h1 className="mt-2 font-display text-3xl font-medium">{title}</h1>
-          <div className="mt-8 page-enter">{children}</div>
+          <p className="eyebrow">{eyebrow}</p>
+          <h1 className="mt-3 font-display text-4xl font-medium tracking-tight">{title}</h1>
+          <div className="mt-10 page-enter">{children}</div>
         </Reveal>
       </div>
     </div>

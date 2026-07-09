@@ -17,6 +17,10 @@ dist-ssr
 .env.*
 !.env.example
 
+# Agent tooling / plugin caches — not part of this project
+.agents/
+.codex/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

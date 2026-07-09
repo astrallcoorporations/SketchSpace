@@ -31,12 +31,12 @@ export function ContactPage() {
         canonical="/contact"
       />
 
-      <section className="mx-auto max-w-2xl px-6 py-16 sm:py-24">
+      <section className="mx-auto max-w-2xl px-6 py-24 sm:py-36">
         <Reveal>
-          <p className="text-sm font-medium tracking-wide text-brand uppercase">Contact</p>
+          <p className="eyebrow">Contact</p>
         </Reveal>
         <Reveal delay={0.05}>
-          <h1 className="mt-3 text-balance font-display text-4xl font-medium sm:text-5xl">
+          <h1 className="mt-4 text-balance font-display text-6xl font-medium italic sm:text-7xl">
             Let's talk
           </h1>
         </Reveal>

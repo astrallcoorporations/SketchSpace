@@ -1,4 +1,5 @@
 import { Reveal } from '@/components/motion/reveal'
+import { TextReveal } from '@/components/motion/text-reveal'
 import {
   Accordion,
   AccordionContent,
@@ -9,22 +10,20 @@ import { faqs } from '@/features/landing/content'
 
 export function FaqSection() {
   return (
-    <section className="mx-auto max-w-3xl px-6 py-28 sm:py-36">
+    <section className="mx-auto max-w-3xl px-6 py-40 sm:py-52">
       <div className="text-center">
         <Reveal>
-          <p className="text-sm font-medium tracking-wide text-brand uppercase">
-            Questions
-          </p>
+          <p className="eyebrow justify-center">Questions</p>
         </Reveal>
-        <Reveal delay={0.05}>
-          <h2 className="mt-3 font-display text-3xl font-medium text-balance sm:text-5xl">
-            Before you ask in a Discord no one reads.
-          </h2>
-        </Reveal>
+        <TextReveal
+          as="h2"
+          text="Before you ask in a Discord no one reads."
+          className="mx-auto mt-4 max-w-xl font-display text-4xl font-medium text-balance sm:text-6xl"
+        />
       </div>
 
       <Reveal delay={0.1}>
-        <Accordion type="single" collapsible className="mt-12">
+        <Accordion type="single" collapsible className="mt-16">
           {faqs.map((faq) => (
             <AccordionItem key={faq.question} value={faq.question} className="border-border/50">
               <AccordionTrigger className="text-left text-base transition-colors duration-200 hover:text-brand">

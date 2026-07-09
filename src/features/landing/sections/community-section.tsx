@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
+import { TextReveal } from '@/components/motion/text-reveal'
 import { Flame, Palette, Users2 } from 'lucide-react'
 
 const quests = [
@@ -28,19 +29,17 @@ const circumference = 2 * Math.PI * radius
 
 export function CommunitySection() {
   return (
-    <section id="community" className="mx-auto max-w-6xl px-6 py-28 sm:py-36">
+    <section id="community" className="mx-auto max-w-6xl px-6 py-40 sm:py-52">
       <Reveal>
-        <p className="text-sm font-medium tracking-wide text-brand uppercase">
-          Community quests
-        </p>
+        <p className="eyebrow">Community quests</p>
       </Reveal>
-      <Reveal delay={0.05}>
-        <h2 className="mt-3 max-w-xl font-display text-3xl font-medium text-balance sm:text-5xl">
-          Progress you can see, with people cheering you on.
-        </h2>
-      </Reveal>
+      <TextReveal
+        as="h2"
+        text="Progress you can see, with people cheering you on."
+        className="mt-4 max-w-xl font-display text-4xl font-medium text-balance sm:text-6xl"
+      />
 
-      <StaggerGroup className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-3">
+      <StaggerGroup className="mt-20 grid grid-cols-1 gap-6 sm:grid-cols-3">
         {quests.map(({ icon: Icon, title, reward, progress }) => (
           <motion.div
             key={title}
