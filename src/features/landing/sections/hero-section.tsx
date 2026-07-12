@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Magnetic } from '@/components/motion/magnetic'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
 import { usePrefersReducedMotion } from '@/hooks/use-media-query'
+import { CanvasErrorBoundary } from '@/components/canvas-error-boundary'
 
 const HeroScene = lazy(() =>
   import('@/features/landing/hero/hero-scene').then((m) => ({ default: m.HeroScene })),
@@ -64,9 +65,11 @@ export function HeroSection() {
 
   return (
     <section ref={sectionRef} className="relative h-svh overflow-hidden bg-background">
-      <Suspense fallback={<div className="absolute inset-0 bg-gradient-to-br from-background via-brand-muted to-background" />}>
-        <HeroScene morphProgress={morphProgress} />
-      </Suspense>
+      <CanvasErrorBoundary fallback={<div className="absolute inset-0 bg-gradient-to-br from-background via-brand-muted to-background" aria-hidden />}>
+        <Suspense fallback={<div className="absolute inset-0 bg-gradient-to-br from-background via-brand-muted to-background" />}>
+          <HeroScene morphProgress={morphProgress} />
+        </Suspense>
+      </CanvasErrorBoundary>
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/15 to-background/40" />
 

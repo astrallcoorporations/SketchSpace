@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { GalleryVertical } from 'lucide-react'
 import { getPublicArtworkShowcase, type ShowcaseArtwork } from '@/features/marketing/api'
+import { sanitizeImageUrl } from '@/lib/image-url'
 
 function PieceSkeleton() {
   return <div className="aspect-[4/5] animate-skeleton rounded-2xl border border-border" />
@@ -77,11 +78,12 @@ export function PortfolioSection() {
             <motion.div key={piece.id} variants={staggerItem}>
               <Link to={`/artwork/${piece.id}`}>
                 <TiltCard className="group relative aspect-[4/5] overflow-hidden rounded-2xl border border-border bg-muted">
-                  {piece.cover_image_url && (
+                  {sanitizeImageUrl(piece.cover_image_url) && (
                     <img
-                      src={piece.cover_image_url}
+                      src={sanitizeImageUrl(piece.cover_image_url)!}
                       alt={piece.title}
                       loading="lazy"
+                      crossOrigin="anonymous"
                       className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     />
                   )}

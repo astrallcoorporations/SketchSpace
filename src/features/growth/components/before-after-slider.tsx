@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { GripVertical } from 'lucide-react'
 import type { BeforeAfterCandidate } from '@/features/growth/computations'
+import { sanitizeImageUrl } from '@/lib/image-url'
 
 export function BeforeAfterSlider({ candidate }: { candidate: BeforeAfterCandidate }) {
   const [position, setPosition] = useState(50)
@@ -9,8 +10,9 @@ export function BeforeAfterSlider({ candidate }: { candidate: BeforeAfterCandida
     <div className="overflow-hidden rounded-2xl border border-border bg-muted">
       <div className="relative aspect-[4/3] w-full select-none overflow-hidden sm:aspect-video">
         <img
-          src={candidate.after.image_url}
+          src={sanitizeImageUrl(candidate.after.image_url) ?? ''}
           alt={`${candidate.artwork.title} — latest version`}
+          crossOrigin="anonymous"
           className="absolute inset-0 size-full object-cover"
           draggable={false}
         />
@@ -19,8 +21,9 @@ export function BeforeAfterSlider({ candidate }: { candidate: BeforeAfterCandida
           style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
         >
           <img
-            src={candidate.before.image_url}
+            src={sanitizeImageUrl(candidate.before.image_url) ?? ''}
             alt={`${candidate.artwork.title} — earlier version`}
+            crossOrigin="anonymous"
             className="absolute inset-0 size-full object-cover"
             draggable={false}
           />

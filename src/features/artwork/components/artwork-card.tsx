@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Lock, EyeOff, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ArtworkWithOwner } from '@/features/artwork/types'
+import { sanitizeImageUrl } from '@/lib/image-url'
 
 const visibilityIcon = {
   public: null,
@@ -25,11 +26,12 @@ export function ArtworkCard({
 
   const inner = (
     <div className="relative overflow-hidden rounded-xl">
-      {artwork.cover_image_url ? (
+      {sanitizeImageUrl(artwork.cover_image_url) ? (
         <motion.img
-          src={artwork.cover_image_url}
+          src={sanitizeImageUrl(artwork.cover_image_url)!}
           alt={artwork.title}
           loading="lazy"
+          crossOrigin="anonymous"
           className="w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
           initial={false}
           whileHover={selectable ? undefined : { scale: 1.03 }}

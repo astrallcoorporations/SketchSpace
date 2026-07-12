@@ -14,4 +14,15 @@ export default defineConfig({
       '@': path.resolve(dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      // Proxy legacy localhost:5000 image requests to bypass CORS in dev.
+      // Old DB records still point to the original Express backend.
+      '/uploads': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 })

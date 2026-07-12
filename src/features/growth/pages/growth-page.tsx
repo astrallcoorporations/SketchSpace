@@ -28,6 +28,7 @@ import {
   computeYearOptions,
   computeYearlyRecap,
 } from '@/features/growth/computations'
+import { sanitizeImageUrl } from '@/lib/image-url'
 import type { GrowthData } from '@/features/growth/types'
 
 function StatTile({ label, value, icon }: { label: string; value: string | number; icon?: ReactNode }) {
@@ -264,8 +265,8 @@ export function GrowthPage() {
                 className="group flex items-center gap-4 rounded-xl border border-border bg-background p-3 transition-colors hover:border-brand/40"
               >
                 <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-muted">
-                  {artwork.cover_image_url && (
-                    <img src={artwork.cover_image_url} alt={artwork.title} className="size-full object-cover" />
+                  {sanitizeImageUrl(artwork.cover_image_url) && (
+                    <img src={sanitizeImageUrl(artwork.cover_image_url)!} alt={artwork.title} crossOrigin="anonymous" className="size-full object-cover" />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">

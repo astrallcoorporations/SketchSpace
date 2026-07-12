@@ -28,6 +28,7 @@ import {
 import { EditArtworkDialog } from '@/features/artwork/components/edit-artwork-dialog'
 import type { Artwork, ArtworkWithOwner } from '@/features/artwork/types'
 import type { Tables } from '@/types/database'
+import { sanitizeImageUrl } from '@/lib/image-url'
 
 const visibilityMeta = {
   public: null,
@@ -152,7 +153,7 @@ export function ArtworkDetailPage() {
 
       <Reveal className="mt-6">
         <div className="overflow-hidden rounded-2xl border border-border bg-muted">
-          {artwork.cover_image_url && (
+          {sanitizeImageUrl(artwork.cover_image_url) && (
             <button
               type="button"
               onClick={() => {
@@ -162,7 +163,12 @@ export function ArtworkDetailPage() {
               className="block w-full cursor-zoom-in"
               aria-label="Open full image"
             >
-              <img src={artwork.cover_image_url} alt={artwork.title} className="w-full" />
+              <img
+                src={sanitizeImageUrl(artwork.cover_image_url)!}
+                alt={artwork.title}
+                crossOrigin="anonymous"
+                className="w-full"
+              />
             </button>
           )}
         </div>
@@ -261,8 +267,9 @@ export function ArtworkDetailPage() {
                 aria-label={`Open version ${version.version_number}`}
               >
                 <img
-                  src={version.image_url}
+                  src={sanitizeImageUrl(version.image_url) ?? ''}
                   alt={`Version ${version.version_number}`}
+                  crossOrigin="anonymous"
                   className="aspect-square w-full rounded-lg border border-border object-cover"
                 />
                 <p className="mt-1 text-center text-xs text-muted-foreground">
@@ -356,8 +363,9 @@ export function ArtworkDetailPage() {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.15 }}
-              src={versions[lightboxIndex].image_url}
+              src={sanitizeImageUrl(versions[lightboxIndex].image_url) ?? ''}
               alt={`${artwork.title} — version ${versions[lightboxIndex].version_number}`}
+              crossOrigin="anonymous"
               className="max-h-full max-w-full rounded-lg object-contain"
               onClick={(e) => e.stopPropagation()}
             />
