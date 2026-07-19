@@ -1,6 +1,6 @@
-import * as THREE from 'three'
+﻿import * as THREE from 'three'
 
-// Ashima Arts / Ian McEwan simplex noise (MIT) — the standard, battle-tested
+// Ashima Arts / Ian McEwan simplex noise (MIT) â€” the standard, battle-tested
 // GLSL 3D simplex implementation used across the WebGL ecosystem.
 const simplexNoise = /* glsl */ `
   vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -82,34 +82,83 @@ const fragmentShader = /* glsl */ `
   uniform vec2 uPointer;
   uniform vec3 uPaper;
   uniform vec3 uBrand;
+  uniform vec3 uBrand2;
   uniform vec3 uInk;
+  // Ink drops from pointer taps: xy = position (aspect space), z = birth time,
+  // w = strength (0 = empty slot).
+  uniform vec4 uDrops[4];
   varying vec2 vUv;
 
   ${simplexNoise}
+
+  float fbm(vec3 p) {
+    float value = 0.0;
+    float amplitude = 0.5;
+    for (int i = 0; i < 3; i++) {
+      value += amplitude * snoise(p);
+      p = p * 2.03 + 19.7;
+      amplitude *= 0.5;
+    }
+    return value;
+  }
 
   void main() {
     vec2 uv = vUv;
     vec2 aspectUv = (uv - 0.5) * vec2(1.6, 1.0) + 0.5;
 
-    float t = uTime * 0.035;
+    float t = uTime * 0.03;
 
-    // Domain warp: displace the sampling point through a slower noise field
-    // so the ramp reads as flowing ink rather than a static gradient.
-    vec2 warp = vec2(
-      snoise(vec3(aspectUv * 1.4, t)),
-      snoise(vec3(aspectUv * 1.4 + 100.0, t))
-    ) * 0.18;
+    // Paper tooth: fine static grain the pigment settles into.
+    float grain = snoise(vec3(aspectUv * 90.0, 7.0)) * 0.5 + 0.5;
 
-    vec2 pointerPull = (uPointer - 0.5) * 0.06;
-    vec2 sampleUv = aspectUv + warp + pointerPull;
+    // Double domain warp (warp fed through a second warp) — this folding is
+    // what makes the field read as ink filaments spreading in water instead
+    // of drifting fog.
+    vec2 q = vec2(
+      fbm(vec3(aspectUv * 1.3, t)),
+      fbm(vec3(aspectUv * 1.3 + 31.4, t))
+    );
+    vec2 r = vec2(
+      fbm(vec3(aspectUv * 1.8 + q * 1.6, t * 1.2)),
+      fbm(vec3(aspectUv * 1.8 + q * 1.6 + 47.2, t * 1.2))
+    );
 
-    float n1 = snoise(vec3(sampleUv * 2.2, t));
-    float n2 = snoise(vec3(sampleUv * 4.0 + 50.0, t * 1.3));
-    float field = n1 * 0.7 + n2 * 0.3;
-    field = field * 0.5 + 0.5; // 0..1
+    vec2 pointerPull = (uPointer - 0.5) * 0.08;
+    vec2 sampleUv = aspectUv + q * 0.12 + r * 0.22 + pointerPull;
 
-    vec3 color = mix(uPaper, uBrand, smoothstep(0.35, 0.85, field));
-    color = mix(color, uInk, smoothstep(0.86, 1.05, field) * 0.4);
+    float density = fbm(vec3(sampleUv * 2.1, t)) * 0.5 + 0.5;
+    // Tooth slightly resists or accepts ink, breaking up smooth boundaries.
+    density += (grain - 0.5) * 0.05;
+
+    // Tap drops: a dark core that thins as an irregular bleed ring expands
+    // outward. The ring samples through the flow warp so it deforms with the
+    // surrounding ink rather than staying a perfect circle.
+    for (int i = 0; i < 4; i++) {
+      vec4 drop = uDrops[i];
+      float age = uTime - drop.z;
+      if (drop.w <= 0.0 || age < 0.0) continue;
+      float radius = 0.04 + age * 0.11;
+      float fade = exp(-age * 0.5);
+      float d = distance(aspectUv + r * 0.07, drop.xy);
+      float ring = smoothstep(radius, radius - 0.045, d) * smoothstep(radius - 0.16, radius - 0.045, d);
+      float core = smoothstep(0.09, 0.0, d) * exp(-age * 0.85);
+      density += (ring * 0.5 + core * 0.4) * drop.w * fade;
+    }
+
+    // Feathered body with a darkened rim: pigment pools at the bleed edge,
+    // the classic watercolor "edge darkening".
+    float body = smoothstep(0.48, 0.75, density);
+    float rim = smoothstep(0.48, 0.56, density) * (1.0 - smoothstep(0.56, 0.72, density));
+
+    // Granulation: thin washes show the paper tooth through the pigment.
+    float granulation = mix(1.0, grain, 0.4 * (1.0 - body));
+
+    // Thin washes read pink, heavier flow shifts violet, dense pools sink
+    // toward near-black ink.
+    vec3 wash = mix(uBrand2, uBrand, smoothstep(0.3, 0.8, density));
+    vec3 color = mix(uPaper, wash, body * 0.85 * granulation);
+    color = mix(color, uInk, smoothstep(0.78, 1.0, density) * 0.55);
+    color = mix(color, uInk, rim * 0.22);
 
     // Soft vignette so type stays readable toward the edges.
     float vignette = smoothstep(1.05, 0.35, distance(uv, vec2(0.5)));
@@ -125,9 +174,13 @@ export type InkShaderMaterial = THREE.ShaderMaterial & {
     uPointer: { value: THREE.Vector2 }
     uPaper: { value: THREE.Color }
     uBrand: { value: THREE.Color }
+    uBrand2: { value: THREE.Color }
     uInk: { value: THREE.Color }
+    uDrops: { value: THREE.Vector4[] }
   }
 }
+
+const MAX_DROPS = 4
 
 /** Fullscreen ink/watercolor flow field, blended through the brand ramp. */
 export function createInkShaderMaterial(): InkShaderMaterial {
@@ -137,10 +190,29 @@ export function createInkShaderMaterial(): InkShaderMaterial {
     uniforms: {
       uTime: { value: 0 },
       uPointer: { value: new THREE.Vector2(0.5, 0.5) },
-      uPaper: { value: new THREE.Color('#f7f2e7') },
-      uBrand: { value: new THREE.Color('#a8763a') },
-      uInk: { value: new THREE.Color('#1a1613') },
+      uPaper: { value: new THREE.Color('#ffffff') },
+      uBrand: { value: new THREE.Color('#a855f7') },
+      uBrand2: { value: new THREE.Color('#ec4899') },
+      uInk: { value: new THREE.Color('#0a0a0a') },
+      uDrops: {
+        value: Array.from({ length: MAX_DROPS }, () => new THREE.Vector4(0, 0, -1e3, 0)),
+      },
     },
     depthWrite: false,
   }) as InkShaderMaterial
+}
+
+/**
+ * Register an ink drop at plane UV (0..1). Recycles the oldest slot.
+ * Coordinates are converted into the shader's aspect-corrected space here so
+ * callers only ever think in plain UVs.
+ */
+export function addInkDrop(material: InkShaderMaterial, u: number, v: number, strength = 1) {
+  const drops = material.uniforms.uDrops.value
+  let slot = 0
+  for (let i = 1; i < drops.length; i++) {
+    if (drops[i].z < drops[slot].z) slot = i
+  }
+  const x = (u - 0.5) * 1.6 + 0.5
+  drops[slot].set(x, v, material.uniforms.uTime.value, strength)
 }

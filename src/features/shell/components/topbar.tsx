@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState, type FormEvent } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Bell, Menu, Search, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,13 +16,30 @@ import { UploadDialog } from '@/features/artwork/components/upload-dialog'
 import { ThemeToggle } from '@/components/shared/theme-toggle'
 import { useAuth } from '@/hooks/use-auth'
 import { signOut } from '@/lib/auth'
+import { getUnreadCount } from '@/features/notifications/api'
 
 export function Topbar() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { user } = useAuth()
   const [query, setQuery] = useState('')
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [uploadOpen, setUploadOpen] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  // Refresh on route change so the badge clears after visiting /notifications.
+  useEffect(() => {
+    if (!user) return
+    let cancelled = false
+    getUnreadCount(user.id)
+      .then((count) => {
+        if (!cancelled) setUnreadCount(count)
+      })
+      .catch(() => undefined)
+    return () => {
+      cancelled = true
+    }
+  }, [user, location.pathname])
 
   function handleSearchSubmit(e: FormEvent) {
     e.preventDefault()
@@ -68,11 +85,16 @@ export function Topbar() {
         <Button
           variant="ghost"
           size="icon"
-          aria-label="Notifications"
+          aria-label={unreadCount > 0 ? `Notifications (${unreadCount} unread)` : 'Notifications'}
           onClick={() => navigate('/notifications')}
-          className="transition-colors duration-200"
+          className="relative transition-colors duration-200"
         >
           <Bell className="size-4.5" />
+          {unreadCount > 0 && (
+            <span className="absolute top-1 right-1 flex min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] leading-4 font-medium text-brand-foreground">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
         </Button>
 
         <ThemeToggle />

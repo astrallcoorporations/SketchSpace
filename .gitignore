@@ -20,6 +20,10 @@ dist-ssr
 # Agent tooling / plugin caches — not part of this project
 .agents/
 .codex/
+.impeccable/
+
+# Supabase CLI local state
+supabase/.temp/
 
 # Editor directories and files
 .vscode/*

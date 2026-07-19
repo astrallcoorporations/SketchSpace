@@ -96,7 +96,7 @@ export function HeroSection() {
           <h1 className="max-w-5xl text-balance font-display text-[clamp(3rem,9vw,8rem)] leading-[0.98] font-medium tracking-tight">
             The home where{' '}
             <span
-              className="italic bg-gradient-to-r from-brand via-brand-muted-foreground to-brand bg-clip-text text-transparent animate-gradient-shimmer"
+              className="italic bg-gradient-to-r from-brand-from via-brand to-brand-to bg-clip-text text-transparent animate-gradient-shimmer"
               style={{ fontOpticalSizing: 'auto' }}
             >
               artists

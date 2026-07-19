@@ -1,4 +1,4 @@
-import { useMemo, useRef, type RefObject } from 'react'
+﻿import { useMemo, useRef, type RefObject } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { AdditiveBlending, BufferAttribute, BufferGeometry, MathUtils, Vector2 } from 'three'
 
@@ -17,7 +17,7 @@ function buildScatterPositions(count: number, width: number, height: number) {
   return positions
 }
 
-/** Loose spiral — the "organized" shape particles settle into as you scroll. */
+/** Loose spiral â€” the "organized" shape particles settle into as you scroll. */
 function buildSpiralPositions(count: number, width: number, height: number) {
   const positions = new Float32Array(count * 3)
   const turns = 3.2
@@ -91,7 +91,7 @@ export function ParticleField({ morphProgress, count = 480, reduceMotion }: Part
     [count],
   )
 
-  // Working buffers mutated in place every frame — avoids per-frame allocation.
+  // Working buffers mutated in place every frame â€” avoids per-frame allocation.
   const positions = useMemo(() => new Float32Array(scatter), [scatter])
   const linePositions = useMemo(() => new Float32Array(edges.length * 2 * 3), [edges])
 
@@ -169,7 +169,7 @@ export function ParticleField({ morphProgress, count = 480, reduceMotion }: Part
         </bufferGeometry>
         <pointsMaterial
           size={scale * 0.006}
-          color="#d4a656"
+          color="#e879f9"
           transparent
           opacity={0.8}
           sizeAttenuation
@@ -182,7 +182,7 @@ export function ParticleField({ morphProgress, count = 480, reduceMotion }: Part
           <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
         </bufferGeometry>
         <lineBasicMaterial
-          color="#d4a656"
+          color="#e879f9"
           transparent
           opacity={0.1}
           blending={AdditiveBlending}

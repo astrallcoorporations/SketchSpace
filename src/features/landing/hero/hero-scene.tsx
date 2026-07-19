@@ -1,6 +1,6 @@
-import { useEffect, useRef, type RefObject } from 'react'
+﻿import { useEffect, useRef, type RefObject } from 'react'
 import * as THREE from 'three'
-import { createInkShaderMaterial, type InkShaderMaterial } from './ink-shader-material'
+import { addInkDrop, createInkShaderMaterial, type InkShaderMaterial } from './ink-shader-material'
 import { useMediaQuery, usePrefersReducedMotion } from '@/hooks/use-media-query'
 
 type Edge = [number, number]
@@ -122,7 +122,7 @@ function createParticleField(count: number, viewport: { width: number; height: n
     pointsGeometry,
     new THREE.PointsMaterial({
       size: scale * 0.006,
-      color: '#d4a656',
+      color: '#e879f9',
       transparent: true,
       opacity: 0.8,
       sizeAttenuation: true,
@@ -134,7 +134,7 @@ function createParticleField(count: number, viewport: { width: number; height: n
   const lines = new THREE.LineSegments(
     lineGeometry,
     new THREE.LineBasicMaterial({
-      color: '#d4a656',
+      color: '#e879f9',
       transparent: true,
       opacity: 0.1,
       blending: THREE.AdditiveBlending,
@@ -282,6 +282,17 @@ export function HeroScene({ morphProgress }: { morphProgress: RefObject<number> 
       rebuildSceneObjects()
     }
 
+    // The background plane is scaled 1.4x past the viewport, so canvas UV
+    // maps into plane UV through the same factor.
+    function canvasUvToPlaneUv(event: PointerEvent) {
+      const rect = renderer.domElement.getBoundingClientRect()
+      const u = (event.clientX - rect.left) / Math.max(rect.width, 1)
+      const v = 1 - (event.clientY - rect.top) / Math.max(rect.height, 1)
+      return { u: 0.5 + (u - 0.5) / 1.4, v: 0.5 + (v - 0.5) / 1.4 }
+    }
+
+    const lastTrailDrop = { u: -1, v: -1 }
+
     function updatePointer(event: PointerEvent) {
       const rect = renderer.domElement.getBoundingClientRect()
       const x = ((event.clientX - rect.left) / Math.max(rect.width, 1)) * 2 - 1
@@ -289,6 +300,26 @@ export function HeroScene({ morphProgress }: { morphProgress: RefObject<number> 
       const viewport = getViewport(camera, renderer)
       pointer.userData.targetX = x * viewport.width * 0.5
       pointer.userData.targetY = y * viewport.height * 0.5
+
+      // Dragging draws an ink trail: light drops spaced out along the path.
+      if (!reduceMotion && shaderBackground && (event.buttons & 1) === 1) {
+        const { u, v } = canvasUvToPlaneUv(event)
+        const du = u - lastTrailDrop.u
+        const dv = v - lastTrailDrop.v
+        if (du * du + dv * dv > 0.012) {
+          addInkDrop(shaderBackground.material, u, v, 0.4)
+          lastTrailDrop.u = u
+          lastTrailDrop.v = v
+        }
+      }
+    }
+
+    function handlePointerDown(event: PointerEvent) {
+      if (reduceMotion || !shaderBackground) return
+      const { u, v } = canvasUvToPlaneUv(event)
+      addInkDrop(shaderBackground.material, u, v)
+      lastTrailDrop.u = u
+      lastTrailDrop.v = v
     }
 
     function resetPointer() {
@@ -343,6 +374,7 @@ export function HeroScene({ morphProgress }: { morphProgress: RefObject<number> 
 
     const canvas = renderer.domElement
     canvas.addEventListener('pointermove', updatePointer)
+    canvas.addEventListener('pointerdown', handlePointerDown)
     canvas.addEventListener('pointerleave', resetPointer)
     canvas.addEventListener('webglcontextlost', handleContextLost)
     canvas.addEventListener('webglcontextrestored', handleContextRestored)
@@ -352,6 +384,7 @@ export function HeroScene({ morphProgress }: { morphProgress: RefObject<number> 
       cancelAnimationFrame(rafId)
       resizeObserver.disconnect()
       canvas.removeEventListener('pointermove', updatePointer)
+      canvas.removeEventListener('pointerdown', handlePointerDown)
       canvas.removeEventListener('pointerleave', resetPointer)
       canvas.removeEventListener('webglcontextlost', handleContextLost)
       canvas.removeEventListener('webglcontextrestored', handleContextRestored)
