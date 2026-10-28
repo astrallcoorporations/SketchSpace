@@ -1,20 +1,25 @@
 import { NavLink } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
+import { Wordmark } from '@/components/shared/wordmark'
 import { navItems } from '@/features/shell/nav-items'
 import { useAuth } from '@/hooks/use-auth'
 import { signOut } from '@/lib/auth'
 import { cn } from '@/lib/utils'
 
+/**
+ * The marker rack. The page you are on gets the one live edge: its cap fills
+ * magenta. Nothing else in the rack wears the accent.
+ */
 export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const { user } = useAuth()
 
   return (
     <div className="flex h-full flex-col">
-      <NavLink to="/" className="px-2 font-display text-lg font-medium transition-opacity duration-200 hover:opacity-80">
-        SketchSpace
+      <NavLink to="/" className="self-start rounded-sm px-2" aria-label="SketchSpace studio">
+        <Wordmark />
       </NavLink>
 
-      <nav className="mt-8 flex flex-1 flex-col gap-1">
+      <nav aria-label="App" className="mt-8 flex flex-1 flex-col gap-1">
         {navItems.map(({ label, href, icon: Icon }) => (
           <NavLink
             key={href}
@@ -23,27 +28,38 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             onClick={onNavigate}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground',
-                isActive && 'bg-brand-muted text-brand-muted-foreground hover:bg-brand-muted hover:text-brand-muted-foreground',
+                'group flex items-center gap-3 rounded-full border-2 border-transparent py-2 pr-3 pl-3 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:bg-sidebar-accent hover:text-foreground',
+                isActive && 'border-sidebar-border bg-sidebar-accent text-foreground',
               )
             }
           >
-            <Icon className="size-4.5 transition-transform duration-200 group-hover:scale-110" strokeWidth={1.75} />
-            {label}
+            {({ isActive }) => (
+              <>
+                <Icon className="size-[1.1rem]" strokeWidth={1.75} aria-hidden="true" />
+                <span className="flex-1">{label}</span>
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    'size-2.5 rounded-full transition-colors',
+                    isActive ? 'bg-ink-magenta-light' : 'bg-transparent group-hover:bg-pass-v1',
+                  )}
+                />
+              </>
+            )}
           </NavLink>
         ))}
       </nav>
 
-      <div className="flex items-center gap-2 border-t border-border px-2 pt-4">
-        <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-muted text-xs font-medium text-brand-muted-foreground transition-transform duration-200 hover:scale-105">
-          {user?.email?.[0]?.toUpperCase() ?? '?'}
+      <div className="flex items-center gap-2 border-t-2 border-sidebar-border px-1 pt-4">
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-input bg-pass-v3 font-display text-base uppercase">
+          {user?.email?.[0] ?? '?'}
         </div>
         <p className="min-w-0 flex-1 truncate text-sm text-muted-foreground">{user?.email}</p>
         <button
           type="button"
           aria-label="Sign out"
           onClick={() => signOut()}
-          className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-all duration-200 outline-none hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="flex size-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors duration-200 hover:bg-sidebar-accent hover:text-foreground"
         >
           <LogOut className="size-4" />
         </button>
@@ -54,7 +70,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
 
 export function Sidebar() {
   return (
-    <aside className="hidden w-60 shrink-0 border-r border-border bg-background p-4 lg:flex">
+    <aside className="sticky top-0 hidden h-svh w-64 shrink-0 border-r-2 border-sidebar-border bg-sidebar p-4 lg:flex">
       <SidebarNav />
     </aside>
   )

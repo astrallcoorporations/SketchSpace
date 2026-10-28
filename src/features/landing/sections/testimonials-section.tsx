@@ -1,48 +1,32 @@
-import { Reveal } from '@/components/motion/reveal'
-import { TextReveal } from '@/components/motion/text-reveal'
 import { testimonials } from '@/features/landing/content'
 
-function TestimonialCard({ quote, name, role }: (typeof testimonials)[number]) {
-  return (
-    <figure className="group w-[min(85vw,22rem)] shrink-0 rounded-2xl border border-border bg-background p-6 transition-all duration-300 hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5">
-      <blockquote className="pull-quote text-base text-foreground">{quote}</blockquote>
-      <figcaption className="mt-4 text-xs text-muted-foreground">
-        <span className="font-medium text-foreground">{name}</span> — {role}
-      </figcaption>
-    </figure>
-  )
-}
-
 export function TestimonialsSection() {
-  const row = [...testimonials, ...testimonials]
-
   return (
-    <section className="overflow-hidden py-40 sm:py-52">
-      <div className="mx-auto max-w-6xl px-6">
-        <Reveal>
-          <p className="eyebrow">From the community</p>
-        </Reveal>
-        <TextReveal
-          as="h2"
-          text="Artists say it feels different."
-          className="mt-4 max-w-lg font-display text-4xl font-medium text-balance sm:text-6xl"
-        />
-      </div>
-
-      <div className="group mt-20 flex flex-col gap-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-        <div className="flex w-max gap-4 animate-marquee group-hover:[animation-play-state:paused]">
-          {row.map((t, i) => (
-            <TestimonialCard key={`${t.name}-${i}`} {...t} />
+    <section aria-labelledby="voices-title" className="px-4 py-24 sm:px-8 sm:py-32">
+      <div className="mx-auto max-w-[88rem]">
+        <h2 id="voices-title" className="font-display text-5xl leading-[0.9] uppercase sm:text-7xl">
+          Artists say it feels different.
+        </h2>
+        <ul className="mt-14 grid gap-x-12 gap-y-14 md:grid-cols-2">
+          {testimonials.map((t, i) => (
+            <li key={t.name}>
+              <figure>
+                <blockquote
+                  className={`font-display text-[clamp(1.6rem,2.6vw,2.4rem)] leading-[1.05] font-[650] [font-stretch:80%] ${
+                    ['text-ink-pink-light', 'text-foreground', 'text-foreground', 'text-ink-violet-light'][i]
+                  }`}
+                >
+                  “{t.quote}”
+                </blockquote>
+                <figcaption className="mt-4 flex items-center gap-3 text-sm">
+                  <span aria-hidden="true" className="h-[2px] w-8 bg-border" />
+                  <span className="font-semibold">{t.name}</span>
+                  <span className="text-muted-foreground">{t.role}</span>
+                </figcaption>
+              </figure>
+            </li>
           ))}
-        </div>
-        <div className="flex w-max gap-4 animate-marquee-reverse group-hover:[animation-play-state:paused]">
-          {row
-            .slice()
-            .reverse()
-            .map((t, i) => (
-              <TestimonialCard key={`${t.name}-rev-${i}`} {...t} />
-            ))}
-        </div>
+        </ul>
       </div>
     </section>
   )

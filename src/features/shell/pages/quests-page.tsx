@@ -80,7 +80,7 @@ export function QuestsPage() {
       <Reveal>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="font-display text-2xl font-medium">Quests</h1>
+            <h1 className="font-display text-2xl uppercase leading-[0.9]">Quests</h1>
             <p className="mt-1 text-sm text-muted-foreground">
               Structured challenges that reward showing up.
             </p>
@@ -139,7 +139,7 @@ export function QuestsPage() {
                         className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted"
                       >
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-brand-from to-brand-to transition-[width] duration-500"
+                          className="h-full rounded-full bg-ink-magenta transition-[width] duration-500"
                           style={{ width: `${percent}%` }}
                         />
                       </div>

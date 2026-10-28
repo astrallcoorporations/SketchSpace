@@ -21,7 +21,7 @@ export const featureDetails: FeatureDetail[] = [
   {
     icon: GalleryVertical,
     eyebrow: 'Artwork',
-    title: 'A portfolio that works like real Storage, not a gallery template',
+    title: 'A portfolio that works like real storage, not a gallery template',
     description:
       'Every upload goes through real progress, retry, and cancel — not a spinner that lies to you. Multi-file drag & drop, automatic image optimization, and full version history on every piece.',
     points: [
@@ -104,6 +104,7 @@ export type PricingTier = {
   featured: boolean
 }
 
+// SketchSpace is free only. Do not add tiers here until a paid plan really exists.
 export const marketingPricingTiers: PricingTier[] = [
   {
     name: 'Free',
@@ -111,7 +112,7 @@ export const marketingPricingTiers: PricingTier[] = [
     yearly: 0,
     description: 'Everything you need to start improving in public.',
     features: [
-      'Unlimited artwork uploads with real Storage',
+      'Unlimited artwork uploads',
       'Full version history & Growth Timeline',
       'All 9 learning paths, XP, and streaks',
       'Public profile with follow/following',
@@ -120,49 +121,5 @@ export const marketingPricingTiers: PricingTier[] = [
     ctaTarget: 'signup',
     featured: false,
   },
-  {
-    name: 'Pro',
-    monthly: 200,
-    yearly: 150,
-    description: 'For artists building a serious portfolio and daily practice.',
-    features: [
-      'Everything in Free',
-      'Custom portfolio layouts & themes',
-      'Advanced growth analytics',
-      'Priority feature access',
-    ],
-    cta: 'Start free trial',
-    ctaTarget: 'signup',
-    featured: true,
-  },
-  {
-    name: 'Teams',
-    monthly: 1000,
-    yearly: 750,
-    description: 'For studios and creative collectives running real production.',
-    features: [
-      'Everything in Pro',
-      'Shared team workspace & projects',
-      'Admin & role management',
-      'Dedicated support',
-    ],
-    cta: 'Talk to us',
-    ctaTarget: 'contact',
-    featured: false,
-  },
 ]
 
-export const pricingFaqs = [
-  {
-    question: 'Do I need a card to start?',
-    answer: 'No. The Free tier is free indefinitely — no card required, no trial clock running in the background.',
-  },
-  {
-    question: 'What happens to my data if I downgrade?',
-    answer: 'Nothing gets deleted. You keep every artwork, version, and profile setting — some Pro-only features just go read-only.',
-  },
-  {
-    question: 'Is Teams available yet?',
-    answer: "Teams billing is rolling out alongside collaborative Projects. Reach out and we'll set your studio up directly.",
-  },
-] as const

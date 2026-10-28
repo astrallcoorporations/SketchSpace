@@ -1,14 +1,41 @@
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ArrowRight, Check, Clock } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Magnetic } from '@/components/motion/magnetic'
-import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
-import { TextReveal } from '@/components/motion/text-reveal'
+import { Clock } from 'lucide-react'
+import { MarkerSwatch } from '@/components/swatch/marker-swatch'
+import type { InkName } from '@/components/swatch/marker-ink'
 import { MarketingLayout } from '@/features/marketing/components/marketing-layout'
 import { Seo } from '@/components/shared/seo'
 import { featureDetails } from '@/features/marketing/content'
-import { cn } from '@/lib/utils'
+
+const inks: InkName[] = ['pink', 'magenta', 'violet']
+
+/** One piece, six saved versions, on the unbroken version line. Example data. */
+function VersionStrip() {
+  return (
+    <figure className="sheet p-4 sm:p-5" aria-label="Example: one piece across six saved versions">
+      <div className="grid grid-cols-6 gap-2">
+        {[1, 2, 3, 4, 5, 6].map((n) => (
+          <div key={n} className="aspect-[3/4] overflow-hidden border-[1.5px] border-paper-ink">
+            <MarkerSwatch ink="magenta" passes={n} seed={n + 90} animate />
+          </div>
+        ))}
+      </div>
+      <div className="relative mt-4 h-4" aria-hidden="true">
+        <div className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-paper-ink" />
+        <div className="absolute inset-0 grid grid-cols-6">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <span key={n} className="flex items-center justify-center">
+              <span className={n === 6 ? 'size-4 rounded-full border-2 border-paper bg-ink-pink' : 'size-2.5 rounded-full bg-paper-ink'} />
+            </span>
+          ))}
+        </div>
+      </div>
+      <figcaption className="mt-3 flex justify-between font-code text-[0.65rem] text-paper-ink/75">
+        <span>v1 · first upload</span>
+        <span>Example · one piece</span>
+        <span>v6 · now</span>
+      </figcaption>
+    </figure>
+  )
+}
 
 export function FeaturesPage() {
   return (
@@ -18,99 +45,65 @@ export function FeaturesPage() {
         description="Growth tracking, portfolio, learning paths, and collaboration — everything artists need to improve, in one place."
         canonical="/features"
       />
-      <section className="mx-auto max-w-4xl px-6 py-24 text-center sm:py-36">
-        <Reveal>
-          <p className="eyebrow justify-center">Everything, built in</p>
-        </Reveal>
-        <TextReveal
-          as="h1"
-          text="One system for actually getting better, not five tabs pretending to be one."
-          className="mx-auto mt-4 max-w-3xl text-balance font-display text-5xl font-medium sm:text-7xl"
-        />
-        <Reveal delay={0.1}>
-          <p className="mx-auto mt-8 max-w-2xl text-lg text-muted-foreground text-balance">
-            Every feature below is either live in the product today or in active development —
-            marked clearly, no vaporware.
-          </p>
-        </Reveal>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-6 pb-28">
-        <div className="space-y-20">
-          {featureDetails.map((feature, i) => (
-            <Reveal key={feature.title} delay={0.05}>
-              <div
-                className={cn(
-                  'grid grid-cols-1 items-center gap-10 lg:grid-cols-2',
-                  i % 2 === 1 && 'lg:[&>*:first-child]:order-2',
-                )}
-              >
-                <div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-11 items-center justify-center rounded-xl bg-brand-muted text-brand-muted-foreground">
-                      <feature.icon className="size-5" strokeWidth={1.75} />
-                    </div>
-                    <span className="eyebrow">{feature.eyebrow}</span>
-                    {feature.status === 'in-progress' && (
-                      <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2.5 py-0.5 text-xs text-muted-foreground">
-                        <Clock className="size-3" /> In development
-                      </span>
-                    )}
-                  </div>
-                  <h2 className="mt-4 text-balance font-display text-2xl font-medium sm:text-3xl">
-                    {feature.title}
-                  </h2>
-                  <p className="mt-3 text-muted-foreground">{feature.description}</p>
-                  <ul className="mt-6 space-y-2.5">
-                    {feature.points.map((point) => (
-                      <li key={point} className="flex items-start gap-2 text-sm">
-                        <Check className="mt-0.5 size-4 shrink-0 text-brand" />
-                        <span>{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <StaggerGroup className="grid grid-cols-2 gap-3">
-                  {feature.points.slice(0, 4).map((point) => (
-                    <motion.div
-                      key={point}
-                      variants={staggerItem}
-                      whileHover={{ y: -3 }}
-                      className="flex aspect-square flex-col justify-between rounded-2xl border border-border bg-background p-5 shadow-[var(--shadow-sm)]"
-                    >
-                      <feature.icon className="size-5 text-brand" strokeWidth={1.75} />
-                      <p className="text-sm font-medium text-balance">{point}</p>
-                    </motion.div>
-                  ))}
-                </StaggerGroup>
-              </div>
-            </Reveal>
-          ))}
+      <section className="px-4 pt-16 pb-20 sm:px-8 sm:pt-24">
+        <div className="mx-auto grid max-w-[88rem] items-center gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+          <div>
+            <h1 className="font-display text-[clamp(3rem,6.4vw,5.6rem)] leading-[0.86] uppercase">
+              One system for actually getting better, not five tabs pretending to be one.
+            </h1>
+            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+              Every feature below is either live in the product today or in active development, marked clearly. No
+              vaporware.
+            </p>
+          </div>
+          <VersionStrip />
         </div>
       </section>
 
-      <section className="border-t border-border bg-muted/30 px-6 py-20 text-center">
-        <Reveal>
-          <h2 className="font-display text-3xl font-medium text-balance sm:text-4xl">
-            Start with the pieces that are live today.
-          </h2>
-        </Reveal>
-        <Reveal delay={0.05}>
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <Magnetic>
-              <Button asChild variant="brand" size="lg" className="h-11 gap-2 px-6 text-base">
-                <Link to="/signup">
-                  Start creating <ArrowRight className="size-4" />
-                </Link>
-              </Button>
-            </Magnetic>
-            <Button asChild variant="outline" size="lg" className="h-11 px-6 text-base">
-              <Link to="/pricing">See pricing</Link>
-            </Button>
-          </div>
-        </Reveal>
+      <section className="px-4 pb-28 sm:px-8">
+        <ol className="mx-auto max-w-[88rem] border-t-2 border-border">
+          {featureDetails.map((feature, i) => {
+            const ink = inks[i % inks.length]
+            return (
+              <li
+                key={feature.title}
+                className="grid gap-10 border-b-2 border-border py-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16"
+              >
+                <div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <feature.icon className="size-6 text-ink-violet-light" strokeWidth={1.75} aria-hidden="true" />
+                    {feature.status === 'in-progress' && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-input px-3 py-0.5 text-xs font-medium text-muted-foreground">
+                        <Clock className="size-3.5" aria-hidden="true" /> In development
+                      </span>
+                    )}
+                  </div>
+                  <h2 className="mt-4 font-display text-4xl leading-[0.9] uppercase sm:text-5xl">{feature.title}</h2>
+                  <p className="mt-4 max-w-[60ch] text-lg leading-relaxed text-muted-foreground">
+                    {feature.description}
+                  </p>
+                </div>
+
+                {/* the feature's parts as a swatch legend: one more pass per line */}
+                <ul className="sheet self-start p-4 sm:p-6">
+                  {feature.points.map((point, k) => (
+                    <li
+                      key={point}
+                      className="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-4 border-b-[1.5px] border-paper-rule py-3 last:border-b-0"
+                    >
+                      <div className="h-8 overflow-hidden border-[1.5px] border-paper-ink">
+                        <MarkerSwatch ink={ink} passes={k + 1} seed={i * 17 + k} animate />
+                      </div>
+                      <span className="font-medium">{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            )
+          })}
+        </ol>
       </section>
+
     </MarketingLayout>
   )
 }

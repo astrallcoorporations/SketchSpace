@@ -1,6 +1,6 @@
-﻿import { useEffect, useRef, type RefObject } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 import * as THREE from 'three'
-import { addInkDrop, createInkShaderMaterial, type InkShaderMaterial } from './ink-shader-material'
+import { addInkDrop, createInkShaderMaterial, type InkPalette, type InkShaderMaterial } from './ink-shader-material'
 import { useMediaQuery, usePrefersReducedMotion } from '@/hooks/use-media-query'
 
 type Edge = [number, number]
@@ -93,9 +93,9 @@ function disposeObject(object: THREE.Object3D) {
   })
 }
 
-function createShaderBackground(viewport: { width: number; height: number }) {
+function createShaderBackground(viewport: { width: number; height: number }, palette?: InkPalette) {
   const geometry = new THREE.PlaneGeometry(1, 1)
-  const material = createInkShaderMaterial()
+  const material = createInkShaderMaterial(palette)
   const mesh = new THREE.Mesh(geometry, material)
   mesh.position.set(0, 0, -1)
   mesh.scale.set(viewport.width * 1.4, viewport.height * 1.4, 1)
@@ -214,7 +214,7 @@ function createParticleField(count: number, viewport: { width: number; height: n
   return { group, update, markDirty }
 }
 
-export function HeroScene({ morphProgress }: { morphProgress: RefObject<number> }) {
+export function HeroScene({ morphProgress, palette }: { morphProgress: RefObject<number>; palette?: InkPalette }) {
   const hostRef = useRef<HTMLDivElement>(null)
   const reduceMotion = usePrefersReducedMotion()
   const isCompact = useMediaQuery('(max-width: 768px)')
@@ -272,7 +272,7 @@ export function HeroScene({ morphProgress }: { morphProgress: RefObject<number> 
       }
 
       const viewport = getViewport(camera, renderer)
-      shaderBackground = createShaderBackground(viewport)
+      shaderBackground = createShaderBackground(viewport, palette)
       particles = createParticleField(isCompact ? 220 : 480, viewport)
       scene.add(shaderBackground, particles.group)
     }
@@ -394,7 +394,7 @@ export function HeroScene({ morphProgress }: { morphProgress: RefObject<number> 
       renderer.forceContextLoss()
       canvas.remove()
     }
-  }, [isCompact, morphProgress, reduceMotion])
+  }, [isCompact, morphProgress, reduceMotion, palette])
 
   return <div ref={hostRef} className="absolute inset-0" aria-hidden />
 }

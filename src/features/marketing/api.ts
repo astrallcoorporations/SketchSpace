@@ -7,6 +7,8 @@ export type ShowcaseArtwork = {
   cover_image_url: string | null
   created_at: string
   profiles: { id: string; username: string; display_name: string | null; avatar_url: string | null } | null
+  /** Saved versions of the piece, counted from artwork_versions. */
+  versionCount: number
 }
 
 /** Real public artwork for marketing surfaces (landing preview, /community) —
@@ -15,14 +17,18 @@ export async function getPublicArtworkShowcase(limit = 8): Promise<ShowcaseArtwo
   const { data, error } = await supabase
     .from('artworks')
     .select(
-      'id, title, medium, cover_image_url, created_at, profiles!artworks_owner_id_fkey(id, username, display_name, avatar_url)',
+      'id, title, medium, cover_image_url, created_at, profiles!artworks_owner_id_fkey(id, username, display_name, avatar_url), artwork_versions(count)',
     )
     .eq('visibility', 'public')
     .not('cover_image_url', 'is', null)
     .order('created_at', { ascending: false })
     .limit(limit)
   if (error) throw error
-  return (data ?? []) as unknown as ShowcaseArtwork[]
+  type Row = Omit<ShowcaseArtwork, 'versionCount'> & { artwork_versions: { count: number }[] | null }
+  return ((data ?? []) as unknown as Row[]).map(({ artwork_versions, ...rest }) => ({
+    ...rest,
+    versionCount: artwork_versions?.[0]?.count ?? 0,
+  }))
 }
 
 export type ShowcaseArtist = {

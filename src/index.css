@@ -2,108 +2,107 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/geist';
+@import '@fontsource-variable/anybody/standard.css';
+@import '@fontsource-variable/martian-mono/standard.css';
 @import '@fontsource-variable/fraunces';
 
 @custom-variant dark (&:is(.dark *));
 
-:root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --border: #e5e5e5;
-  --radius: 0.375rem;
-  --card: #fcfcfc;
-  --card-foreground: #0a0a0a;
-  --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  --primary: #0a0a0a;
-  --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #0a0a0a;
-  --muted: #f4f4f5;
-  --muted-foreground: #6b6b74;
-  --accent: #f6f0f9;
-  --accent-foreground: #0a0a0a;
-  --destructive: oklch(0.577 0.245 27.325);
-  --input: #e5e5e5;
-  --ring: #c026d3;
-  --chart-1: #db2777;
-  --chart-2: #9333ea;
-  --chart-3: #c026d3;
-  --chart-4: #7c3aed;
-  --chart-5: #ec4899;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #0a0a0a;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f6f0f9;
-  --sidebar-accent-foreground: #0a0a0a;
-  --sidebar-border: #e5e5e5;
-  --sidebar-ring: #c026d3;
-
-  /* SketchSpace brand — monochrome canvas, pink→purple accent. */
-  --brand: #c026d3;
-  --brand-foreground: #ffffff;
-  --brand-muted: #fae8ff;
-  --brand-muted-foreground: #86198f;
-  --brand-from: #ec4899;
-  --brand-to: #8b5cf6;
-
-  --shadow-color: 0 0% 8%;
-  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.05);
-  --shadow-md: 0 4px 16px -4px hsl(var(--shadow-color) / 0.12);
-  --shadow-lg: 0 16px 48px -12px hsl(var(--shadow-color) / 0.18);
-}
-
+/*
+ * SketchSpace — the swatch ladder.
+ * One marker family, pass by pass: blank paper at the light end, the deepest
+ * violet pass at the dark end. The deepest pass is the app's ground; every
+ * surface above it is one pass lighter. Pink, magenta and violet are the
+ * pinned brand inks. The app ships dark only.
+ */
+:root,
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --card: #131316;
-  --card-foreground: #fafafa;
-  --popover: #131316;
-  --popover-foreground: #fafafa;
-  --primary: #fafafa;
-  --primary-foreground: #0a0a0a;
-  --secondary: #1b1b1f;
-  --secondary-foreground: #fafafa;
-  --muted: #1b1b1f;
-  --muted-foreground: #a1a1aa;
-  --accent: #221826;
-  --accent-foreground: #fafafa;
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: rgb(250 250 250 / 12%);
-  --input: rgb(250 250 250 / 16%);
-  --ring: #e879f9;
-  --chart-1: #f472b6;
-  --chart-2: #a78bfa;
-  --chart-3: #e879f9;
-  --chart-4: #8b5cf6;
-  --chart-5: #ec4899;
-  --sidebar: #0a0a0a;
-  --sidebar-foreground: #fafafa;
-  --sidebar-primary: #fafafa;
-  --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #221826;
-  --sidebar-accent-foreground: #fafafa;
-  --sidebar-border: rgb(250 250 250 / 12%);
-  --sidebar-ring: #e879f9;
+  /* the ladder */
+  --paper: #fbf8fd;
+  --paper-ink: #1d1424;
+  --paper-rule: #d9cfe3;
+  --pass-v6: #160d1d;
+  --pass-v5: #1a1022;
+  --pass-v4: #221630;
+  --pass-v3: #2a1b39;
+  --pass-v2: #33214a;
+  --pass-v1: #3d2a52;
+  --ink-pink: #ec4899;
+  --ink-pink-light: #f59ac8;
+  --ink-magenta: #c026d3;
+  --ink-magenta-light: #e27cec;
+  --ink-violet: #8b5cf6;
+  --ink-violet-light: #b49af9;
 
-  --brand: #e879f9;
-  --brand-foreground: #1c0a21;
-  --brand-muted: #3a1440;
-  --brand-muted-foreground: #f0abfc;
-  --brand-from: #f472b6;
-  --brand-to: #a78bfa;
+  --background: var(--pass-v5);
+  --foreground: #f4ecfa;
+  --card: var(--pass-v4);
+  --card-foreground: #f4ecfa;
+  --popover: #261936;
+  --popover-foreground: #f4ecfa;
+  --primary: #f4ecfa;
+  --primary-foreground: var(--pass-v5);
+  --secondary: #2c1d3c;
+  --secondary-foreground: #f4ecfa;
+  --muted: var(--pass-v3);
+  --muted-foreground: #ab98bf;
+  --accent: var(--pass-v2);
+  --accent-foreground: #f4ecfa;
+  --destructive: #ff7088;
+  --border: #3d2a52;
+  --input: #4a3362;
+  --ring: var(--ink-magenta-light);
+  --radius: 0.5rem;
 
-  --shadow-color: 0 0% 0%;
-  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.3);
-  --shadow-md: 0 4px 16px -4px hsl(var(--shadow-color) / 0.45);
-  --shadow-lg: 0 16px 48px -12px hsl(var(--shadow-color) / 0.6);
+  --chart-1: var(--ink-pink);
+  --chart-2: var(--ink-violet);
+  --chart-3: var(--ink-magenta);
+  --chart-4: var(--ink-pink-light);
+  --chart-5: var(--ink-violet-light);
+
+  --sidebar: var(--pass-v6);
+  --sidebar-foreground: #f4ecfa;
+  --sidebar-primary: #f4ecfa;
+  --sidebar-primary-foreground: var(--pass-v6);
+  --sidebar-accent: var(--pass-v3);
+  --sidebar-accent-foreground: #f4ecfa;
+  --sidebar-border: #2e1f40;
+  --sidebar-ring: var(--ink-magenta-light);
+
+  /* the one live edge: magenta marks the active thing, nothing else */
+  --brand: var(--ink-magenta);
+  --brand-foreground: #ffffff;
+  --brand-muted: #3a1846;
+  --brand-muted-foreground: #f3c6f6;
+  --brand-from: var(--ink-pink);
+  --brand-to: var(--ink-violet);
+
+  --shadow-color: 270 60% 3%;
+  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.5);
+  --shadow-md: 0 6px 16px -6px hsl(var(--shadow-color) / 0.7);
+  --shadow-lg: 0 24px 48px -20px hsl(var(--shadow-color) / 0.85);
+
+  color-scheme: dark;
 }
 
 @theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: 'Geist Variable', sans-serif;
-  --font-display: 'Fraunces Variable', 'Geist Variable', serif;
+  --font-heading: var(--font-display);
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Anybody Variable', 'Geist Variable', sans-serif;
+  --font-mono: 'Martian Mono Variable', ui-monospace, monospace;
+  --color-paper: var(--paper);
+  --color-paper-ink: var(--paper-ink);
+  --color-paper-rule: var(--paper-rule);
+  --color-pass-v6: var(--pass-v6);
+  --color-pass-v4: var(--pass-v4);
+  --color-pass-v3: var(--pass-v3);
+  --color-pass-v2: var(--pass-v2);
+  --color-ink-pink: var(--ink-pink);
+  --color-ink-pink-light: var(--ink-pink-light);
+  --color-ink-magenta: var(--ink-magenta);
+  --color-ink-magenta-light: var(--ink-magenta-light);
+  --color-ink-violet: var(--ink-violet);
+  --color-ink-violet-light: var(--ink-violet-light);
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-muted: var(--brand-muted);
@@ -171,6 +170,8 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    caret-color: var(--ink-magenta-light);
+    accent-color: var(--ink-magenta);
   }
 
   button:not(:disabled),
@@ -181,28 +182,77 @@
   html {
     @apply font-sans;
     scroll-behavior: smooth;
+    scrollbar-color: var(--pass-v1) var(--pass-v6);
+  }
+
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    text-underline-offset: 0.22em;
+    text-decoration-thickness: 1.5px;
   }
 
   ::selection {
-    background: var(--brand);
-    color: var(--brand-foreground);
+    background: var(--ink-pink);
+    color: #ffffff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--pass-v6);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--pass-v1);
+    border: 3px solid var(--pass-v6);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #57406f;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ink-magenta-light);
+    outline-offset: 2px;
   }
 }
 
+/* Condensed heavy display face — the lettering on a marker barrel. */
 @utility font-display {
   font-family: var(--font-display);
-  font-feature-settings: 'ss01' 1, 'ss02' 1;
+  font-stretch: 62%;
+  font-weight: 860;
+  letter-spacing: -0.01em;
 }
 
-/* Pink→purple gradient text */
+/* Codes, dates, counts. Data only, never prose. */
+@utility font-code {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+/* A paper test sheet lying on the violet ground. */
+@utility sheet {
+  background: var(--paper);
+  color: var(--paper-ink);
+  border-radius: 4px;
+  box-shadow: 0 1px 0 hsl(var(--shadow-color) / 0.4), 0 28px 60px -28px hsl(var(--shadow-color) / 0.9);
+}
+
+/* Legacy name kept for existing markup; emphasis is ink, never a gradient. */
 @utility text-gradient-brand {
-  background: linear-gradient(100deg, var(--brand-from), var(--brand-to));
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  color: var(--ink-magenta-light);
 }
 
-/* ── Marquee ── */
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -218,48 +268,14 @@
   @media (prefers-reduced-motion: reduce) { animation: none; }
 }
 
-/* ── Noise texture ── */
-@utility bg-noise {
-  pointer-events: none;
-  opacity: 0.035;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+/* Retired effects: names kept so old markup compiles, effects gone. */
+@utility bg-noise { display: none; }
+@utility animate-gradient-shimmer { animation: none; }
+@utility animate-glow-pulse { animation: none; }
+@utility animate-float { animation: none; }
+@utility btn-glow { position: relative; }
+@utility pricing-featured-glow { position: relative; }
 
-/* ── Premium microinteraction utilities ── */
-
-/* Gradient text shimmer */
-@keyframes gradient-shimmer {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@utility animate-gradient-shimmer {
-  background-size: 200% 200%;
-  animation: gradient-shimmer 6s ease-in-out infinite;
-}
-
-/* Glow pulse */
-@keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 20px -4px var(--brand); }
-  50% { box-shadow: 0 0 32px -2px var(--brand); }
-}
-
-@utility animate-glow-pulse {
-  animation: glow-pulse 2.5s ease-in-out infinite;
-}
-
-/* Subtle float */
-@keyframes subtle-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-
-@utility animate-float {
-  animation: subtle-float 4s ease-in-out infinite;
-}
-
-/* Skeleton shimmer */
 @keyframes skeleton-shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -269,58 +285,36 @@
   background: linear-gradient(
     90deg,
     var(--muted) 0%,
-    color-mix(in oklch, var(--muted), var(--background) 40%) 50%,
+    color-mix(in oklch, var(--muted), var(--foreground) 6%) 50%,
     var(--muted) 100%
   );
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.8s ease-in-out infinite;
+  @media (prefers-reduced-motion: reduce) { animation: none; }
 }
 
-/* Card premium hover */
 @utility card-hover {
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.3s ease;
+              border-color 0.2s ease;
 }
 
 @utility card-hover-lift {
   &:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    border-color: var(--input);
   }
 }
 
-/* Button premium effects */
-@utility btn-glow {
-  position: relative;
-  &::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, var(--brand-from), var(--brand-to));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
-    filter: blur(8px);
-  }
-  &:hover::before {
-    opacity: 0.5;
-  }
-}
-
-/* Input focus glow */
 @utility input-focus-glow {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease;
   &:focus-within {
-    border-color: var(--brand);
-    box-shadow: 0 0 0 3px color-mix(in oklch, var(--brand), transparent 80%);
+    border-color: var(--ink-magenta-light);
   }
 }
 
-/* Smooth page transitions */
 @utility page-enter {
   animation: page-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  @media (prefers-reduced-motion: reduce) { animation: none; }
 }
 
 @keyframes page-enter {
@@ -334,33 +328,29 @@
   }
 }
 
-/* Stagger children animation */
 @utility stagger-children {
   > * {
-    opacity: 0;
     animation: page-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
-  > *:nth-child(1) { animation-delay: 0ms; }
-  > *:nth-child(2) { animation-delay: 60ms; }
-  > *:nth-child(3) { animation-delay: 120ms; }
-  > *:nth-child(4) { animation-delay: 180ms; }
-  > *:nth-child(5) { animation-delay: 240ms; }
-  > *:nth-child(6) { animation-delay: 300ms; }
-  > *:nth-child(7) { animation-delay: 360ms; }
-  > *:nth-child(8) { animation-delay: 420ms; }
+  > *:nth-child(2) { animation-delay: 50ms; }
+  > *:nth-child(3) { animation-delay: 100ms; }
+  > *:nth-child(4) { animation-delay: 150ms; }
+  > *:nth-child(5) { animation-delay: 200ms; }
+  > *:nth-child(6) { animation-delay: 250ms; }
+  @media (prefers-reduced-motion: reduce) { > * { animation: none; } }
 }
 
-/* Navbar link hover underline */
+/* The live edge under a hovered nav link. */
 @utility nav-link-hover {
   position: relative;
   &::after {
     content: '';
     position: absolute;
-    bottom: -2px;
+    bottom: -3px;
     left: 0;
     width: 0;
-    height: 1.5px;
-    background: var(--brand);
+    height: 2px;
+    background: var(--ink-magenta-light);
     transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   &:hover::after {
@@ -368,63 +358,107 @@
   }
 }
 
-/* Focus ring animation */
-@keyframes focus-ring {
-  0% { box-shadow: 0 0 0 0px color-mix(in oklch, var(--brand), transparent 60%); }
-  100% { box-shadow: 0 0 0 3px color-mix(in oklch, var(--brand), transparent 60%); }
-}
-
 @utility focus-ring-animated {
   &:focus-visible {
-    animation: focus-ring 0.2s ease forwards;
+    outline: 2px solid var(--ink-magenta-light);
+    outline-offset: 2px;
   }
 }
 
-/* ── Editorial devices ── */
-
-/* Small-caps eyebrow label above headings */
+/* Retired: a label above a heading. Kept only so stray markup does not break. */
 @utility eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5em;
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--brand);
+  display: none;
 }
 
-/* Numbered section label, e.g. 01 / 02 — only for genuinely sequential content */
 @utility section-number {
-  font-family: var(--font-display);
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  font-size: 0.875rem;
-  font-style: italic;
-  color: color-mix(in oklch, var(--foreground), transparent 55%);
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
 }
 
-/* Pull-quote styling for testimonial/callout copy */
 @utility pull-quote {
   font-family: var(--font-display);
-  font-weight: 380;
-  font-style: italic;
-  line-height: 1.3;
-  border-left: 1px solid var(--brand);
-  padding-left: 1.25em;
+  font-stretch: 80%;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
-/* Pricing card glow for featured */
-@utility pricing-featured-glow {
-  position: relative;
-  &::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, var(--brand-from), var(--brand-to), var(--brand-from));
-    z-index: -1;
-    opacity: 0.6;
-    filter: blur(12px);
-  }
+/*
+ * The classic look, kept on the sign-up and log-in screens at the author's
+ * request: the original white canvas, pink-purple accent and Fraunces display.
+ * Unlayered on purpose so it wins over the swatch utilities inside its scope.
+ */
+.theme-classic {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --border: #e5e5e5;
+  --radius: 0.375rem;
+  --card: #fcfcfc;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+  --primary: #0a0a0a;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #0a0a0a;
+  --muted: #f4f4f5;
+  --muted-foreground: #6b6b74;
+  --accent: #f6f0f9;
+  --accent-foreground: #0a0a0a;
+  --destructive: oklch(0.577 0.245 27.325);
+  --input: #e5e5e5;
+  --ring: #c026d3;
+  --chart-1: #db2777;
+  --chart-2: #9333ea;
+  --chart-3: #c026d3;
+  --chart-4: #7c3aed;
+  --chart-5: #ec4899;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #0a0a0a;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f6f0f9;
+  --sidebar-accent-foreground: #0a0a0a;
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: #c026d3;
+
+  /* SketchSpace brand — monochrome canvas, pink→purple accent. */
+  --brand: #c026d3;
+  --brand-foreground: #ffffff;
+  --brand-muted: #fae8ff;
+  --brand-muted-foreground: #86198f;
+  --brand-from: #ec4899;
+  --brand-to: #8b5cf6;
+
+  --shadow-color: 0 0% 8%;
+  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.05);
+  --shadow-md: 0 4px 16px -4px hsl(var(--shadow-color) / 0.12);
+  --shadow-lg: 0 16px 48px -12px hsl(var(--shadow-color) / 0.18);
+  color-scheme: light;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.theme-classic .font-display {
+  font-family: 'Fraunces Variable', 'Geist Variable', serif;
+  font-stretch: normal;
+  font-weight: 500;
+  letter-spacing: normal;
+  font-feature-settings: 'ss01' 1, 'ss02' 1;
+}
+
+
+.theme-classic [data-slot='button'] {
+  border-radius: var(--radius-lg);
+  border-width: 1px;
+}
+
+.theme-classic [data-slot='button']::before {
+  display: none;
+}
+
+.theme-classic ::selection {
+  background: var(--brand);
+  color: var(--brand-foreground);
 }

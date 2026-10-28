@@ -7,7 +7,7 @@ import { Toaster } from '@/components/ui/sonner'
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
     <HelmetProvider>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <ThemeProvider attribute="class" forcedTheme="dark" defaultTheme="dark" disableTransitionOnChange>
         <TooltipProvider delayDuration={150}>
           {children}
           <Toaster />

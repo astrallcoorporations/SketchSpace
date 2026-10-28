@@ -1,39 +1,49 @@
-import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
-import { TextReveal } from '@/components/motion/text-reveal'
-import { motion } from 'framer-motion'
+import { MarkerSwatch } from '@/components/swatch/marker-swatch'
+import type { InkName } from '@/components/swatch/marker-ink'
 import { features } from '@/features/landing/content'
 
+const inks: InkName[] = ['pink', 'pink', 'magenta', 'magenta', 'violet', 'violet']
+
+/**
+ * The feature list as a swatch legend: each row is one more pass than the
+ * row above, so the list itself deepens as you read down it.
+ */
 export function FeaturesSection() {
   return (
-    <section id="features" className="mx-auto max-w-6xl px-6 py-40 sm:py-52">
-      <Reveal>
-        <p className="eyebrow">What you get</p>
-      </Reveal>
-      <TextReveal
-        as="h2"
-        text="Everything scattered across five other tools, actually connected."
-        className="mt-4 max-w-2xl font-display text-4xl font-medium text-balance sm:text-6xl"
-      />
+    <section aria-labelledby="features-title" className="px-4 py-24 sm:px-8 sm:py-32">
+      <div className="mx-auto grid max-w-[88rem] gap-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-20">
+        <div className="lg:sticky lg:top-28 lg:self-start">
+          <h2 id="features-title" className="font-display text-5xl leading-[0.9] uppercase sm:text-6xl">
+            Six tools, one place.
+          </h2>
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
+            The portfolio site, the critique Discord, the project spreadsheet and the challenge server, finally
+            connected to the same pieces of work.
+          </p>
+        </div>
 
-      <StaggerGroup className="mt-20 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
-        {features.map(({ icon: Icon, title, description }) => (
-          <motion.div
-            key={title}
-            variants={staggerItem}
-            whileHover={{ y: -4, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } }}
-            className="group relative bg-background p-8 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-            <div className="relative">
-              <div className="mb-5 flex size-10 items-center justify-center rounded-lg bg-brand-muted text-brand-muted-foreground transition-all duration-300 group-hover:bg-brand group-hover:text-brand-foreground group-hover:shadow-[0_0_20px_-4px_var(--brand)]">
-                <Icon className="size-5" strokeWidth={1.75} />
+        <ol className="border-t-2 border-border">
+          {features.map(({ title, description, icon: Icon }, i) => (
+            <li
+              key={title}
+              className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-5 border-b-2 border-border py-7 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-8"
+            >
+              <div className="overflow-hidden rounded-[3px] border-[1.5px] border-paper-rule">
+                <div className="h-12 sm:h-16">
+                  <MarkerSwatch ink={inks[i]} passes={i + 1} seed={i * 13 + 5} animate />
+                </div>
               </div>
-              <h3 className="text-lg font-medium">{title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{description}</p>
-            </div>
-          </motion.div>
-        ))}
-      </StaggerGroup>
+              <div>
+                <h3 className="flex items-center gap-2.5 text-xl font-semibold sm:text-2xl">
+                  <Icon className="size-5 text-ink-violet-light" strokeWidth={1.75} aria-hidden="true" />
+                  {title}
+                </h3>
+                <p className="mt-2 max-w-[60ch] leading-relaxed text-muted-foreground">{description}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
     </section>
   )
 }

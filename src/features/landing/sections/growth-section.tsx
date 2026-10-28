@@ -1,124 +1,100 @@
-import { motion } from 'framer-motion'
-import { Reveal } from '@/components/motion/reveal'
-import { TextReveal } from '@/components/motion/text-reveal'
-import { CountUp } from '@/components/motion/count-up'
-import { growthStats } from '@/features/landing/content'
+import { useId, useState } from 'react'
+import { MarkerSwatch } from '@/components/swatch/marker-swatch'
 
-const points = [
-  [0, 150],
-  [60, 140],
-  [120, 120],
-  [180, 128],
-  [240, 88],
-  [300, 96],
-  [360, 52],
-  [420, 40],
+// Example piece: fourteen saved versions across fourteen months.
+const versions = [
+  { month: 'Jan', note: 'First block-in' },
+  { month: 'Feb', note: 'Value pass' },
+  { month: 'Mar', note: 'Redrew the hands' },
+  { month: 'Apr', note: 'Second colour pass' },
+  { month: 'May', note: 'Critique: edges too soft' },
+  { month: 'Jun', note: 'Sharpened edges' },
+  { month: 'Jul', note: 'New background' },
+  { month: 'Aug', note: 'Lighting rework' },
+  { month: 'Sep', note: 'Critique: muddy shadows' },
+  { month: 'Oct', note: 'Cleaner shadows' },
+  { month: 'Nov', note: 'Detail pass' },
+  { month: 'Dec', note: 'Colour grade' },
+  { month: 'Jan', note: 'Final tweaks' },
+  { month: 'Feb', note: 'Now' },
 ] as const
 
-const linePath = points.map(([x, y], i) => `${i === 0 ? 'M' : 'L'}${x},${y}`).join(' ')
-const areaPath = `${linePath} L420,190 L0,190 Z`
+const MAX_PASSES = 6
 
 export function GrowthSection() {
-  return (
-    <section className="border-y border-border bg-muted/30">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 px-6 py-40 sm:py-52 lg:grid-cols-2">
-        <div>
-          <Reveal>
-            <p className="eyebrow">Artist growth</p>
-          </Reveal>
-          <TextReveal
-            as="h2"
-            text="See yourself getting better. Literally."
-            className="mt-4 font-display text-4xl font-medium text-balance sm:text-6xl"
-          />
-          <Reveal delay={0.1}>
-            <p className="mt-5 max-w-md text-muted-foreground">
-              Every upload plots against your own history. No comparison to strangers — just
-              the line that matters: the one going up.
-            </p>
-          </Reveal>
+  const [index, setIndex] = useState(versions.length - 1)
+  const id = useId()
+  const passes = 1 + Math.round((index / (versions.length - 1)) * (MAX_PASSES - 1))
+  const v = versions[index]
 
-          <div className="mt-10 grid grid-cols-3 gap-6">
-            {growthStats.map((stat, i) => (
-              <Reveal key={stat.label} delay={0.15 + i * 0.05}>
-                <div className="transition-transform duration-200 hover:scale-105">
-                  <CountUp
-                    value={stat.value}
-                    suffix={stat.suffix}
-                    className="font-display text-2xl font-medium sm:text-3xl"
-                  />
-                  <p className="mt-1 text-xs text-muted-foreground">{stat.label}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+  return (
+    <section aria-labelledby={`${id}-title`} className="bg-pass-v6 px-4 py-24 sm:px-8 sm:py-32">
+      <div className="mx-auto max-w-[88rem]">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <h2 id={`${id}-title`} className="max-w-3xl font-display text-5xl leading-[0.9] uppercase sm:text-7xl">
+            See yourself getting better. Literally.
+          </h2>
+          <p className="max-w-md text-lg leading-relaxed text-muted-foreground">
+            Every upload is a new version of the same piece, never a new post. Drag back through a year and watch the
+            same work deepen.
+          </p>
         </div>
 
-        <Reveal direction="left" delay={0.1}>
-          <svg
-            viewBox="0 0 420 190"
-            className="w-full overflow-visible"
-            role="img"
-            aria-label="Chart showing an artist's skill trending upward over time"
-          >
-            <defs>
-              <linearGradient id="growth-fill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--brand)" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="var(--brand)" stopOpacity="0" />
-              </linearGradient>
-            </defs>
+        <div className="mt-14 grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-center">
+          <div className="sheet p-4">
+            <div className="aspect-[4/3] overflow-hidden border-[1.5px] border-paper-ink">
+              <MarkerSwatch key={passes} ink="magenta" passes={passes} seed={42} />
+            </div>
+            <div className="mt-3 flex items-baseline justify-between gap-4">
+              <span className="font-display text-2xl uppercase">v{index + 1}</span>
+              <span className="text-right text-sm text-paper-ink/80">
+                {v.note} · <span className="font-code text-xs">{v.month}</span>
+              </span>
+            </div>
+          </div>
 
-            {[0, 1, 2, 3].map((row) => (
-              <line
-                key={row}
-                x1="0"
-                x2="420"
-                y1={40 + row * 40}
-                y2={40 + row * 40}
-                stroke="var(--border)"
-                strokeDasharray="4 6"
+          <div>
+            <label htmlFor={`${id}-range`} className="text-sm font-medium">
+              Version history <span className="text-muted-foreground">(example piece, 14 versions)</span>
+            </label>
+            {/* One unbroken line that scales with the page and never wraps; the dot at the end is now. */}
+            <div className="relative mt-5 h-16">
+              <div className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-pass-v1" />
+              <div
+                className="absolute top-1/2 left-0 h-[3px] -translate-y-1/2 rounded-full bg-ink-magenta-light"
+                style={{ width: `${(index / (versions.length - 1)) * 100}%` }}
               />
-            ))}
-
-            <motion.path
-              d={areaPath}
-              fill="url(#growth-fill)"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: '-10% 0px' }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            />
-
-            <motion.path
-              d={linePath}
-              fill="none"
-              stroke="var(--brand)"
-              strokeWidth={2.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              initial={{ pathLength: 0 }}
-              whileInView={{ pathLength: 1 }}
-              viewport={{ once: true, margin: '-10% 0px' }}
-              transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-            />
-
-            {points.map(([x, y], i) => (
-              <motion.circle
-                key={x}
-                cx={x}
-                cy={y}
-                r={4}
-                fill="var(--background)"
-                stroke="var(--brand)"
-                strokeWidth={2}
-                initial={{ scale: 0, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                viewport={{ once: true, margin: '-10% 0px' }}
-                transition={{ duration: 0.3, delay: 0.3 + i * 0.08 }}
+              <ol className="absolute inset-0 flex items-center justify-between" aria-hidden="true">
+                {versions.map((_, i) => (
+                  <li
+                    key={i}
+                    className={
+                      i === versions.length - 1
+                        ? 'size-4 rounded-full border-2 border-background bg-ink-pink'
+                        : i <= index
+                          ? 'size-2.5 rounded-full bg-ink-magenta-light'
+                          : 'size-2.5 rounded-full bg-pass-v1'
+                    }
+                  />
+                ))}
+              </ol>
+              <input
+                id={`${id}-range`}
+                type="range"
+                min={0}
+                max={versions.length - 1}
+                value={index}
+                onChange={(e) => setIndex(Number(e.target.value))}
+                aria-valuetext={`Version ${index + 1}, ${v.month}: ${v.note}`}
+                className="absolute inset-0 size-full cursor-ew-resize opacity-0"
               />
-            ))}
-          </svg>
-        </Reveal>
+            </div>
+            <div className="mt-2 flex justify-between font-code text-xs text-muted-foreground">
+              <span>v1 · Jan</span>
+              <span>v14 · now</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   )

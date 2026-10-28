@@ -1,161 +1,100 @@
 import { useState, type FormEvent } from 'react'
-import { Mail, MessageSquare, Send, Loader2, CheckCircle2 } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { MarketingLayout } from '@/features/marketing/components/marketing-layout'
 import { Seo } from '@/components/shared/seo'
-import { Reveal } from '@/components/motion/reveal'
+
+const CONTACT_EMAIL = 'hello@sketchspace.app'
 
 export function ContactPage() {
   const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'sent'>('idle')
+  const [opened, setOpened] = useState(false)
 
-  async function handleSubmit(event: FormEvent) {
+  // There is no send backend yet, so the form hands the message to the
+  // visitor's own email app, ready to send, instead of pretending it went.
+  function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    setStatus('loading')
-    // Simulate send — in production, wire to Supabase Edge Function or email API
-    await new Promise((r) => setTimeout(r, 1200))
-    setStatus('sent')
+    const body = `${message}\n\n— ${name}`
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    setOpened(true)
   }
 
   return (
     <MarketingLayout>
       <Seo
         title="Contact"
-        description="Get in touch with the SketchSpace team. Questions, feedback, or partnership inquiries — we'd love to hear from you."
+        description="Questions about SketchSpace, feedback on a feature, or a partnership idea. Write to the team."
         canonical="/contact"
       />
 
-      <section className="mx-auto max-w-2xl px-6 py-24 sm:py-36">
-        <Reveal>
-          <p className="eyebrow">Contact</p>
-        </Reveal>
-        <Reveal delay={0.05}>
-          <h1 className="mt-4 text-balance font-display text-6xl font-medium italic sm:text-7xl">
-            Let's talk
-          </h1>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Questions, feedback, or partnership inquiries — we'd love to hear from you.
-          </p>
-        </Reveal>
-
-        <Reveal delay={0.15}>
-          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="flex items-center gap-3 rounded-xl border border-border bg-background p-4 transition-shadow duration-300 hover:shadow-[var(--shadow-sm)]">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-muted text-brand-muted-foreground">
-                <Mail className="size-5" />
-              </div>
-              <div>
-                <p className="text-sm font-medium">Email</p>
-                <p className="text-xs text-muted-foreground">hello@sketchspace.app</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 rounded-xl border border-border bg-background p-4 transition-shadow duration-300 hover:shadow-[var(--shadow-sm)]">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-muted text-brand-muted-foreground">
-                <MessageSquare className="size-5" />
-              </div>
-              <div>
-                <p className="text-sm font-medium">Response time</p>
-                <p className="text-xs text-muted-foreground">Within 24 hours</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 rounded-xl border border-border bg-background p-4 transition-shadow duration-300 hover:shadow-[var(--shadow-sm)]">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-muted text-brand-muted-foreground">
-                <Send className="size-5" />
-              </div>
-              <div>
-                <p className="text-sm font-medium">Teams plan</p>
-                <p className="text-xs text-muted-foreground">Custom pricing</p>
-              </div>
-            </div>
+      <section className="px-4 pt-16 pb-28 sm:px-8 sm:pt-24">
+        <div className="mx-auto grid max-w-[88rem] gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20">
+          <div>
+            <h1 className="font-display text-[clamp(3.5rem,8vw,6.5rem)] leading-[0.86] uppercase">Let's talk.</h1>
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
+              Questions about SketchSpace, feedback on a feature, a bug you hit, or a partnership idea. Write to the
+              team.
+            </p>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="mt-8 inline-flex items-center gap-3 text-lg font-semibold text-ink-pink-light hover:underline"
+            >
+              <Mail className="size-5" aria-hidden="true" />
+              {CONTACT_EMAIL}
+            </a>
           </div>
-        </Reveal>
 
-        <Reveal delay={0.2}>
-          {status === 'sent' ? (
-            <div className="mt-12 flex flex-col items-center gap-4 rounded-2xl border border-border bg-background p-12 text-center">
-              <CheckCircle2 className="size-12 text-brand" />
-              <h2 className="font-display text-xl font-medium">Message sent</h2>
-              <p className="text-sm text-muted-foreground">
-                Thanks for reaching out. We'll get back to you within 24 hours.
-              </p>
-              <Button variant="outline" onClick={() => { setStatus('idle'); setName(''); setEmail(''); setSubject(''); setMessage('') }}>
-                Send another message
-              </Button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="mt-12 space-y-5 rounded-2xl border border-border bg-background p-8">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="rounded-md border-2 border-border bg-pass-v4 p-6 sm:p-8">
+            {opened ? (
+              <div className="flex flex-col items-start gap-4" role="status">
+                <h2 className="font-display text-4xl leading-[0.9] uppercase">Check your email app</h2>
+                <p className="max-w-md text-muted-foreground">
+                  Your message is waiting there, addressed to {CONTACT_EMAIL}. Press send in that app to deliver it.
+                  If nothing opened, email us directly at the address on the left.
+                </p>
+                <Button variant="outline" onClick={() => setOpened(false)}>
+                  Back to the form
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="contact-name">Name</Label>
+                  <Label htmlFor="contact-name">Your name</Label>
+                  <Input id="contact-name" required value={name} onChange={(e) => setName(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="contact-subject">Subject</Label>
                   <Input
-                    id="contact-name"
+                    id="contact-subject"
                     required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Your name"
-                    className="input-focus-glow"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder="What's it about?"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="contact-email">Email</Label>
-                  <Input
-                    id="contact-email"
-                    type="email"
+                  <Label htmlFor="contact-message">Message</Label>
+                  <Textarea
+                    id="contact-message"
                     required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="input-focus-glow"
+                    rows={6}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                   />
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="contact-subject">Subject</Label>
-                <Input
-                  id="contact-subject"
-                  required
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  placeholder="How can we help?"
-                  className="input-focus-glow"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="contact-message">Message</Label>
-                <Textarea
-                  id="contact-message"
-                  required
-                  rows={5}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Tell us more..."
-                  className="input-focus-glow"
-                />
-              </div>
-
-              <Button type="submit" variant="brand" className="w-full" disabled={status === 'loading'}>
-                {status === 'loading' ? (
-                  <>
-                    <Loader2 className="mr-2 size-4 animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  'Send message'
-                )}
-              </Button>
-            </form>
-          )}
-        </Reveal>
+                <Button type="submit" variant="brand" size="lg" className="w-full">
+                  Write it in my email app
+                </Button>
+                <p className="text-sm text-muted-foreground">Opens your email app with this message ready to send.</p>
+              </form>
+            )}
+          </div>
+        </div>
       </section>
     </MarketingLayout>
   )

@@ -9,17 +9,18 @@ const HeroScene = lazy(() =>
 
 type AuthLayoutProps = {
   children: ReactNode
-  eyebrow: string
+  /** Kept for existing callers; no longer rendered. */
+  eyebrow?: string
   title: string
   visualCopy: string
 }
 
-export function AuthLayout({ children, eyebrow, title, visualCopy }: AuthLayoutProps) {
+export function AuthLayout({ children, title, visualCopy }: AuthLayoutProps) {
   const isCompact = useMediaQuery('(max-width: 1024px)')
   const morphProgress = useRef(0.3)
 
   return (
-    <div className="grid min-h-svh lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+    <div className="theme-classic grid min-h-svh lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
       <div className="relative flex flex-col justify-between overflow-hidden bg-foreground p-10 text-background lg:min-h-svh">
         {isCompact ? (
           <div className="absolute inset-0">
@@ -46,8 +47,7 @@ export function AuthLayout({ children, eyebrow, title, visualCopy }: AuthLayoutP
 
       <div className="flex items-center justify-center px-6 py-16 sm:px-12">
         <Reveal className="w-full max-w-sm" direction="none">
-          <p className="eyebrow">{eyebrow}</p>
-          <h1 className="mt-3 font-display text-4xl font-medium tracking-tight">{title}</h1>
+          <h1 className="font-display text-4xl font-medium tracking-tight">{title}</h1>
           <div className="mt-10 page-enter">{children}</div>
         </Reveal>
       </div>

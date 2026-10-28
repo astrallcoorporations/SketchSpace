@@ -204,7 +204,7 @@ export default function NotFoundPage() {
         {/* giant 404 */}
         <motion.div variants={itemUp} className="relative mb-2">
           <motion.span
-            className="block select-none font-display text-[10rem] leading-none font-black tracking-tighter sm:text-[14rem]"
+            className="block select-none font-display text-[10rem] leading-none sm:text-[14rem] uppercase"
             style={{
               background:
                 'linear-gradient(135deg, var(--brand) 0%, color-mix(in oklch, var(--brand), white 35%) 40%, color-mix(in oklch, var(--brand), white 60%) 70%, var(--brand) 100%)',
@@ -223,7 +223,7 @@ export default function NotFoundPage() {
 
           {/* glitch echo layers */}
           <motion.span
-            className="pointer-events-none absolute inset-0 block select-none font-display text-[10rem] leading-none font-black tracking-tighter opacity-20 sm:text-[14rem]"
+            className="pointer-events-none absolute inset-0 block select-none font-display text-[10rem] leading-none opacity-20 sm:text-[14rem] uppercase"
             style={{ color: 'color-mix(in oklch, var(--brand), black 15%)', mixBlendMode: 'screen' }}
             animate={{ x: [0, -3, 3, -1, 0], y: [0, 2, -2, 1, 0] }}
             transition={{
@@ -236,7 +236,7 @@ export default function NotFoundPage() {
             404
           </motion.span>
           <motion.span
-            className="pointer-events-none absolute inset-0 block select-none font-display text-[10rem] leading-none font-black tracking-tighter opacity-10 sm:text-[14rem]"
+            className="pointer-events-none absolute inset-0 block select-none font-display text-[10rem] leading-none opacity-10 sm:text-[14rem] uppercase"
             style={{ color: 'color-mix(in oklch, var(--brand), white 45%)', mixBlendMode: 'screen' }}
             animate={{ x: [0, 4, -4, 2, 0], y: [0, -3, 3, -1, 0] }}
             transition={{
@@ -257,7 +257,7 @@ export default function NotFoundPage() {
           className="mb-6 flex items-center gap-3"
         >
           <motion.div
-            className="h-px w-12 bg-gradient-to-r from-transparent to-brand/50"
+            className="h-px w-12 bg-brand/50"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: duration.slow, delay: 0.6, ease: easing.out }}
@@ -275,7 +275,7 @@ export default function NotFoundPage() {
             <Sparkles className="size-5 text-brand" />
           </motion.div>
           <motion.div
-            className="h-px w-12 bg-gradient-to-l from-transparent to-brand/50"
+            className="h-px w-12 bg-brand/50"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: duration.slow, delay: 0.6, ease: easing.out }}
@@ -286,7 +286,7 @@ export default function NotFoundPage() {
         {/* headline */}
         <motion.h1
           variants={itemUp}
-          className="mb-3 font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
+          className="mb-3 font-display text-2xl text-foreground sm:text-3xl uppercase leading-[0.9]"
         >
           This page wandered off-canvas.
         </motion.h1>

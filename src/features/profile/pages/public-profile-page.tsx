@@ -148,7 +148,7 @@ export function PublicProfilePage() {
           {profile.banner_url ? (
             <img src={profile.banner_url} alt="" className="size-full object-cover" />
           ) : (
-            <div className="size-full bg-gradient-to-tr from-brand-muted to-background" />
+            <div className="size-full bg-pass-v3" />
           )}
         </motion.div>
         {/* Soft fade into the content below */}
@@ -174,7 +174,7 @@ export function PublicProfilePage() {
               {profile.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="size-full object-cover" />
               ) : (
-                <span className="font-display text-5xl font-medium text-brand">
+                <span className="font-display text-5xl text-brand uppercase leading-[0.9]">
                   {profile.username[0]?.toUpperCase()}
                 </span>
               )}
@@ -185,7 +185,7 @@ export function PublicProfilePage() {
               variants={itemUpVariants}
               className="mt-4 text-center sm:mt-0 sm:pb-4 sm:text-left"
             >
-              <h1 className="font-display text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+              <h1 className="font-display text-4xl text-foreground sm:text-5xl uppercase leading-[0.9]">
                 {profile.display_name || profile.username}
               </h1>
               <p className="mt-1 text-lg text-brand/80">@{profile.username}</p>
@@ -268,19 +268,19 @@ export function PublicProfilePage() {
           {/* Right: Stats */}
           <div className="flex shrink-0 gap-8 border-t border-border/50 pt-8 sm:border-t-0 sm:border-l sm:pl-8 sm:pt-0">
             <div className="flex flex-col gap-1">
-              <span className="font-display text-3xl font-bold tracking-tight text-foreground">
+              <span className="font-display text-3xl text-foreground uppercase leading-[0.9]">
                 {counts.followers}
               </span>
               <span className="text-xs tracking-widest text-muted-foreground uppercase">Followers</span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="font-display text-3xl font-bold tracking-tight text-foreground">
+              <span className="font-display text-3xl text-foreground uppercase leading-[0.9]">
                 {counts.following}
               </span>
               <span className="text-xs tracking-widest text-muted-foreground uppercase">Following</span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="font-display text-3xl font-bold tracking-tight text-brand">
+              <span className="font-display text-3xl text-brand uppercase leading-[0.9]">
                 {profile.xp}
               </span>
               <span className="text-xs tracking-widest text-brand/60 uppercase">XP</span>
@@ -291,8 +291,8 @@ export function PublicProfilePage() {
         {/* ── Portfolio Grid ── */}
         <motion.div variants={itemUpVariants} className="mt-16">
           <div className="mb-8 flex items-center justify-between">
-            <h2 className="font-display text-3xl font-medium tracking-tight">Gallery</h2>
-            <div className="h-px flex-1 ml-6 bg-gradient-to-r from-border to-transparent" />
+            <h2 className="font-display text-3xl uppercase leading-[0.9]">Gallery</h2>
+            <div className="h-px flex-1 ml-6 bg-border" />
           </div>
           
           {items.length === 0 && !artworksLoading ? (

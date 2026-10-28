@@ -97,6 +97,7 @@ export const testimonials = [
   },
 ] as const
 
+// SketchSpace is free only. Do not add tiers here until a paid plan really exists.
 export const pricingTiers = [
   {
     name: 'Studio',
@@ -108,32 +109,6 @@ export const pricingTiers = [
       'Full timeline & version history',
       'Join community quests',
       '1 active project',
-    ],
-    featured: false,
-  },
-  {
-    name: 'Pro',
-    monthly: 200,
-    yearly: 150,
-    description: 'For artists building a serious portfolio and team practice.',
-    features: [
-      'Everything in Studio',
-      'Unlimited projects & teams',
-      'Advanced skill analytics',
-      'Priority critique queue',
-    ],
-    featured: true,
-  },
-  {
-    name: 'Collective',
-    monthly: 1000,
-    yearly: 750,
-    description: 'For studios and creative collectives running real production.',
-    features: [
-      'Everything in Pro',
-      'Shared team workspace',
-      'Admin & role management',
-      'Dedicated support',
     ],
     featured: false,
   },

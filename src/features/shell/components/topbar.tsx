@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { SidebarNav } from '@/features/shell/components/sidebar'
 import { UploadDialog } from '@/features/artwork/components/upload-dialog'
-import { ThemeToggle } from '@/components/shared/theme-toggle'
 import { useAuth } from '@/hooks/use-auth'
 import { signOut } from '@/lib/auth'
 import { getUnreadCount } from '@/features/notifications/api'
@@ -48,7 +47,7 @@ export function Topbar() {
   }
 
   return (
-    <header className="flex items-center gap-3 border-b border-border bg-background/80 backdrop-blur-sm px-4 py-3 lg:px-6">
+    <header className="sticky top-0 z-30 flex items-center gap-3 border-b-2 border-border bg-background px-4 py-3 lg:px-6">
       <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
         <Button
           variant="ghost"
@@ -59,7 +58,7 @@ export function Topbar() {
         >
           <Menu className="size-5" />
         </Button>
-        <SheetContent side="left" className="w-64 p-4">
+        <SheetContent side="left" className="w-72 border-r-2 bg-sidebar p-4">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <SidebarNav onNavigate={() => setMobileNavOpen(false)} />
         </SheetContent>
@@ -72,12 +71,12 @@ export function Topbar() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search your artwork…"
           aria-label="Search"
-          className="pl-9 input-focus-glow"
+          className="h-10 rounded-full pl-9"
         />
       </form>
 
       <div className="ml-auto flex items-center gap-2">
-        <Button variant="brand" size="sm" className="gap-1.5" onClick={() => setUploadOpen(true)}>
+        <Button onClick={() => setUploadOpen(true)}>
           <Upload className="size-4" />
           <span className="hidden sm:inline">Quick upload</span>
         </Button>
@@ -97,14 +96,12 @@ export function Topbar() {
           )}
         </Button>
 
-        <ThemeToggle />
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               type="button"
               aria-label="Account menu"
-              className="flex size-8 items-center justify-center rounded-full bg-brand-muted text-xs font-medium text-brand-muted-foreground outline-none transition-transform duration-200 hover:scale-105 focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="flex size-10 items-center justify-center rounded-full border-2 border-input bg-pass-v3 font-display text-lg uppercase outline-none transition-colors duration-200 hover:border-ink-violet-light"
             >
               {user?.email?.[0]?.toUpperCase() ?? '?'}
             </button>

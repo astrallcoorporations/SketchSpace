@@ -1,88 +1,54 @@
-import { motion } from 'framer-motion'
-import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
-import { TextReveal } from '@/components/motion/text-reveal'
 import { Flame, Palette, Users2 } from 'lucide-react'
+import { MarkerSwatch } from '@/components/swatch/marker-swatch'
+import type { InkName } from '@/components/swatch/marker-ink'
 
-const quests = [
-  {
-    icon: Flame,
-    title: '30-day sketch streak',
-    reward: '450 XP',
-    progress: 0.72,
-  },
-  {
-    icon: Palette,
-    title: 'Master one new medium',
-    reward: '800 XP',
-    progress: 0.4,
-  },
-  {
-    icon: Users2,
-    title: 'Ship a collaborative project',
-    reward: '1200 XP',
-    progress: 0.15,
-  },
-] as const
+const quests: { icon: typeof Flame; title: string; reward: string; progress: number; ink: InkName }[] = [
+  { icon: Flame, title: '30-day sketch streak', reward: '450 XP', progress: 0.72, ink: 'pink' },
+  { icon: Palette, title: 'Master one new medium', reward: '800 XP', progress: 0.4, ink: 'magenta' },
+  { icon: Users2, title: 'Ship a collaborative project', reward: '1200 XP', progress: 0.15, ink: 'violet' },
+]
 
-const radius = 26
-const circumference = 2 * Math.PI * radius
-
+/** Quest progress is a swatch bar: the marker has filled as far as you have got. */
 export function CommunitySection() {
   return (
-    <section id="community" className="mx-auto max-w-6xl px-6 py-40 sm:py-52">
-      <Reveal>
-        <p className="eyebrow">Community quests</p>
-      </Reveal>
-      <TextReveal
-        as="h2"
-        text="Progress you can see, with people cheering you on."
-        className="mt-4 max-w-xl font-display text-4xl font-medium text-balance sm:text-6xl"
-      />
-
-      <StaggerGroup className="mt-20 grid grid-cols-1 gap-6 sm:grid-cols-3">
-        {quests.map(({ icon: Icon, title, reward, progress }) => (
-          <motion.div
-            key={title}
-            variants={staggerItem}
-            whileHover={{ y: -4, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } }}
-            className="group rounded-2xl border border-border bg-background p-7 shadow-[var(--shadow-sm)] transition-all duration-300 hover:shadow-[var(--shadow-md)]"
-          >
-            <div className="flex items-center gap-4">
-              <div className="relative flex size-16 shrink-0 items-center justify-center">
-                <svg viewBox="0 0 64 64" className="absolute inset-0 -rotate-90">
-                  <circle
-                    cx="32"
-                    cy="32"
-                    r={radius}
-                    fill="none"
-                    stroke="var(--border)"
-                    strokeWidth="4"
-                  />
-                  <motion.circle
-                    cx="32"
-                    cy="32"
-                    r={radius}
-                    fill="none"
-                    stroke="var(--brand)"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    strokeDasharray={circumference}
-                    initial={{ strokeDashoffset: circumference }}
-                    whileInView={{ strokeDashoffset: circumference * (1 - progress) }}
-                    viewport={{ once: true, margin: '-10% 0px' }}
-                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-                  />
-                </svg>
-                <Icon className="size-5 text-brand transition-transform duration-300 group-hover:scale-110" strokeWidth={1.75} />
+    <section id="community" aria-labelledby="quests-title" className="bg-pass-v6 px-4 py-24 sm:px-8 sm:py-32">
+      <div className="mx-auto grid max-w-[88rem] gap-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-20">
+        <div>
+          <h2 id="quests-title" className="font-display text-5xl leading-[0.9] uppercase sm:text-6xl">
+            A reason to show up tomorrow.
+          </h2>
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
+            Quests reward practice, not going viral: streaks, new mediums, shipped projects. Example progress shown.
+          </p>
+        </div>
+        <ul className="space-y-4">
+          {quests.map(({ icon: Icon, title, reward, progress, ink }) => (
+            <li key={title} className="rounded-md border-2 border-border bg-pass-v4 p-5">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <h3 className="flex items-center gap-2.5 text-lg font-semibold">
+                  <Icon className="size-5 text-ink-violet-light" strokeWidth={1.75} aria-hidden="true" />
+                  {title}
+                </h3>
+                <span className="font-code text-sm text-muted-foreground">
+                  {Math.round(progress * 100)}% · {reward}
+                </span>
               </div>
-              <div>
-                <h3 className="text-sm font-medium">{title}</h3>
-                <p className="text-xs text-muted-foreground">{reward} on completion</p>
+              <div
+                role="progressbar"
+                aria-label={`${title} progress`}
+                aria-valuenow={Math.round(progress * 100)}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                className="mt-4 h-9 overflow-hidden rounded-[3px] bg-paper"
+              >
+                <div className="h-full" style={{ width: `${progress * 100}%` }}>
+                  <MarkerSwatch ink={ink} passes={3} seed={title.length} animate />
+                </div>
               </div>
-            </div>
-          </motion.div>
-        ))}
-      </StaggerGroup>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   )
 }

@@ -1,4 +1,4 @@
-﻿import * as THREE from 'three'
+import * as THREE from 'three'
 
 // Ashima Arts / Ian McEwan simplex noise (MIT) â€” the standard, battle-tested
 // GLSL 3D simplex implementation used across the WebGL ecosystem.
@@ -182,18 +182,23 @@ export type InkShaderMaterial = THREE.ShaderMaterial & {
 
 const MAX_DROPS = 4
 
+export type InkPalette = { paper: string; brand: string; brand2: string; ink: string }
+
+/** The original white-paper palette; the landing passes a violet-ground one. */
+export const PAPER_PALETTE: InkPalette = { paper: '#ffffff', brand: '#a855f7', brand2: '#ec4899', ink: '#0a0a0a' }
+
 /** Fullscreen ink/watercolor flow field, blended through the brand ramp. */
-export function createInkShaderMaterial(): InkShaderMaterial {
+export function createInkShaderMaterial(palette: InkPalette = PAPER_PALETTE): InkShaderMaterial {
   return new THREE.ShaderMaterial({
     vertexShader,
     fragmentShader,
     uniforms: {
       uTime: { value: 0 },
       uPointer: { value: new THREE.Vector2(0.5, 0.5) },
-      uPaper: { value: new THREE.Color('#ffffff') },
-      uBrand: { value: new THREE.Color('#a855f7') },
-      uBrand2: { value: new THREE.Color('#ec4899') },
-      uInk: { value: new THREE.Color('#0a0a0a') },
+      uPaper: { value: new THREE.Color(palette.paper) },
+      uBrand: { value: new THREE.Color(palette.brand) },
+      uBrand2: { value: new THREE.Color(palette.brand2) },
+      uInk: { value: new THREE.Color(palette.ink) },
       uDrops: {
         value: Array.from({ length: MAX_DROPS }, () => new THREE.Vector4(0, 0, -1e3, 0)),
       },
