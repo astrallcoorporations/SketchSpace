@@ -3,7 +3,8 @@
  *
  * Runs on Vercel, server-side only. Configure in Vercel → Project → Settings →
  * Environment Variables (never in the client, never committed):
- *   RESEND_API_KEY  the Resend API key
+ *   RESEND_API_KEY  the Resend API key (the project's existing `sending_emails`
+ *                   variable is accepted as the same thing)
  *   CONTACT_TO      inbox that receives messages
  *   CONTACT_FROM    verified sender, e.g. "SketchSpace <contact@your-domain>"
  *                   (until a domain is verified in Resend, "onboarding@resend.dev"
@@ -24,7 +25,7 @@ function escapeHtml(s: string) {
 }
 
 export async function POST(request: Request) {
-  const key = process.env.RESEND_API_KEY
+  const key = process.env.RESEND_API_KEY ?? process.env.sending_emails
   const to = process.env.CONTACT_TO
   const from = process.env.CONTACT_FROM ?? 'SketchSpace <onboarding@resend.dev>'
   if (!key || !to) {
