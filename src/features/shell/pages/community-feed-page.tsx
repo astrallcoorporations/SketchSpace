@@ -74,7 +74,7 @@ export function CommunityFeedPage() {
       {loading ? (
         <div className="mt-8 columns-2 gap-4 sm:columns-3 lg:columns-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="mb-4 break-inside-avoid rounded-xl" style={{ height: `${200 + (i % 3) * 80}px` }} />
+            <Skeleton key={i} className="mb-4 break-inside-avoid rounded-md" style={{ height: `${200 + (i % 3) * 80}px` }} />
           ))}
         </div>
       ) : artworks.length === 0 ? (

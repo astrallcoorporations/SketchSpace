@@ -27,7 +27,7 @@ function FileRow({ file, onDelete }: { file: SharedFile; onDelete: (path: string
   }
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-border bg-background p-4">
+    <div className="flex items-center gap-3 rounded-md border-2 border-border bg-pass-v4 p-4">
       <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
         <FileText className="size-5 text-muted-foreground" />
       </div>
@@ -108,7 +108,7 @@ export function SharedFilesPage() {
       {files === null ? (
         <div className="mt-8 space-y-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-16 rounded-xl" />
+            <Skeleton key={i} className="h-16 rounded-md" />
           ))}
         </div>
       ) : files.length === 0 ? (

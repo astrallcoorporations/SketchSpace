@@ -76,7 +76,7 @@ export function BulkActionBar({
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 40, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed inset-x-0 bottom-6 z-40 mx-auto flex w-fit max-w-[calc(100vw-2rem)] flex-wrap items-center gap-2 rounded-2xl border border-border bg-background/95 px-4 py-2.5 shadow-lg backdrop-blur-sm"
+          className="fixed inset-x-0 bottom-6 z-40 mx-auto flex w-fit max-w-[calc(100vw-2rem)] flex-wrap items-center gap-2 rounded-md border-2 border-border bg-background/95 px-4 py-2.5 shadow-lg"
         >
           <span className="mr-1 text-sm font-medium">
             {selectedIds.length} selected

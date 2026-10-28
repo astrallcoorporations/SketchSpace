@@ -127,7 +127,7 @@ export function NotificationsPage() {
       {loading ? (
         <div className="mt-8 space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-16 rounded-xl" />
+            <Skeleton key={i} className="h-16 rounded-md" />
           ))}
         </div>
       ) : (

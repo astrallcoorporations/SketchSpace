@@ -56,8 +56,8 @@ export function SettingsPage() {
     return (
       <div className="mx-auto w-full max-w-2xl px-6 py-10">
         <Skeleton className="h-7 w-28" />
-        <div className="mt-6 rounded-2xl border border-border p-6">
-          <Skeleton className="h-40 w-full rounded-xl" />
+        <div className="mt-6 rounded-md border-2 border-border p-6">
+          <Skeleton className="h-40 w-full rounded-md" />
           <Skeleton className="-mt-10 ml-2 size-20 rounded-full border-4 border-background" />
           <div className="mt-8 grid grid-cols-2 gap-4">
             <Skeleton className="h-9 w-full" />
@@ -95,7 +95,7 @@ export function SettingsPage() {
     <div className="mx-auto w-full max-w-2xl px-6 py-10 page-enter">
       <h1 className="font-display text-2xl font-medium">Settings</h1>
 
-      <Card className="mt-6 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]">
+      <Card className="mt-6 transition-shadow duration-300">
         <CardHeader>
           <CardTitle className="text-base">Profile</CardTitle>
         </CardHeader>
@@ -171,7 +171,7 @@ export function SettingsPage() {
 
       <AppearanceCard />
 
-      <Card className="mt-6 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]">
+      <Card className="mt-6 transition-shadow duration-300">
         <CardHeader>
           <CardTitle className="text-base">Account</CardTitle>
         </CardHeader>
@@ -218,7 +218,7 @@ function AppearanceCard() {
   useEffect(() => setMounted(true), [])
 
   return (
-    <Card className="mt-6 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]">
+    <Card className="mt-6 transition-shadow duration-300">
       <CardHeader>
         <CardTitle className="text-base">Appearance</CardTitle>
       </CardHeader>

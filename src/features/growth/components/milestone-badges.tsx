@@ -12,7 +12,7 @@ export function MilestoneBadges({ milestones }: { milestones: Milestone[] }) {
           key={milestone.id}
           variants={staggerItem}
           className={cn(
-            'flex flex-col items-start gap-2 rounded-xl border p-4 transition-colors',
+            'flex flex-col items-start gap-2 rounded-md border p-4 transition-colors',
             milestone.achieved
               ? 'border-brand/30 bg-brand-muted'
               : 'border-border bg-muted/30 opacity-60',

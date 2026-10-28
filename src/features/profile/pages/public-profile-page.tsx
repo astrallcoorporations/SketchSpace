@@ -1,3 +1,4 @@
+import { sanitizeImageUrl } from '@/lib/image-url'
 import { useCallback, useEffect, useState, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -146,7 +147,7 @@ export function PublicProfilePage() {
           className="absolute inset-0 bg-brand-muted/30"
         >
           {profile.banner_url ? (
-            <img src={profile.banner_url} alt="" className="size-full object-cover" />
+            <img src={sanitizeImageUrl(profile.banner_url) ?? undefined} alt="" className="size-full object-cover" />
           ) : (
             <div className="size-full bg-pass-v3" />
           )}
@@ -221,7 +222,7 @@ export function PublicProfilePage() {
         {/* ── Stats & Bio Panel ── */}
         <motion.div
           variants={itemUpVariants}
-          className="mt-10 flex flex-col gap-8 rounded-3xl border border-border/50 bg-card/40 p-8 shadow-[var(--shadow-md)] backdrop-blur-md sm:flex-row sm:items-start sm:p-10"
+          className="mt-10 flex flex-col gap-8 rounded-md border-2 border-border bg-pass-v4 p-8 sm:flex-row sm:items-start sm:p-10"
         >
           {/* Left: Bio & Tags */}
           <div className="flex-1 space-y-6">
@@ -296,7 +297,7 @@ export function PublicProfilePage() {
           </div>
           
           {items.length === 0 && !artworksLoading ? (
-            <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 py-32">
+            <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border/50 py-32">
               <div className="size-16 rounded-full bg-muted flex items-center justify-center mb-4">
                 <span className="text-2xl text-muted-foreground">🎨</span>
               </div>

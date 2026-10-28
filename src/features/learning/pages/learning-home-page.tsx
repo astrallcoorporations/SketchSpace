@@ -46,11 +46,11 @@ export function LearningHomePage() {
           <Skeleton className="h-7 w-32" />
           <Skeleton className="h-5 w-24" />
         </div>
-        <Skeleton className="mt-6 h-24 w-full rounded-2xl" />
+        <Skeleton className="mt-6 h-24 w-full rounded-md" />
         <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          <Skeleton className="h-40 rounded-2xl" />
-          <Skeleton className="h-40 rounded-2xl" />
-          <Skeleton className="h-40 rounded-2xl" />
+          <Skeleton className="h-40 rounded-md" />
+          <Skeleton className="h-40 rounded-md" />
+          <Skeleton className="h-40 rounded-md" />
         </div>
       </div>
     )
@@ -72,7 +72,7 @@ export function LearningHomePage() {
         <Reveal>
           <motion.div
             whileHover={{ y: -2 }}
-            className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-brand/30 bg-brand-muted p-6"
+            className="mt-6 flex items-center justify-between gap-4 rounded-md border border-brand/30 bg-brand-muted p-6"
           >
             <div>
               <p className="text-xs font-medium tracking-wide text-brand uppercase">

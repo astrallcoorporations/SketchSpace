@@ -33,7 +33,7 @@ import type { GrowthData } from '@/features/growth/types'
 
 function StatTile({ label, value, icon }: { label: string; value: string | number; icon?: ReactNode }) {
   return (
-    <motion.div variants={staggerItem} className="rounded-2xl border border-border bg-background p-5">
+    <motion.div variants={staggerItem} className="rounded-md border-2 border-border bg-pass-v4 p-5">
       <div className="flex items-center gap-2 text-muted-foreground">
         {icon}
         <span className="text-sm">{label}</span>
@@ -173,7 +173,7 @@ export function GrowthPage() {
         />
       </StaggerGroup>
 
-      <Reveal className="mt-8 rounded-2xl border border-border bg-background p-5">
+      <Reveal className="mt-8 rounded-md border-2 border-border bg-pass-v4 p-5">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-medium text-muted-foreground">Activity</h2>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -193,7 +193,7 @@ export function GrowthPage() {
 
       {yearlyRecap && (
         <Reveal className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl border border-brand/30 bg-brand-muted p-6">
+          <div className="rounded-md border border-brand/30 bg-brand-muted p-6">
             <p className="text-xs font-medium tracking-wide text-brand uppercase">{year} recap</p>
             <p className="mt-2 font-display text-xl font-medium">
               {yearlyRecap.uploads} upload{yearlyRecap.uploads === 1 ? '' : 's'}, {yearlyRecap.revisions} revision
@@ -211,7 +211,7 @@ export function GrowthPage() {
             )}
           </div>
 
-          <div className="rounded-2xl border border-border bg-background p-6">
+          <div className="rounded-md border-2 border-border bg-pass-v4 p-6">
             <p className="text-sm font-medium text-muted-foreground">Monthly uploads</p>
             <div className="mt-3 space-y-2">
               {monthlyRecaps.length === 0 ? (
@@ -262,7 +262,7 @@ export function GrowthPage() {
               <Link
                 key={artwork.id}
                 to={`/artwork/${artwork.id}`}
-                className="group flex items-center gap-4 rounded-xl border border-border bg-background p-3 transition-colors hover:border-brand/40"
+                className="group flex items-center gap-4 rounded-md border-2 border-border bg-pass-v4 p-3 transition-colors hover:border-brand/40"
               >
                 <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-muted">
                   {sanitizeImageUrl(artwork.cover_image_url) && (

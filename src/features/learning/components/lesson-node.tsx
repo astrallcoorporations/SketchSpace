@@ -16,7 +16,7 @@ export function LessonNode({ lesson, offset }: { lesson: LessonWithStatus; offse
       whileHover={isLocked ? undefined : { scale: 1.06 }}
       whileTap={isLocked ? undefined : { scale: 0.96 }}
       className={cn(
-        'relative flex size-16 shrink-0 items-center justify-center rounded-full border-4 shadow-[var(--shadow-sm)] transition-colors',
+        'relative flex size-16 shrink-0 items-center justify-center rounded-full border-4 transition-colors',
         isCompleted && 'border-emerald-500/30 bg-emerald-500 text-white',
         isCurrent && 'animate-pulse border-brand/30 bg-brand text-brand-foreground',
         isLocked && 'cursor-not-allowed border-border bg-muted text-muted-foreground',

@@ -45,7 +45,7 @@ export function LearningPathPage() {
       <div className="mx-auto w-full max-w-2xl px-6 py-10">
         <Skeleton className="h-4 w-20" />
         <div className="mt-6 flex items-center gap-4">
-          <Skeleton className="size-14 rounded-2xl" />
+          <Skeleton className="size-14 rounded-md" />
           <div className="space-y-2">
             <Skeleton className="h-6 w-40" />
             <Skeleton className="h-4 w-56" />
@@ -81,7 +81,7 @@ export function LearningPathPage() {
       </Link>
 
       <Reveal className="mt-6 flex items-center gap-4">
-        <div className="flex size-14 items-center justify-center rounded-2xl bg-brand-muted text-brand-muted-foreground">
+        <div className="flex size-14 items-center justify-center rounded-md bg-brand-muted text-brand-muted-foreground">
           <PathIcon name={path.icon} className="size-6" strokeWidth={1.75} />
         </div>
         <div>

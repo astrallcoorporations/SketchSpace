@@ -58,7 +58,7 @@ export function LessonPage() {
             <Skeleton className="h-5 w-16 rounded-full" />
           </div>
         </div>
-        <Skeleton className="mt-6 h-24 w-full rounded-xl" />
+        <Skeleton className="mt-6 h-24 w-full rounded-md" />
         <Skeleton className="mt-8 h-10 w-full rounded-lg" />
       </div>
     )
@@ -106,7 +106,7 @@ export function LessonPage() {
             key="celebration"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-10 flex flex-col items-center gap-4 rounded-2xl border border-brand/30 bg-brand-muted py-16 text-center"
+            className="mt-10 flex flex-col items-center gap-4 rounded-md border border-brand/30 bg-brand-muted py-16 text-center"
           >
             <motion.div
               initial={{ scale: 0 }}
@@ -149,7 +149,7 @@ export function LessonPage() {
               )}
 
               {lesson.content && (
-                <div className="mt-6 rounded-xl border border-border bg-muted/40 p-6">
+                <div className="mt-6 rounded-md border-2 border-border bg-muted/40 p-6">
                   <p className="leading-relaxed whitespace-pre-line">{lesson.content}</p>
                 </div>
               )}

@@ -113,7 +113,7 @@ export function FileUploadZone({ onUploaded }: { onUploaded: () => void }) {
         onDragLeave={() => setIsDragging(false)}
         onDrop={(e) => { e.preventDefault(); setIsDragging(false); addFiles(e.dataTransfer.files) }}
         className={cn(
-          'flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-8 text-center transition-colors',
+          'flex cursor-pointer flex-col items-center justify-center gap-3 rounded-md border-2 border-dashed p-8 text-center transition-colors',
           isDragging ? 'border-brand bg-brand-muted' : 'border-border hover:border-brand/50',
         )}
       >

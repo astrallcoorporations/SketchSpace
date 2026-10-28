@@ -57,16 +57,16 @@ export function StudioPage() {
 
       {loading ? (
         <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          <Skeleton className="h-24 rounded-2xl" />
-          <Skeleton className="h-24 rounded-2xl" />
-          <Skeleton className="h-24 rounded-2xl sm:col-span-2" />
+          <Skeleton className="h-24 rounded-md" />
+          <Skeleton className="h-24 rounded-md" />
+          <Skeleton className="h-24 rounded-md sm:col-span-2" />
         </div>
       ) : (
       <StaggerGroup className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -2 }}
-          className="rounded-2xl border border-border bg-background p-5 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]"
+          className="rounded-md border-2 border-border bg-pass-v4 p-5 transition-shadow duration-300"
         >
           <div className="flex items-center gap-2 text-muted-foreground">
             <Flame className={streak && streak.current_streak > 0 ? 'size-4 text-amber-500' : 'size-4'} />
@@ -79,7 +79,7 @@ export function StudioPage() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -2 }}
-          className="rounded-2xl border border-border bg-background p-5 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]"
+          className="rounded-md border-2 border-border bg-pass-v4 p-5 transition-shadow duration-300"
         >
           <div className="flex items-center gap-2 text-muted-foreground">
             <Sparkles className="size-4 text-brand" />
@@ -99,7 +99,7 @@ export function StudioPage() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -2 }}
-          className="rounded-2xl border border-border bg-background p-5 sm:col-span-2 transition-shadow duration-300 hover:shadow-[var(--shadow-md)]"
+          className="rounded-md border-2 border-border bg-pass-v4 p-5 sm:col-span-2 transition-shadow duration-300"
         >
           <div className="flex items-center gap-2 text-muted-foreground">
             <TrendingUp className="size-4" />
@@ -138,11 +138,11 @@ export function StudioPage() {
         {loading ? (
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="aspect-square rounded-xl" />
+              <Skeleton key={i} className="aspect-square rounded-md" />
             ))}
           </div>
         ) : artworks.length === 0 ? (
-          <div className="mt-4 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-14 text-center">
+          <div className="mt-4 flex flex-col items-center gap-3 rounded-md border border-dashed border-border py-14 text-center">
             <UploadCloud className="size-6 text-muted-foreground" />
             <p className="text-sm text-muted-foreground">
               Your studio is where every piece starts. Upload something to begin.

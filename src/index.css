@@ -462,3 +462,14 @@
   background: var(--brand);
   color: var(--brand-foreground);
 }
+
+.theme-classic [data-slot='input'],
+.theme-classic [data-slot='textarea'] {
+  border-width: 1px;
+  border-radius: var(--radius-lg);
+  padding-inline: 0.625rem;
+}
+
+.theme-classic [data-slot='input'] {
+  height: 2rem;
+}

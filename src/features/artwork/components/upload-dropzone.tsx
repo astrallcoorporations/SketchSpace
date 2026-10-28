@@ -50,7 +50,7 @@ export function UploadDropzone({ onFilesAdded }: { onFilesAdded: (files: File[])
       onDragLeave={() => setIsDragging(false)}
       onDrop={handleDrop}
       className={cn(
-        'flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed p-10 text-center transition-colors has-[input:focus-visible]:ring-3 has-[input:focus-visible]:ring-ring/50',
+        'flex cursor-pointer flex-col items-center justify-center gap-3 rounded-md border-2 border-dashed p-10 text-center transition-colors has-[input:focus-visible]:ring-3 has-[input:focus-visible]:ring-ring/50',
         isDragging ? 'border-brand bg-brand-muted' : 'border-border hover:border-brand/50',
       )}
     >

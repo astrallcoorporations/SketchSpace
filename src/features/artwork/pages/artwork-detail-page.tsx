@@ -85,7 +85,7 @@ export function ArtworkDetailPage() {
     return (
       <div className="mx-auto w-full max-w-4xl px-6 py-10">
         <Skeleton className="h-4 w-24" />
-        <Skeleton className="mt-6 aspect-video w-full rounded-2xl" />
+        <Skeleton className="mt-6 aspect-video w-full rounded-md" />
         <div className="mt-6 flex items-center justify-between">
           <Skeleton className="h-7 w-48" />
           <Skeleton className="h-8 w-32" />
@@ -152,7 +152,7 @@ export function ArtworkDetailPage() {
       </Link>
 
       <Reveal className="mt-6">
-        <div className="overflow-hidden rounded-2xl border border-border bg-muted">
+        <div className="overflow-hidden rounded-md border-2 border-border bg-muted">
           {sanitizeImageUrl(artwork.cover_image_url) && (
             <button
               type="button"

@@ -7,7 +7,7 @@ export function BeforeAfterSlider({ candidate }: { candidate: BeforeAfterCandida
   const [position, setPosition] = useState(50)
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-muted">
+    <div className="overflow-hidden rounded-md border-2 border-border bg-muted">
       <div className="relative aspect-[4/3] w-full select-none overflow-hidden sm:aspect-video">
         <img
           src={sanitizeImageUrl(candidate.after.image_url) ?? ''}
@@ -33,15 +33,15 @@ export function BeforeAfterSlider({ candidate }: { candidate: BeforeAfterCandida
           className="pointer-events-none absolute inset-y-0 flex w-0.5 -translate-x-1/2 items-center bg-background"
           style={{ left: `${position}%` }}
         >
-          <div className="flex size-7 items-center justify-center rounded-full bg-background text-foreground shadow-[var(--shadow-md)]">
+          <div className="flex size-7 items-center justify-center rounded-full bg-background text-foreground">
             <GripVertical className="size-3.5" />
           </div>
         </div>
 
-        <span className="absolute top-2 left-2 rounded-full bg-black/50 px-2 py-0.5 text-xs text-white backdrop-blur-sm">
+        <span className="absolute top-2 left-2 rounded-full bg-black/50 px-2 py-0.5 text-xs text-white">
           Before · v{candidate.before.version_number}
         </span>
-        <span className="absolute top-2 right-2 rounded-full bg-black/50 px-2 py-0.5 text-xs text-white backdrop-blur-sm">
+        <span className="absolute top-2 right-2 rounded-full bg-black/50 px-2 py-0.5 text-xs text-white">
           After · v{candidate.after.version_number}
         </span>
 
