@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Mail } from 'lucide-react'
+import { Loader2, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -9,20 +9,34 @@ import { Seo } from '@/components/shared/seo'
 
 const CONTACT_EMAIL = 'hello@sketchspace.app'
 
+type Status = { kind: 'idle' } | { kind: 'sending' } | { kind: 'sent' } | { kind: 'error'; message: string }
+
 export function ContactPage() {
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
-  const [opened, setOpened] = useState(false)
+  const [company, setCompany] = useState('') // honeypot, hidden from people
+  const [status, setStatus] = useState<Status>({ kind: 'idle' })
 
-  // There is no send backend yet, so the form hands the message to the
-  // visitor's own email app, ready to send, instead of pretending it went.
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    const body = `${message}\n\n— ${name}`
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-    setOpened(true)
+    setStatus({ kind: 'sending' })
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, subject, message, company }),
+      })
+      const data = (await res.json().catch(() => ({}))) as { error?: string }
+      if (!res.ok) throw new Error(data.error ?? 'The message could not be sent right now.')
+      setStatus({ kind: 'sent' })
+    } catch (e) {
+      setStatus({ kind: 'error', message: e instanceof Error ? e.message : 'The message could not be sent right now.' })
+    }
   }
+
+  const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`${message}\n\n— ${name}`)}`
 
   return (
     <MarketingLayout>
@@ -50,22 +64,41 @@ export function ContactPage() {
           </div>
 
           <div className="rounded-md border-2 border-border bg-pass-v4 p-6 sm:p-8">
-            {opened ? (
+            {status.kind === 'sent' ? (
               <div className="flex flex-col items-start gap-4" role="status">
-                <h2 className="font-display text-4xl leading-[0.9] uppercase">Check your email app</h2>
+                <h2 className="font-display text-4xl leading-[0.9] uppercase">Message sent</h2>
                 <p className="max-w-md text-muted-foreground">
-                  Your message is waiting there, addressed to {CONTACT_EMAIL}. Press send in that app to deliver it.
-                  If nothing opened, email us directly at the address on the left.
+                  It's with the team now. Replies go to {email}.
                 </p>
-                <Button variant="outline" onClick={() => setOpened(false)}>
-                  Back to the form
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setStatus({ kind: 'idle' })
+                    setSubject('')
+                    setMessage('')
+                  }}
+                >
+                  Send another message
                 </Button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="space-y-2">
-                  <Label htmlFor="contact-name">Your name</Label>
-                  <Input id="contact-name" required value={name} onChange={(e) => setName(e.target.value)} />
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="contact-name">Your name</Label>
+                    <Input id="contact-name" required value={name} onChange={(e) => setName(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="contact-email">Your email</Label>
+                    <Input
+                      id="contact-email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="contact-subject">Subject</Label>
@@ -87,10 +120,37 @@ export function ContactPage() {
                     onChange={(e) => setMessage(e.target.value)}
                   />
                 </div>
-                <Button type="submit" variant="brand" size="lg" className="w-full">
-                  Write it in my email app
+                {/* honeypot: off-screen and skipped by keyboard and screen readers */}
+                <div aria-hidden="true" className="absolute -left-[9999px]">
+                  <label htmlFor="contact-company">Company</label>
+                  <input
+                    id="contact-company"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={company}
+                    onChange={(e) => setCompany(e.target.value)}
+                  />
+                </div>
+
+                {status.kind === 'error' && (
+                  <p role="alert" className="rounded-md border-2 border-destructive/50 p-3 text-sm">
+                    {status.message}{' '}
+                    <a href={mailto} className="font-semibold text-ink-pink-light underline">
+                      Send it from your email app instead
+                    </a>
+                    .
+                  </p>
+                )}
+
+                <Button type="submit" variant="brand" size="lg" className="w-full" disabled={status.kind === 'sending'}>
+                  {status.kind === 'sending' ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" aria-hidden="true" /> Sending
+                    </>
+                  ) : (
+                    'Send message'
+                  )}
                 </Button>
-                <p className="text-sm text-muted-foreground">Opens your email app with this message ready to send.</p>
               </form>
             )}
           </div>

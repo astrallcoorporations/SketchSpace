@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<title>Confirm your SketchSpace account</title>
+<!--
+  SketchSpace — "Confirm signup" email.
+  Paste into Supabase → Authentication → Emails → Templates → Confirm signup.
+  Subject line: Your first swatch is waiting
+  Go template variables used: {{ .ConfirmationURL }}, {{ .Email }}
+  Built for email clients: tables, inline styles, no images, no scripts.
+-->
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@60,800&display=swap" rel="stylesheet">
+<style>
+  @media (max-width: 600px) {
+    .wrap { width: 100% !important; }
+    .pad { padding-left: 24px !important; padding-right: 24px !important; }
+    .h1 { font-size: 40px !important; }
+  }
+</style>
+</head>
+<body style="margin:0; padding:0; background:#1a1022;">
+  <div style="display:none; max-height:0; overflow:hidden; opacity:0;">One click and your studio is open. Every piece you make here keeps its whole history.</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#1a1022;">
+    <tr>
+      <td align="center" style="padding:40px 12px;">
+        <table role="presentation" class="wrap" width="560" cellpadding="0" cellspacing="0" border="0" style="width:560px; max-width:560px;">
+
+          <!-- wordmark -->
+          <tr>
+            <td class="pad" style="padding:0 8px 24px 8px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="width:8px; height:22px; background:#ec4899; border-radius:3px;"></td>
+                  <td style="width:3px;"></td>
+                  <td style="width:8px; height:22px; background:#c026d3; border-radius:3px;"></td>
+                  <td style="width:3px;"></td>
+                  <td style="width:8px; height:22px; background:#8b5cf6; border-radius:3px;"></td>
+                  <td style="padding-left:10px; font-family:Anybody, 'Arial Narrow', Arial, sans-serif; font-stretch:62%; font-weight:800; font-size:22px; line-height:22px; letter-spacing:0.5px; color:#f4ecfa; text-transform:uppercase;">SketchSpace</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- the sheet -->
+          <tr>
+            <td style="background:#fbf8fd; border-radius:6px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td class="pad" style="padding:40px 40px 8px 40px;">
+                    <h1 class="h1" style="margin:0; font-family:Anybody, 'Arial Narrow', Arial, sans-serif; font-stretch:62%; font-weight:800; font-size:52px; line-height:0.92; text-transform:uppercase; color:#1d1424;">Your first swatch is waiting.</h1>
+                  </td>
+                </tr>
+
+                <!-- swatch ladder: one ink, pass by pass -->
+                <tr>
+                  <td class="pad" style="padding:24px 40px 8px 40px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="height:34px; background:#fbd3e8; border:1.5px solid #1d1424;"></td>
+                        <td style="width:6px;"></td>
+                        <td style="height:34px; background:#f59ac8; border:1.5px solid #1d1424;"></td>
+                        <td style="width:6px;"></td>
+                        <td style="height:34px; background:#ec4899; border:1.5px solid #1d1424;"></td>
+                        <td style="width:6px;"></td>
+                        <td style="height:34px; background:#c026d3; border:1.5px solid #1d1424;"></td>
+                        <td style="width:6px;"></td>
+                        <td style="height:34px; background:#8b5cf6; border:1.5px solid #1d1424;"></td>
+                        <td style="width:6px;"></td>
+                        <td style="height:34px; background:#5b21b6; border:1.5px solid #1d1424;"></td>
+                      </tr>
+                      <tr>
+                        <td colspan="11" style="padding-top:6px; font-family:'Courier New', monospace; font-size:12px; color:#6b5a78;">One pass at a time. Every piece keeps its history.</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="pad" style="padding:20px 40px 0 40px; font-family:Arial, Helvetica, sans-serif; font-size:16px; line-height:1.6; color:#3b2f44;">
+                    Confirm your email and your studio is open. Upload a piece, keep every version of it, and watch your own hand get better month over month.
+                  </td>
+                </tr>
+
+                <!-- the button: a marker-cap pill -->
+                <tr>
+                  <td class="pad" style="padding:28px 40px 8px 40px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="background:#c026d3; border-radius:999px;">
+                          <a href="{{ .ConfirmationURL }}" style="display:inline-block; padding:16px 30px 16px 24px; font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; color:#ffffff; text-decoration:none; border-radius:999px;">
+                            <span style="display:inline-block; width:10px; height:10px; margin-right:10px; background:#ffffff; border-radius:999px; vertical-align:1px;"></span>Confirm my email
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="pad" style="padding:20px 40px 36px 40px; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:1.6; color:#6b5a78;">
+                    Button not working? Paste this link into your browser:<br>
+                    <a href="{{ .ConfirmationURL }}" style="color:#a21caf; word-break:break-all;">{{ .ConfirmationURL }}</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- footer -->
+          <tr>
+            <td class="pad" style="padding:24px 8px 0 8px; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:1.6; color:#ab98bf;">
+              This email was sent to {{ .Email }} because someone signed up for SketchSpace with it. Not you? Ignore it and no account is created.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
