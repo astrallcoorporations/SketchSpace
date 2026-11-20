@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useTheme } from 'next-themes'
-import { Moon, Sun, Monitor } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -169,8 +167,6 @@ export function SettingsPage() {
         </CardContent>
       </Card>
 
-      <AppearanceCard />
-
       <Card className="mt-6 transition-shadow duration-300">
         <CardHeader>
           <CardTitle className="text-base">Account</CardTitle>
@@ -190,84 +186,3 @@ export function SettingsPage() {
   )
 }
 
-const themeOptions = [
-  {
-    value: 'light' as const,
-    label: 'Light',
-    icon: Sun,
-    description: 'Clean, bright interface',
-  },
-  {
-    value: 'dark' as const,
-    label: 'Dark',
-    icon: Moon,
-    description: 'Easy on the eyes',
-  },
-  {
-    value: 'system' as const,
-    label: 'System',
-    icon: Monitor,
-    description: 'Matches your OS',
-  },
-] as const
-
-function AppearanceCard() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => setMounted(true), [])
-
-  return (
-    <Card className="mt-6 transition-shadow duration-300">
-      <CardHeader>
-        <CardTitle className="text-base">Appearance</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div>
-          <Label>Theme</Label>
-          <p className="text-xs text-muted-foreground">
-            Choose how SketchSpace looks for you.
-          </p>
-        </div>
-        <div className="grid grid-cols-3 gap-3">
-          {themeOptions.map((opt) => {
-            const isActive = mounted && theme === opt.value
-            const Icon = opt.icon
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => setTheme(opt.value)}
-                className={`group flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all duration-300 ${
-                  isActive
-                    ? 'border-brand bg-brand-muted shadow-sm'
-                    : 'border-border bg-card hover:border-muted-foreground/30 hover:bg-muted hover:-translate-y-0.5'
-                }`}
-              >
-                <div
-                  className={`flex size-10 items-center justify-center rounded-lg transition-all duration-300 ${
-                    isActive
-                      ? 'bg-brand text-brand-foreground shadow-[0_0_16px_-4px_var(--brand)]'
-                      : 'bg-muted text-muted-foreground group-hover:text-foreground'
-                  }`}
-                >
-                  <Icon className="size-5" />
-                </div>
-                <span
-                  className={`text-sm font-medium ${
-                    isActive ? 'text-brand-muted-foreground' : 'text-foreground'
-                  }`}
-                >
-                  {opt.label}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {opt.description}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-      </CardContent>
-    </Card>
-  )
-}

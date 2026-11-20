@@ -204,19 +204,7 @@ export default function NotFoundPage() {
         {/* giant 404 */}
         <motion.div variants={itemUp} className="relative mb-2">
           <motion.span
-            className="block select-none font-display text-[10rem] leading-none sm:text-[14rem] uppercase"
-            style={{
-              background:
-                'linear-gradient(135deg, var(--brand) 0%, color-mix(in oklch, var(--brand), white 35%) 40%, color-mix(in oklch, var(--brand), white 60%) 70%, var(--brand) 100%)',
-              backgroundSize: '200% 200%',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-            animate={{
-              backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-            }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+            className="block select-none font-display text-[10rem] leading-none text-brand sm:text-[14rem] uppercase"
           >
             404
           </motion.span>
@@ -311,12 +299,6 @@ export default function NotFoundPage() {
                 <ArrowLeft className="size-4" />
                 Back to SketchSpace
               </Link>
-            </Button>
-          </motion.div>
-
-          <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} transition={spring.snappy}>
-            <Button asChild variant="outline" size="lg" className="px-6">
-              <Link to="/app">Open Studio</Link>
             </Button>
           </motion.div>
         </motion.div>
