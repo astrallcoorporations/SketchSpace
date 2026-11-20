@@ -7,8 +7,19 @@ import tailwindcss from '@tailwindcss/vite'
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // https://vite.dev/config/
+// Share-card scrapers need an absolute image URL. Vercel exposes the production domain at build time.
+const siteUrl = process.env.SITE_URL
+  ? process.env.SITE_URL.replace(/\/$/, '')
+  : process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : ''
+
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    { name: 'site-url', transformIndexHtml: (html: string) => html.replaceAll('__SITE_URL__', siteUrl) },
+  ],
   resolve: {
     alias: {
       '@': path.resolve(dirname, './src'),
