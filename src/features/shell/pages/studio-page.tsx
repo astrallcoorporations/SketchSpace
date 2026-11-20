@@ -4,8 +4,10 @@ import { Flame, Sparkles, UploadCloud } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Reveal, StaggerGroup, staggerItem } from '@/components/motion/reveal'
+import { Reveal, staggerItem } from '@/components/motion/reveal'
+import { stagger } from '@/lib/motion-tokens'
 import { sanitizeImageUrl } from '@/lib/image-url'
+import { MarkerSwatch } from '@/components/swatch/marker-swatch'
 import { useAuth } from '@/hooks/use-auth'
 import { useOwnProfile } from '@/features/profile/hooks/use-own-profile'
 import { listArtworks } from '@/features/artwork/api'
@@ -98,7 +100,12 @@ export function StudioPage() {
           <Skeleton className="h-96 rounded-md" />
         </div>
       ) : (
-        <StaggerGroup className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-[1.4fr_1fr]">
+        <motion.div
+          className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-[1.4fr_1fr]"
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: { transition: { staggerChildren: stagger.base } } }}
+        >
           {/* The work is the hero, not the stats: the studio's reason to exist is the art. */}
           <motion.div variants={staggerItem}>
             {hero ? (
@@ -132,10 +139,12 @@ export function StudioPage() {
                 </div>
               </Link>
             ) : (
-              <div className="flex h-full flex-col items-center justify-center gap-3 rounded-md border border-dashed border-border py-20 text-center">
-                <UploadCloud className="size-6 text-muted-foreground" />
+              <div className="flex h-full flex-col items-center justify-center gap-5 rounded-md border-2 border-dashed border-border py-16 text-center">
+                <div className="sheet w-28 p-1.5">
+                  <MarkerSwatch ink="magenta" passes={3} seed={4} animate className="aspect-square" />
+                </div>
                 <p className="max-w-xs text-sm text-muted-foreground">
-                  Your studio is where every piece starts. Upload something to begin.
+                  Every piece starts on blank paper. Upload yours and watch the pass deepen.
                 </p>
                 <Button variant="brand" onClick={() => setUploadOpen(true)}>
                   Upload artwork
@@ -180,7 +189,7 @@ export function StudioPage() {
               </Button>
             </div>
           </motion.div>
-        </StaggerGroup>
+        </motion.div>
       )}
 
       {(loading || rest.length > 0) && (
