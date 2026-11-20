@@ -56,7 +56,7 @@ export function StudioPage() {
       <Reveal>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="font-display text-2xl uppercase">
+            <h1 className="font-display text-2xl font-medium">
               Welcome back{profile?.display_name ? `, ${profile.display_name}` : ''}
             </h1>
             <p className="mt-1 text-muted-foreground">Here's where your practice stands today.</p>
