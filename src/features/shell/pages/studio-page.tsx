@@ -49,7 +49,7 @@ export function StudioPage() {
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-10">
       <Reveal>
-        <h1 className="font-display text-2xl font-medium">
+        <h1 className="font-display text-2xl uppercase">
           Welcome back{profile?.display_name ? `, ${profile.display_name}` : ''}
         </h1>
         <p className="mt-1 text-muted-foreground">Here's where your practice stands today.</p>
@@ -66,26 +66,30 @@ export function StudioPage() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -2 }}
-          className="rounded-md border-2 border-border bg-pass-v4 p-5 transition-shadow duration-300"
+          className="group rounded-md border-2 border-border bg-pass-v4 p-5 transition-colors duration-300 hover:border-ink-violet-light/50"
         >
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Flame className={streak && streak.current_streak > 0 ? 'size-4 text-amber-500' : 'size-4'} />
-            <span className="text-sm">Streak</span>
+          <div className="flex items-center gap-3">
+            <div className="flex size-9 items-center justify-center rounded-lg bg-brand-muted text-brand-muted-foreground">
+              <Flame className="size-4" />
+            </div>
+            <span className="text-sm text-muted-foreground">Streak</span>
           </div>
-          <p className="mt-2 font-display text-3xl font-medium">{streak?.current_streak ?? 0}</p>
+          <p className="mt-3 font-display text-3xl">{streak?.current_streak ?? 0}</p>
           <p className="text-xs text-muted-foreground">days in a row</p>
         </motion.div>
 
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -2 }}
-          className="rounded-md border-2 border-border bg-pass-v4 p-5 transition-shadow duration-300"
+          className="group rounded-md border-2 border-border bg-pass-v4 p-5 transition-colors duration-300 hover:border-ink-violet-light/50"
         >
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Sparkles className="size-4 text-brand" />
-            <span className="text-sm">Level {level}</span>
+          <div className="flex items-center gap-3">
+            <div className="flex size-9 items-center justify-center rounded-lg bg-brand-muted text-brand-muted-foreground">
+              <Sparkles className="size-4" />
+            </div>
+            <span className="text-sm text-muted-foreground">Level {level}</span>
           </div>
-          <p className="mt-2 font-display text-3xl font-medium">{profile?.xp ?? 0} XP</p>
+          <p className="mt-3 font-display text-3xl">{profile?.xp ?? 0} XP</p>
           <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
             <motion.div
               className="h-full rounded-full bg-brand"
@@ -99,15 +103,17 @@ export function StudioPage() {
         <motion.div
           variants={staggerItem}
           whileHover={{ y: -2 }}
-          className="rounded-md border-2 border-border bg-pass-v4 p-5 sm:col-span-2 transition-shadow duration-300"
+          className="group rounded-md border-2 border-border bg-pass-v4 p-5 transition-colors duration-300 hover:border-ink-violet-light/50 sm:col-span-2"
         >
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <TrendingUp className="size-4" />
-            <span className="text-sm">Continue learning</span>
+          <div className="flex items-center gap-3">
+            <div className="flex size-9 items-center justify-center rounded-lg bg-brand-muted text-brand-muted-foreground">
+              <TrendingUp className="size-4" />
+            </div>
+            <span className="text-sm text-muted-foreground">Continue learning</span>
           </div>
           {continueTarget ? (
             <>
-              <p className="mt-2 truncate font-medium">{continueTarget.lesson.title}</p>
+              <p className="mt-3 truncate font-medium">{continueTarget.lesson.title}</p>
               <p className="truncate text-xs text-muted-foreground">
                 {continueTarget.path.title} · {continueTarget.unit.title}
               </p>
@@ -117,7 +123,7 @@ export function StudioPage() {
             </>
           ) : (
             <>
-              <p className="mt-2 text-sm text-muted-foreground">All caught up on lessons.</p>
+              <p className="mt-3 text-sm text-muted-foreground">All caught up on lessons.</p>
               <Button asChild variant="outline" size="sm" className="mt-3">
                 <Link to="/learning">Browse paths</Link>
               </Button>
