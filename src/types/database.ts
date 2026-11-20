@@ -509,6 +509,47 @@ export type Database = {
           },
         ]
       }
+      shared_files: {
+        Row: {
+          created_at: string
+          id: string
+          mime_type: string
+          name: string
+          owner_id: string
+          path: string
+          size: number
+          visibility: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mime_type?: string
+          name: string
+          owner_id: string
+          path: string
+          size?: number
+          visibility?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mime_type?: string
+          name?: string
+          owner_id?: string
+          path?: string
+          size?: number
+          visibility?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shared_files_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           accent_color: string | null
@@ -718,6 +759,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          position: number
           project_id: string
           status: string
           title: string
@@ -728,6 +770,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          position?: number
           project_id: string
           status?: string
           title: string
@@ -738,6 +781,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          position?: number
           project_id?: string
           status?: string
           title?: string
@@ -798,6 +842,7 @@ export type Database = {
     }
     Functions: {
       complete_lesson: { Args: { p_lesson_id: string }; Returns: undefined }
+      my_project_quota: { Args: Record<string, never>; Returns: Json }
     }
     Enums: {
       [_ in never]: never

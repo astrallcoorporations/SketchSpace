@@ -1,9 +1,9 @@
-import { lazy, Suspense, useEffect, useRef } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { CanvasErrorBoundary } from '@/components/canvas-error-boundary'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
-import { usePrefersReducedMotion } from '@/hooks/use-media-query'
+import { useMediaQuery, usePrefersReducedMotion } from '@/hooks/use-media-query'
 import type { InkPalette } from '@/features/landing/hero/ink-shader-material'
 import { MarkerSwatch } from '@/components/swatch/marker-swatch'
 import { MarkerScribble } from '@/components/swatch/marker-scribble'
@@ -29,6 +29,28 @@ const columns: { ink: InkName; code: string; growth: number[] }[] = [
   { ink: 'pink', code: 'P', growth: [1, 2, 3, 5] },
   { ink: 'violet', code: 'V', growth: [1, 2, 3, 4] },
 ]
+
+/** Mounts the WebGL scene only once the page has painted and the device can afford it,
+ *  so ~530 kB of three.js never competes with first paint, phones, or Save-Data users. */
+function useDeferredScene(enabled: boolean) {
+  const [ready, setReady] = useState(false)
+  useEffect(() => {
+    if (!enabled) return
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+    if (connection?.saveData) return
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number
+      cancelIdleCallback?: (n: number) => void
+    }
+    if (w.requestIdleCallback) {
+      const id = w.requestIdleCallback(() => setReady(true), { timeout: 2500 })
+      return () => w.cancelIdleCallback?.(id)
+    }
+    const id = window.setTimeout(() => setReady(true), 1200)
+    return () => window.clearTimeout(id)
+  }, [enabled])
+  return ready
+}
 
 function GrowthChart() {
   return (
@@ -90,6 +112,8 @@ export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const morphProgress = useRef(0)
   const reduceMotion = usePrefersReducedMotion()
+  const isDesktop = useMediaQuery('(min-width: 768px)')
+  const sceneReady = useDeferredScene(isDesktop && !reduceMotion)
 
   // Scrolling through the hero morphs the particle field, as the original did.
   useEffect(() => {
@@ -112,9 +136,11 @@ export function HeroSection() {
     <section ref={sectionRef} className="relative isolate overflow-hidden px-4 pt-28 pb-20 sm:px-8 sm:pt-32 lg:pb-28">
       <div className="absolute inset-0 -z-10" aria-hidden="true">
         <CanvasErrorBoundary fallback={null}>
-          <Suspense fallback={null}>
-            <HeroScene morphProgress={morphProgress} palette={VIOLET_GROUND} />
-          </Suspense>
+          {sceneReady && (
+            <Suspense fallback={null}>
+              <HeroScene morphProgress={morphProgress} palette={VIOLET_GROUND} />
+            </Suspense>
+          )}
         </CanvasErrorBoundary>
         {/* legibility scrim behind the copy column; the ink stays loud on the chart side */}
         <div className="absolute inset-0 bg-background/50 lg:bg-transparent lg:bg-gradient-to-r lg:from-background/90 lg:via-background/45 lg:to-transparent" />

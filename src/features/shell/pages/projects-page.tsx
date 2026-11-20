@@ -9,6 +9,8 @@ import { useAuth } from '@/hooks/use-auth'
 import { listProjects } from '@/features/projects/api'
 import { ProjectCard } from '@/features/projects/components/project-card'
 import { CreateProjectDialog } from '@/features/projects/components/create-project-dialog'
+import { ProjectSlots } from '@/features/projects/components/project-slots'
+import { useProjectQuota } from '@/features/projects/hooks/use-project-quota'
 import type { Project } from '@/features/projects/types'
 
 type ProjectWithMembers = Project & {
@@ -20,6 +22,7 @@ export function ProjectsPage() {
   const { user } = useAuth()
   const [projects, setProjects] = useState<ProjectWithMembers[] | null>(null)
   const [createOpen, setCreateOpen] = useState(false)
+  const quota = useProjectQuota()
 
   const load = useCallback(async () => {
     if (!user) return
@@ -44,6 +47,9 @@ export function ProjectsPage() {
             <p className="mt-1 text-sm text-muted-foreground">
               Collaborate on creative projects with your team.
             </p>
+            <div className="mt-3 min-h-5">
+              <ProjectSlots state={quota} compact />
+            </div>
           </div>
           <Button variant="brand" onClick={() => setCreateOpen(true)}>
             New project
@@ -80,6 +86,7 @@ export function ProjectsPage() {
         open={createOpen}
         onOpenChange={setCreateOpen}
         onCreated={load}
+        quota={quota}
       />
     </div>
   )

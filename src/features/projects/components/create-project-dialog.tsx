@@ -18,25 +18,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { createProject } from '@/features/projects/api'
+import { toast } from 'sonner'
+import { createProject, ProjectLimitError } from '@/features/projects/api'
+import { ProjectSlots } from '@/features/projects/components/project-slots'
+import type { ProjectQuotaState } from '@/features/projects/hooks/use-project-quota'
 import { useAuth } from '@/hooks/use-auth'
 
 type CreateProjectDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   onCreated: () => void
+  quota: ProjectQuotaState
 }
 
-export function CreateProjectDialog({ open, onOpenChange, onCreated }: CreateProjectDialogProps) {
+export function CreateProjectDialog({ open, onOpenChange, onCreated, quota }: CreateProjectDialogProps) {
   const { user } = useAuth()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [visibility, setVisibility] = useState<string>('private')
   const [submitting, setSubmitting] = useState(false)
 
+  const canCreate = quota.quota?.can_create === true
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    if (!user || !name.trim()) return
+    if (!user || !name.trim() || !canCreate) return
     setSubmitting(true)
     try {
       await createProject({
@@ -49,9 +55,15 @@ export function CreateProjectDialog({ open, onOpenChange, onCreated }: CreatePro
       setDescription('')
       setVisibility('private')
       onOpenChange(false)
+      void quota.refresh()
       onCreated()
-    } catch {
-      // errors handled by toast in parent
+    } catch (e) {
+      if (e instanceof ProjectLimitError) {
+        toast.error('No project slots left. Buy a slot to create more.')
+        void quota.refresh()
+      } else {
+        toast.error(e instanceof Error ? e.message : 'Could not create the project.')
+      }
     } finally {
       setSubmitting(false)
     }
@@ -93,13 +105,13 @@ export function CreateProjectDialog({ open, onOpenChange, onCreated }: CreatePro
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="private">Private — only you</SelectItem>
-                <SelectItem value="members">Members only</SelectItem>
                 <SelectItem value="public">Public</SelectItem>
               </SelectContent>
             </Select>
           </div>
+          <ProjectSlots state={quota} />
           <DialogFooter>
-            <Button type="submit" variant="brand" disabled={submitting || !name.trim()}>
+            <Button type="submit" variant="brand" disabled={submitting || !name.trim() || !canCreate}>
               {submitting ? 'Creating…' : 'Create project'}
             </Button>
           </DialogFooter>

@@ -108,7 +108,7 @@ export const pricingTiers = [
       'Unlimited artwork uploads',
       'Full timeline & version history',
       'Join community quests',
-      '1 active project',
+      '3 projects free, then ₹5 per extra project',
     ],
     featured: false,
   },

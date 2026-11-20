@@ -14,6 +14,21 @@ export default defineConfig({
       '@': path.resolve(dirname, './src'),
     },
   },
+  build: {
+    // Vendor chunks cache across deploys: app code changes often, these almost never do.
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: 'vendor-three', test: /node_modules[/](three|@react-three)[/]/, priority: 30 },
+            { name: 'vendor-motion', test: /node_modules[/](framer-motion|motion-dom|motion-utils|gsap|lenis)[/]/, priority: 20 },
+            { name: 'vendor-supabase', test: /node_modules[/]@supabase[/]/, priority: 20 },
+            { name: 'vendor-react', test: /node_modules[/](react|react-dom|scheduler|react-router|react-router-dom)[/]/, priority: 20 },
+          ],
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       // Proxy legacy localhost:5000 image requests to bypass CORS in dev.

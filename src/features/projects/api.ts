@@ -29,20 +29,25 @@ export async function getProject(id: string) {
   }
 }
 
+export class ProjectLimitError extends Error {
+  constructor() {
+    super('You have used all your project slots.')
+    this.name = 'ProjectLimitError'
+  }
+}
+
+/** The database trigger refuses a project beyond the free 3 + paid slots; the owner is added as a
+ *  member by a trigger in the same transaction. */
 export async function createProject(input: ProjectInsert) {
   const { data, error } = await supabase
     .from('projects')
     .insert(input)
     .select()
     .single()
-  if (error) throw error
-
-  // Auto-add owner as member with 'owner' role
-  const { error: memberError } = await supabase
-    .from('project_members')
-    .insert({ project_id: data.id, user_id: input.owner_id, role: 'owner' })
-  if (memberError) throw memberError
-
+  if (error) {
+    if (error.message.includes('PROJECT_LIMIT_REACHED')) throw new ProjectLimitError()
+    throw error
+  }
   return data as Project
 }
 

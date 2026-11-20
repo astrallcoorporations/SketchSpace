@@ -1,11 +1,6 @@
-import { lazy, Suspense, useRef, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { Reveal } from '@/components/motion/reveal'
-import { useMediaQuery } from '@/hooks/use-media-query'
-
-const HeroScene = lazy(() =>
-  import('@/features/landing/hero/hero-scene').then((m) => ({ default: m.HeroScene })),
-)
 
 type AuthLayoutProps = {
   children: ReactNode
@@ -16,39 +11,32 @@ type AuthLayoutProps = {
 }
 
 export function AuthLayout({ children, title, visualCopy }: AuthLayoutProps) {
-  const isCompact = useMediaQuery('(max-width: 1024px)')
-  const morphProgress = useRef(0.3)
-
   return (
-    <div className="theme-classic grid min-h-svh lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
-      <div className="relative flex flex-col justify-between overflow-hidden bg-foreground p-10 text-background lg:min-h-svh">
-        {isCompact ? (
-          <div className="absolute inset-0">
-            <div className="bg-noise absolute inset-0" aria-hidden />
-            <div className="absolute inset-0 bg-gradient-to-br from-brand/30 via-transparent to-transparent" />
-          </div>
-        ) : (
-          <Suspense fallback={<div className="absolute inset-0 bg-gradient-to-br from-background/10 via-brand/20 to-background/10" />}>
-            <HeroScene morphProgress={morphProgress} />
-          </Suspense>
-        )}
+    <div className="theme-classic grid min-h-svh grid-rows-[auto_1fr] lg:grid-rows-none lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+      <div className="relative flex flex-col justify-between overflow-hidden bg-foreground px-6 py-5 text-background sm:px-10 sm:py-6 lg:min-h-svh lg:p-10">
+        {/* Pure CSS backdrop: the WebGL hero is ~530 kB of JS and made sign-in wait on it. */}
+        <div className="absolute inset-0" aria-hidden="true">
+          <div className="bg-noise absolute inset-0" />
+          <div className="absolute inset-0 bg-gradient-to-br from-brand/40 via-transparent to-transparent" />
+          <div className="absolute -right-24 bottom-0 h-3/4 w-3/4 rounded-full bg-gradient-to-tr from-pink-500/25 via-fuchsia-600/20 to-transparent blur-3xl" />
+        </div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground via-foreground/10 to-foreground/60" />
 
         <Link to="/" className="relative font-display text-lg font-medium transition-opacity duration-200 hover:opacity-80">
           SketchSpace
         </Link>
 
-        <div className="relative max-w-md">
+        <div className="relative hidden max-w-md lg:block">
           <p className="font-display text-3xl leading-[1.1] font-medium italic text-balance sm:text-4xl">
             {visualCopy}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center justify-center px-6 py-16 sm:px-12">
+      <div className="flex items-center justify-center px-6 py-10 sm:px-12 sm:py-16">
         <Reveal className="w-full max-w-sm" direction="none">
-          <h1 className="font-display text-4xl font-medium tracking-tight">{title}</h1>
-          <div className="mt-10 page-enter">{children}</div>
+          <h1 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">{title}</h1>
+          <div className="mt-6 page-enter sm:mt-10">{children}</div>
         </Reveal>
       </div>
     </div>

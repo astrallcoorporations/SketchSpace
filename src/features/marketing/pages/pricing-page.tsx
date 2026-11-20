@@ -7,21 +7,25 @@ import { MarketingLayout } from '@/features/marketing/components/marketing-layou
 import { Seo } from '@/components/shared/seo'
 import { marketingPricingTiers } from '@/features/marketing/content'
 
-// SketchSpace is free only today. The free tier's list is the whole offer.
+// No subscriptions or tiers. The only paid thing is an extra project slot: 3 projects free, then Rs 5 each.
 const free = marketingPricingTiers[0]
 
 const faqs = [
   {
     question: 'Do I need a card to start?',
-    answer: 'No. SketchSpace is free, with no card and no trial clock running in the background.',
+    answer: 'No. SketchSpace is free to start, with no card and no trial clock running in the background. A card is only ever involved if you choose to buy an extra project slot.',
   },
   {
     question: 'What happens to my work if I leave?',
     answer: 'You keep full export access to every artwork, comment and project file at any time. There is no lock-in.',
   },
   {
+    question: 'How much do projects cost?',
+    answer: 'Your first 3 projects are free. Each project after that costs ₹5, paid once for that slot. There is no subscription and no recurring charge. Slots are only sold where payments are switched on; if they are not, you will be told plainly.',
+  },
+  {
     question: 'Are there paid plans?',
-    answer: 'Not today. If that ever changes, everything in the free plan stays free.',
+    answer: 'No. There are no tiers or subscriptions, only the ₹5 slot for each project after your third. Everything else stays free.',
   },
 ] as const
 
@@ -30,15 +34,15 @@ export function PricingPage() {
     <MarketingLayout>
       <Seo
         title="Pricing"
-        description="SketchSpace is free: unlimited uploads, full version history, every learning path and a public profile."
+        description="SketchSpace is free to start: unlimited uploads, full version history, every learning path and a public profile. Your first 3 projects are free, then ₹5 each."
         canonical="/pricing"
       />
       <section className="px-4 py-20 sm:px-8 sm:py-28">
         <div className="mx-auto grid max-w-[88rem] gap-12 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:items-start">
           <div>
-            <h1 className="font-display text-6xl leading-[0.86] uppercase sm:text-8xl">Free. That's the plan.</h1>
+            <h1 className="font-display text-6xl leading-[0.86] uppercase sm:text-8xl">Free to start. ₹5 a project after three.</h1>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
-              No tiers to compare and nothing to upgrade. Make work, keep its history, find your people.
+              No tiers to compare and nothing to upgrade. Your first 3 projects are free; each one after that is ₹5, once. Make work, keep its history, find your people.
             </p>
             <div className="mt-10 grid max-w-md grid-cols-5 gap-2" aria-hidden="true">
               {[1, 2, 3, 4, 5].map((n) => (

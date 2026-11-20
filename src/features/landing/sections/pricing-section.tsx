@@ -3,7 +3,7 @@ import { Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { pricingTiers } from '@/features/landing/content'
 
-// SketchSpace is free only; the free tier's list is the whole offer.
+// No subscriptions or tiers. The only paid thing is an extra project slot: 3 projects free, then Rs 5 each.
 const free = pricingTiers[0]
 
 export function PricingSection() {
@@ -12,10 +12,10 @@ export function PricingSection() {
       <div className="mx-auto grid max-w-[88rem] gap-12 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:items-center">
         <div>
           <h2 id="pricing-title" className="font-display text-6xl leading-[0.86] uppercase sm:text-8xl">
-            Free. That's the plan.
+            Free to start. ₹5 a project after three.
           </h2>
           <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
-            SketchSpace is free to use. There are no paid plans today, and nothing you make is locked in.
+            SketchSpace is free to use, and your first 3 projects cost nothing. Every project after that is ₹5, paid once. No subscription, and nothing you make is locked in.
           </p>
         </div>
         <div className="sheet p-6 sm:p-8">

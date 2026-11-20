@@ -116,6 +116,7 @@ export const marketingPricingTiers: PricingTier[] = [
       'Full version history & Growth Timeline',
       'All 9 learning paths, XP, and streaks',
       'Public profile with follow/following',
+      'Project boards: 3 projects free, then ₹5 per extra project',
     ],
     cta: 'Start free',
     ctaTarget: 'signup',

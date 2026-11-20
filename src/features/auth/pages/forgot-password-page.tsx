@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { MailCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Loader2 } from 'lucide-react'
+import { FormField } from '@/features/auth/components/form-field'
+import { validateEmail } from '@/features/auth/lib/validation'
 import { AuthLayout } from '@/features/auth/components/auth-layout'
 import { AuthErrorAlert } from '@/features/auth/components/auth-error-alert'
 import { Turnstile } from '@/components/shared/turnstile'
@@ -19,14 +20,20 @@ export function ForgotPasswordPage() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'sent'>('idle')
   const [error, setError] = useState<AuthErrorDescription | null>(null)
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [touched, setTouched] = useState(false)
+  const emailError = validateEmail(email)
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
     setError(null)
+    if (emailError) {
+      setTouched(true)
+      return
+    }
     setStatus('loading')
 
     try {
-      const { error: resetError } = await sendPasswordReset(email, captchaToken ?? undefined)
+      const { error: resetError } = await sendPasswordReset(email.trim(), captchaToken ?? undefined)
 
       if (resetError) {
         setError(describeAuthError(resetError))
@@ -63,7 +70,7 @@ export function ForgotPasswordPage() {
             <h2 className="text-lg font-medium">Check your inbox</h2>
             <p className="max-w-xs text-sm text-muted-foreground">
               If an account exists for <span className="text-foreground">{email}</span>, a reset
-              link is on its way.
+              link is on its way. It can take a minute; check spam too.
             </p>
             <Link to="/login" className="text-sm text-foreground underline underline-offset-4">
               Back to sign in
@@ -73,17 +80,20 @@ export function ForgotPasswordPage() {
           <motion.form key="form" exit={{ opacity: 0 }} onSubmit={handleSubmit} noValidate className="space-y-5">
             {error && <AuthErrorAlert error={error} />}
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
+            <FormField
+              label="Email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              autoCapitalize="none"
+              spellCheck={false}
+              autoFocus
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => setTouched(true)}
+              error={touched ? emailError : undefined}
+            />
 
             {TURNSTILE_SITE_KEY && (
               <Turnstile
@@ -94,6 +104,7 @@ export function ForgotPasswordPage() {
             )}
 
             <Button type="submit" variant="brand" className="w-full" disabled={status === 'loading'}>
+              {status === 'loading' ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
               {status === 'loading' ? 'Sending link…' : 'Send reset link'}
             </Button>
 

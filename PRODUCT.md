@@ -33,7 +33,7 @@ Not another social feed and not another static portfolio. There is no algorithmi
 - Portfolio that assembles from the artist's work and growth.
 - Learning paths and lessons; growth analytics.
 - Redesign scope: the whole app (marketing and signed-in shell). Routing, data fetching, Supabase schema/queries and auth flows are not to change.
-- Pricing: the app is free only today. The Pro and Collective tiers in the current code are not real plans and must not be presented as purchasable.
+- Pricing (set by the author, 2026-11-20): no subscriptions or tiers. Every user gets their first 3 projects free; each project after that costs ₹5 (INR, paid once per project slot). Everything else is free. Enforced in the database (trigger on projects + project_credits); slots are granted only by a signature-verified Razorpay webhook. Never show a checkout that appears to charge when payments are not configured: show 'payments not set up yet'. The old Pro and Collective tiers were never real plans and must not come back.
 
 ## Brand Commitments
 
@@ -54,4 +54,4 @@ Not another social feed and not another static portfolio. There is no algorithmi
 - Growth over engagement: every surface should make improvement visible, never chase attention.
 - Making together: collaboration is a first-class act, not a side channel.
 - The art is the hero: the artist's work outranks the interface.
-- Honest by default: real numbers, real quotes, no invented plans or proof.
+- Honest by default: real numbers, real quotes, no invented plans or proof, and a price stated plainly (3 projects free, then ₹5 each).

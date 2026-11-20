@@ -27,6 +27,24 @@ if (!isConfigured) {
   )
 }
 
+export type UrlAuthError = { code: string | null; description: string }
+
+/** Supabase redirects failed email links back with `#error=...&error_code=otp_expired` (or the same in
+ *  the query string). Read it once, at startup, before the client rewrites the URL. */
+function readUrlAuthError(): UrlAuthError | null {
+  if (typeof window === 'undefined') return null
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+  const query = new URLSearchParams(window.location.search)
+  const pick = (key: string) => hash.get(key) ?? query.get(key)
+  if (!pick('error') && !pick('error_code')) return null
+  return {
+    code: pick('error_code'),
+    description: pick('error_description') ?? 'The link did not work.',
+  }
+}
+
+export const urlAuthError = readUrlAuthError()
+
 const REMEMBER_ME_KEY = 'sketchspace:remember-me'
 
 /** Call before sign-in. `false` keeps the session in sessionStorage only. */

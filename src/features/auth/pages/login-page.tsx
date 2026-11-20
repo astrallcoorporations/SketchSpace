@@ -1,17 +1,19 @@
-import { useState, type FormEvent } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useRef, useState, type FormEvent } from 'react'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { AuthLayout } from '@/features/auth/components/auth-layout'
 import { AuthErrorAlert } from '@/features/auth/components/auth-error-alert'
+import { FormField } from '@/features/auth/components/form-field'
 import { PasswordInput } from '@/features/auth/components/password-input'
 import { OAuthButtons } from '@/features/auth/components/oauth-buttons'
+import { validateEmail } from '@/features/auth/lib/validation'
 import { Turnstile } from '@/components/shared/turnstile'
 import { Seo } from '@/components/shared/seo'
+import { useAuth } from '@/hooks/use-auth'
+import { useResendCooldown } from '@/hooks/use-resend-cooldown'
 import { resendConfirmationEmail, signInWithPassword } from '@/lib/auth'
 import { setRememberMe as persistRememberMe } from '@/lib/supabase'
 import { describeAuthError, type AuthErrorDescription } from '@/lib/auth-errors'
@@ -21,23 +23,43 @@ const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | u
 export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { session, loading: authLoading } = useAuth()
+  const { remaining, start, cooling } = useResendCooldown()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [emailTouched, setEmailTouched] = useState(false)
+  const [passwordTouched, setPasswordTouched] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
   const [status, setStatus] = useState<'idle' | 'loading'>('idle')
   const [error, setError] = useState<AuthErrorDescription | null>(null)
   const [resending, setResending] = useState(false)
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const emailRef = useRef<HTMLInputElement>(null)
+  const passwordRef = useRef<HTMLInputElement>(null)
+
+  const from = (location.state as { from?: string } | null)?.from ?? '/studio'
+  if (!authLoading && session) return <Navigate to={from} replace />
+
+  const emailError = validateEmail(email)
+  const passwordError = password ? undefined : 'Enter your password.'
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
     setError(null)
+
+    if (emailError || passwordError) {
+      setEmailTouched(true)
+      setPasswordTouched(true)
+      ;(emailError ? emailRef : passwordRef).current?.focus()
+      return
+    }
+
     setStatus('loading')
     persistRememberMe(rememberMe)
 
     try {
       const { error: signInError } = await signInWithPassword(
-        email,
+        email.trim(),
         password,
         captchaToken ?? undefined,
       )
@@ -45,10 +67,10 @@ export function LoginPage() {
       if (signInError) {
         setError(describeAuthError(signInError))
         setStatus('idle')
+        passwordRef.current?.focus()
         return
       }
 
-      const from = (location.state as { from?: string } | null)?.from ?? '/studio'
       navigate(from, { replace: true })
     } catch (err) {
       setError(describeAuthError(err))
@@ -57,8 +79,9 @@ export function LoginPage() {
   }
 
   async function handleResendEmail() {
-    if (!email.trim()) {
-      toast.error('Enter your email first.')
+    if (emailError) {
+      setEmailTouched(true)
+      emailRef.current?.focus()
       return
     }
 
@@ -69,13 +92,17 @@ export function LoginPage() {
         setError(describeAuthError(resendError))
         return
       }
-      toast.success('Confirmation email sent.')
+      start()
+      toast.success('Confirmation email sent. Use the newest one.')
     } catch (err) {
       setError(describeAuthError(err))
     } finally {
       setResending(false)
     }
   }
+
+  const needsConfirmation =
+    error?.kind === 'supabase' && error.message.includes('Confirm your email')
 
   return (
     <AuthLayout
@@ -93,38 +120,45 @@ export function LoginPage() {
         </div>
 
         {error && <AuthErrorAlert error={error} />}
-        {error && error.kind === 'supabase' && error.message.includes('Confirm your email') && (
+        {needsConfirmation && (
           <Button
             type="button"
             variant="outline"
             size="sm"
             className="w-full"
-            disabled={resending}
+            disabled={resending || cooling}
             onClick={handleResendEmail}
           >
             {resending ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
-            Resend confirmation email
+            {cooling ? `Resend available in ${remaining}s` : 'Resend confirmation email'}
           </Button>
         )}
 
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+        <FormField
+          ref={emailRef}
+          label="Email"
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          autoCapitalize="none"
+          spellCheck={false}
+          autoFocus
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onBlur={() => setEmailTouched(true)}
+          error={emailTouched ? emailError : undefined}
+        />
 
         <PasswordInput
+          ref={passwordRef}
           label="Password"
           autoComplete="current-password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onBlur={() => setPasswordTouched(true)}
+          error={passwordTouched ? passwordError : undefined}
         />
 
         {TURNSTILE_SITE_KEY && (
@@ -145,8 +179,15 @@ export function LoginPage() {
           </Link>
         </div>
 
-        <Button type="submit" variant="brand" className="w-full" disabled={status === 'loading'}>
-          {status === 'loading' ? 'Signing in...' : 'Sign in'}
+        <Button
+          type="submit"
+          variant="brand"
+          className="w-full"
+          aria-busy={status === 'loading'}
+          disabled={status === 'loading'}
+        >
+          {status === 'loading' ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
+          {status === 'loading' ? 'Signing in…' : 'Sign in'}
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">

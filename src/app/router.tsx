@@ -13,6 +13,7 @@ const PricingPage = lazy(() => import('@/pages/pricing-page'))
 const ContactPage = lazy(() => import('@/pages/contact-page'))
 const LoginPage = lazy(() => import('@/pages/login-page'))
 const SignupPage = lazy(() => import('@/pages/signup-page'))
+const AuthCallbackPage = lazy(() => import('@/pages/auth-callback-page'))
 const ForgotPasswordPage = lazy(() => import('@/pages/forgot-password-page'))
 const ResetPasswordPage = lazy(() => import('@/pages/reset-password-page'))
 const StudioPage = lazy(() => import('@/pages/studio-page'))
@@ -20,6 +21,7 @@ const GrowthPage = lazy(() => import('@/pages/growth-page'))
 const PortfolioPage = lazy(() => import('@/pages/portfolio-page'))
 const ArtworkDetailPage = lazy(() => import('@/pages/artwork-detail-page'))
 const ProjectsPage = lazy(() => import('@/pages/projects-page'))
+const ProjectBoardPage = lazy(() => import('@/pages/project-board-page'))
 const CommunityFeedPage = lazy(() => import('@/pages/community-feed-page'))
 const SharedFilesPage = lazy(() => import('@/pages/shared-files-page'))
 const QuestsPage = lazy(() => import('@/pages/quests-page'))
@@ -60,6 +62,7 @@ const router = createBrowserRouter([
   { path: '/contact', element: withSuspense(<ContactPage />) },
   { path: '/login', element: withSuspense(<LoginPage />) },
   { path: '/signup', element: withSuspense(<SignupPage />) },
+  { path: '/auth/callback', element: withSuspense(<AuthCallbackPage />) },
   { path: '/forgot-password', element: withSuspense(<ForgotPasswordPage />) },
   { path: '/reset-password', element: withSuspense(<ResetPasswordPage />) },
 
@@ -73,6 +76,7 @@ const router = createBrowserRouter([
   { path: '/portfolio', element: <AppPage><PortfolioPage /></AppPage> },
   { path: '/artwork/:id', element: <AppPage><ArtworkDetailPage /></AppPage> },
   { path: '/projects', element: <AppPage><ProjectsPage /></AppPage> },
+  { path: '/projects/:projectId', element: <AppPage><ProjectBoardPage /></AppPage> },
   { path: '/shared-files', element: <AppPage><SharedFilesPage /></AppPage> },
   { path: '/quests', element: <AppPage><QuestsPage /></AppPage> },
   { path: '/learning', element: <AppPage><LearningHomePage /></AppPage> },
