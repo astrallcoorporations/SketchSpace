@@ -179,7 +179,7 @@ The system is loud on purpose (it must not feel quiet, minimal, childish or gene
 - Condensed heavy uppercase display (Anybody), Geist for UI, Martian Mono only for codes, dates and counts.
 - Swatches are drawn in canvas as multiplied marker passes and fill stroke by stroke on first view.
 - One live magenta edge; nothing else wears the accent.
-- Dark only. Sign-up and log-in are a sanctioned scoped exception that keeps the original light look.
+- Dark only, everywhere, including sign-up and log-in — the earlier light "classic" exception was retired 2026-11-20 at the author's request.
 
 ## Colors
 
@@ -318,8 +318,8 @@ The brand's own test sheet for marketing page headers: three rows (P, M, V) of o
 ### Ink Hero Field
 The original WebGL ink shader and particle field, re-inked through a palette: on the landing page its paper is the ground pass with violet and pink inks and pale ink highlights. Scroll morphs the particle field; reduced motion stops it. A horizontal scrim keeps the copy column legible while the ink stays loud behind the chart.
 
-### Classic Auth Screens (sanctioned scoped exception)
-Sign-up, log-in and password screens deliberately keep the original look at the author's request, scoped under `.theme-classic`: white canvas, near-black ink, the original pink-purple accent, Fraunces display at weight 500, 1px-rimmed buttons at the old 6px radius with no cap dot, light shadows, and the original shader panel. This is not drift. Nothing outside the auth layout uses it, and nothing inside it should be converted to the swatch world.
+### Auth Screens
+Sign-up, log-in and password screens now run the same swatch system as the rest of the app: the ink-hero split panel on the deepest pass, condensed uppercase headings, marker-cap pill buttons and fields, and the single magenta accent. The earlier light `.theme-classic` scope (white canvas, Fraunces, 6px-radius buttons) was retired 2026-11-20 — the author found it did not hold up next to the rest of the product.
 
 ## Do's and Don'ts
 
@@ -331,7 +331,7 @@ Sign-up, log-in and password screens deliberately keep the original look at the 
 - **Do** set headings in condensed heavy uppercase Anybody at 0.86-0.9 line height, and codes, dates and counts in Martian Mono with tabular numerals.
 - **Do** draw swatches with the marker-ink model (multiplied passes, fixed chisel nib up to 30px, alternating lean) and paint them complete under reduced motion.
 - **Do** label every mounted piece with its artist, version count and date.
-- **Do** keep the sign-up and log-in screens in the classic scope exactly as they are.
+- **Do** run sign-up and log-in through the same swatch system as the rest of the app.
 
 ### Don't:
 - **Don't** add a light theme or a theme toggle; the app is dark only.
