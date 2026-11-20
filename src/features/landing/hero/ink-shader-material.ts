@@ -72,7 +72,8 @@ const simplexNoise = /* glsl */ `
 const vertexShader = /* glsl */ `
   varying vec2 vUv;
   void main() {
-    vUv = uv;
+    // The ink is sampled with a 1.4x margin around the visible canvas (see canvasUvToPlaneUv).
+    vUv = 0.5 + (uv - 0.5) / 1.4;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `
