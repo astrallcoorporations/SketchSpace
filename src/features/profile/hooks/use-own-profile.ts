@@ -16,7 +16,7 @@ export function useOwnProfile() {
       return
     }
     setLoading(true)
-    const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+    const { data } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
     setProfile(data)
     setLoading(false)
   }, [user])

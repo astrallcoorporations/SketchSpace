@@ -4,8 +4,9 @@ import { optimizeImage } from '@/lib/image-optimize'
 import type { TablesUpdate } from '@/types/database'
 
 export async function getProfileByUsername(username: string) {
-  const { data, error } = await supabase.from('profiles').select('*').eq('username', username).single()
+  const { data, error } = await supabase.from('profiles').select('*').eq('username', username).maybeSingle()
   if (error) throw error
+  if (!data) throw new Error('No artist found with that username.')
   return data
 }
 
