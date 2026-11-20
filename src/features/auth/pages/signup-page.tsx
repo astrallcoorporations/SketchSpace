@@ -40,7 +40,7 @@ export function SignupPage() {
     password: useRef<HTMLInputElement>(null),
   }
 
-  if (!authLoading && session && status !== 'success') return <Navigate to="/studio" replace />
+  if (!authLoading && session && status !== 'success') return <Navigate to="/" replace />
 
   const errors: Record<Field, string | undefined> = {
     name: validateName(name),
@@ -87,7 +87,7 @@ export function SignupPage() {
       }
 
       if (data.session) {
-        navigate('/studio', { replace: true })
+        navigate('/', { replace: true })
         return
       }
 

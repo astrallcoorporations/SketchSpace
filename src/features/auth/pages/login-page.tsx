@@ -37,7 +37,7 @@ export function LoginPage() {
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
 
-  const from = (location.state as { from?: string } | null)?.from ?? '/studio'
+  const from = (location.state as { from?: string } | null)?.from ?? '/'
   if (!authLoading && session) return <Navigate to={from} replace />
 
   const emailError = validateEmail(email)

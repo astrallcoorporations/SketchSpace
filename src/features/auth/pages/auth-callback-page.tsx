@@ -36,7 +36,7 @@ export function AuthCallbackPage() {
   }, [])
 
   useEffect(() => {
-    if (!loading && session) navigate('/studio', { replace: true })
+    if (!loading && session) navigate('/', { replace: true })
   }, [loading, session, navigate])
 
   useEffect(() => {

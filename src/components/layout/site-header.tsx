@@ -48,7 +48,7 @@ export function SiteHeader() {
   const actions = !loading && (
     session ? (
       <Button asChild variant="brand">
-        <Link to="/studio">Open Studio</Link>
+        <Link to="/">Open Studio</Link>
       </Button>
     ) : (
       <>

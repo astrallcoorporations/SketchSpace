@@ -4,6 +4,7 @@ import { RouteLoader } from '@/components/layout/route-loader'
 import { ProtectedRoute } from '@/components/layout/protected-route'
 import { ErrorBoundary } from '@/components/layout/error-boundary'
 import { AppShellLayout } from '@/features/shell/components/app-shell'
+import { useAuth } from '@/hooks/use-auth'
 
 // Route-level code splitting: every top-level page is its own chunk.
 const LandingPage = lazy(() => import('@/pages/landing-page'))
@@ -53,9 +54,20 @@ function AppPage({ children }: { children: React.ReactNode }) {
   )
 }
 
+/** Root route: the studio once signed in, the marketing page otherwise. Same URL, so a
+ *  shared link to "/" always lands the viewer somewhere sensible for their own session. */
+function RootRoute() {
+  const { session, loading } = useAuth()
+  if (loading) return <RouteLoader />
+  if (session) return <AppPage><StudioPage /></AppPage>
+  return withSuspense(<LandingPage />)
+}
+
 const router = createBrowserRouter([
+  { path: '/', element: <RootRoute /> },
+
   // Public pages
-  { path: '/', element: withSuspense(<LandingPage />) },
+  { path: '/home', element: withSuspense(<LandingPage />) },
   { path: '/features', element: withSuspense(<FeaturesPage />) },
   { path: '/community', element: withSuspense(<MarketingCommunityPage />) },
   { path: '/pricing', element: withSuspense(<PricingPage />) },
@@ -66,11 +78,11 @@ const router = createBrowserRouter([
   { path: '/forgot-password', element: withSuspense(<ForgotPasswordPage />) },
   { path: '/reset-password', element: withSuspense(<ResetPasswordPage />) },
 
-  // Legacy /app path — redirect to studio
-  { path: '/app', element: <Navigate to="/studio" replace /> },
+  // Legacy paths — redirect to the studio, now at the root
+  { path: '/app', element: <Navigate to="/" replace /> },
+  { path: '/studio', element: <Navigate to="/" replace /> },
 
   // Protected app routes — each wrapped with AppShellLayout (sidebar + topbar)
-  { path: '/studio', element: <AppPage><StudioPage /></AppPage> },
   { path: '/homepage', element: <AppPage><CommunityFeedPage /></AppPage> },
   { path: '/growth', element: <AppPage><GrowthPage /></AppPage> },
   { path: '/portfolio', element: <AppPage><PortfolioPage /></AppPage> },
