@@ -44,12 +44,12 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const { user } = useAuth()
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full w-full min-w-0 flex-col">
       <NavLink to="/" className="self-start rounded-sm px-2" aria-label="SketchSpace studio">
         <Wordmark />
       </NavLink>
 
-      <nav aria-label="App" className="mt-8 flex flex-1 flex-col gap-4 overflow-y-auto">
+      <nav aria-label="App" className="mt-8 flex min-w-0 flex-1 flex-col gap-4 overflow-y-auto">
         {navGroups.map((group, i) => (
           <div key={group.label ?? `top-${i}`} className="flex flex-col gap-0.5">
             {group.label && (
@@ -70,7 +70,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </nav>
 
-      <div className="flex items-center gap-2 border-t-2 border-sidebar-border px-1 pt-4">
+      <div className="flex min-w-0 items-center gap-2 border-t-2 border-sidebar-border px-1 pt-4">
         <div className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-input bg-pass-v3 font-display text-base uppercase">
           {user?.email?.[0] ?? '?'}
         </div>
