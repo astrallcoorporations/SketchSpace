@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import { getProject } from '@/features/projects/api'
+import { addProjectMember, getProject, removeProjectMember } from '@/features/projects/api'
 import { createTask, deleteTask, listTasks, subscribeToTasks, updateTask } from '@/features/projects/tasks-api'
 import { TASK_STATUSES, type MemberProfile, type Project, type Task, type TaskStatus } from '@/features/projects/types'
 
@@ -198,5 +198,23 @@ export function useProjectBoard(projectId: string) {
     [markPending],
   )
 
-  return { load, project, tasks, columns, pending, add, patch, move, remove }
+  const addMember = useCallback(
+    async (profile: MemberProfile) => {
+      await addProjectMember(projectId, profile.id)
+      setProject((p) => (p && !p.members.some((m) => m.id === profile.id) ? { ...p, members: [...p.members, profile] } : p))
+    },
+    [projectId],
+  )
+
+  /** Removing someone un-assigns their tasks in the database; mirror that here. */
+  const removeMember = useCallback(
+    async (userId: string) => {
+      await removeProjectMember(projectId, userId)
+      setProject((p) => (p ? { ...p, members: p.members.filter((m) => m.id !== userId) } : p))
+      setTasks((prev) => prev.map((t) => (t.assignee_id === userId ? { ...t, assignee_id: null } : t)))
+    },
+    [projectId],
+  )
+
+  return { load, project, tasks, columns, pending, add, patch, move, remove, addMember, removeMember }
 }

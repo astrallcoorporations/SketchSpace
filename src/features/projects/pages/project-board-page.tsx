@@ -1,11 +1,13 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, FolderKanban, Plus, SearchX } from 'lucide-react'
+import { ArrowLeft, FolderKanban, Plus, SearchX, UserPlus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage, AvatarGroup } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { EmptyState } from '@/features/shell/components/empty-state'
 import { Seo } from '@/components/shared/seo'
+import { useAuth } from '@/hooks/use-auth'
+import { MembersDialog } from '@/features/projects/components/board/members-dialog'
 import { BoardSkeleton } from '@/features/projects/components/board/board-skeleton'
 import { KanbanBoard } from '@/features/projects/components/board/kanban-board'
 import { TaskDialog, type TaskDialogTarget } from '@/features/projects/components/board/task-dialog'
@@ -15,8 +17,10 @@ import type { Task, TaskStatus } from '@/features/projects/types'
 export function ProjectBoardPage() {
   const { projectId = '' } = useParams()
   const board = useProjectBoard(projectId)
+  const { user } = useAuth()
   const [dialog, setDialog] = useState<TaskDialogTarget | null>(null)
-  const { add, patch, move, remove } = board
+  const [peopleOpen, setPeopleOpen] = useState(false)
+  const { add, patch, move, remove, addMember, removeMember } = board
 
   const membersById = useMemo(
     () => new Map((board.project?.members ?? []).map((m) => [m.id, m])),
@@ -105,14 +109,25 @@ export function ProjectBoardPage() {
         </div>
         <div className="flex items-center gap-3">
           {ready && (
-            <AvatarGroup aria-label={`${project.members.length} member${project.members.length === 1 ? '' : 's'}`}>
-              {project.members.slice(0, 5).map((m) => (
-                <Avatar key={m.id} size="sm" title={m.display_name || m.username}>
-                  {m.avatar_url && <AvatarImage src={m.avatar_url} alt="" />}
-                  <AvatarFallback className="text-[10px]">{(m.display_name || m.username).slice(0, 2).toUpperCase()}</AvatarFallback>
-                </Avatar>
-              ))}
-            </AvatarGroup>
+            <button
+              type="button"
+              onClick={() => setPeopleOpen(true)}
+              aria-label={`${project.members.length} member${project.members.length === 1 ? '' : 's'}. Open people list`}
+              className="flex items-center gap-2 rounded-full border-2 border-pass-v1 py-1 pr-3 pl-1.5 transition-colors duration-200 hover:border-input hover:bg-pass-v2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-magenta-light"
+            >
+              <AvatarGroup>
+                {project.members.slice(0, 4).map((m) => (
+                  <Avatar key={m.id} size="sm" title={m.display_name || m.username}>
+                    {m.avatar_url && <AvatarImage src={m.avatar_url} alt="" />}
+                    <AvatarFallback className="text-[10px]">{(m.display_name || m.username).slice(0, 2).toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                ))}
+              </AvatarGroup>
+              <span className="flex items-center gap-1 text-sm font-medium">
+                <UserPlus className="size-4" aria-hidden="true" />
+                {project.owner_id === user?.id ? 'Add people' : 'People'}
+              </span>
+            </button>
           )}
           <Button variant="brand" disabled={!ready} onClick={() => addTo('todo')}>
             <Plus aria-hidden="true" />
@@ -147,6 +162,18 @@ export function ProjectBoardPage() {
           />
         )}
       </div>
+
+      {project && user && (
+        <MembersDialog
+          open={peopleOpen}
+          onOpenChange={setPeopleOpen}
+          members={project.members}
+          ownerId={project.owner_id}
+          currentUserId={user.id}
+          onAdd={addMember}
+          onRemove={removeMember}
+        />
+      )}
 
       <TaskDialog
         target={dialog}

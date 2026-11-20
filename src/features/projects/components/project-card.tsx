@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { FolderKanban, Users } from 'lucide-react'
+import { useAuth } from '@/hooks/use-auth'
 import type { Project } from '@/features/projects/types'
 
 type ProjectCardProps = {
@@ -10,7 +11,9 @@ type ProjectCardProps = {
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  const { user } = useAuth()
   const memberCount = project.project_members?.length ?? 0
+  const shared = project.owner_id !== user?.id
 
   return (
     <Link
@@ -33,6 +36,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           {memberCount} member{memberCount !== 1 ? 's' : ''}
         </span>
         <span className="capitalize">{project.visibility}</span>
+        {shared && <span>by {project.profiles?.display_name || project.profiles?.username}</span>}
       </div>
     </Link>
   )

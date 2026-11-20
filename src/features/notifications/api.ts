@@ -32,6 +32,15 @@ export function artworkIdOf(notification: Notification): string | null {
   return null
 }
 
+export function projectIdOf(notification: Notification): string | null {
+  const payload = notification.payload
+  if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
+    const id = (payload as Record<string, unknown>).project_id
+    if (typeof id === 'string') return id
+  }
+  return null
+}
+
 export async function listNotifications(userId: string): Promise<NotificationWithActor[]> {
   const { data, error } = await supabase
     .from('notifications')

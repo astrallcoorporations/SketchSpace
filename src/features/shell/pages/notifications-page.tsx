@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Bell, CheckCheck, Heart, MessageCircle, Trash2, UserPlus } from 'lucide-react'
+import { Bell, CheckCheck, FolderKanban, Heart, MessageCircle, Trash2, UserPlus } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -9,6 +9,7 @@ import { EmptyState } from '@/features/shell/components/empty-state'
 import { useAuth } from '@/hooks/use-auth'
 import {
   artworkIdOf,
+  projectIdOf,
   deleteNotification,
   listNotifications,
   markAllRead,
@@ -20,12 +21,14 @@ const TYPE_ICONS: Record<string, typeof Bell> = {
   comment: MessageCircle,
   like: Heart,
   follow: UserPlus,
+  project_invite: FolderKanban,
 }
 
 const TYPE_LABELS: Record<string, string> = {
   comment: 'commented on your artwork',
   like: 'liked your artwork',
   follow: 'started following you',
+  project_invite: 'added you to a project',
 }
 
 function relativeTime(iso: string): string {
@@ -138,7 +141,10 @@ export function NotificationsPage() {
             const artworkId = artworkIdOf(notification)
             const actorName =
               notification.actor?.display_name ?? notification.actor?.username ?? 'Someone'
-            const href = artworkId
+            const projectId = projectIdOf(notification)
+            const href = projectId
+              ? `/projects/${projectId}`
+              : artworkId
               ? `/artwork/${artworkId}`
               : notification.actor
                 ? `/u/${notification.actor.username}`

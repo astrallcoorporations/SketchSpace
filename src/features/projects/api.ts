@@ -1,13 +1,23 @@
 import { supabase } from '@/lib/supabase'
-import type { Project, ProjectInsert } from './types'
+import type { MemberProfile, Project, ProjectInsert } from './types'
 
 const OWNER_SELECT = 'profiles!projects_owner_id_fkey(id, username, display_name, avatar_url)'
 
-export async function listProjects(ownerId: string) {
+/** Projects I own or have been added to (the owner also has a member row, written by a trigger). */
+export async function listProjects(userId: string) {
+  const { data: memberships, error: memberError } = await supabase
+    .from('project_members')
+    .select('project_id')
+    .eq('user_id', userId)
+  if (memberError) throw memberError
+
+  const ids = memberships.map((m) => m.project_id)
+  const scope = ids.length > 0 ? `owner_id.eq.${userId},id.in.(${ids.join(',')})` : `owner_id.eq.${userId}`
+
   const { data, error } = await supabase
     .from('projects')
     .select(`*, ${OWNER_SELECT}, project_members(*)`)
-    .eq('owner_id', ownerId)
+    .or(scope)
     .order('created_at', { ascending: false })
   if (error) throw error
   return data as unknown as (Project & {
@@ -81,4 +91,20 @@ export async function removeProjectMember(projectId: string, userId: string) {
     .eq('project_id', projectId)
     .eq('user_id', userId)
   if (error) throw error
+}
+
+/** Find people to add by username or display name. Profiles are public, so this needs no special access. */
+export async function searchProfiles(query: string, excludeIds: string[] = []) {
+  // Strip characters that mean something inside a PostgREST filter or an ILIKE pattern.
+  const q = query.trim().replace(/[%_,()*\\]/g, '')
+  if (q.length < 2) return [] as MemberProfile[]
+  let request = supabase
+    .from('profiles')
+    .select('id, username, display_name, avatar_url')
+    .or(`username.ilike.%${q}%,display_name.ilike.%${q}%`)
+    .limit(8)
+  if (excludeIds.length > 0) request = request.not('id', 'in', `(${excludeIds.join(',')})`)
+  const { data, error } = await request
+  if (error) throw error
+  return data as MemberProfile[]
 }
