@@ -199,8 +199,8 @@ export function FileUploadZone({
                   aria-valuemax={100}
                 >
                   <div
-                    className={cn('h-full origin-left rounded-full transition-[width] duration-200', item.status === 'error' ? 'bg-destructive' : 'bg-ink-violet-light')}
-                    style={{ width: `${item.status === 'error' ? 100 : item.progress}%` }}
+                    className={cn('h-full w-full origin-left rounded-full transition-transform duration-200', item.status === 'error' ? 'bg-destructive' : 'bg-ink-violet-light')}
+                    style={{ transform: `scaleX(${(item.status === 'error' ? 100 : item.progress) / 100})` }}
                   />
                 </div>
                 {item.status === 'error' && <p className="mt-1 text-xs text-destructive">{item.error}</p>}

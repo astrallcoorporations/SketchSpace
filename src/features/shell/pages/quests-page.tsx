@@ -139,8 +139,8 @@ export function QuestsPage() {
                         className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted"
                       >
                         <div
-                          className="h-full rounded-full bg-ink-magenta transition-[width] duration-500"
-                          style={{ width: `${percent}%` }}
+                          className="h-full w-full origin-left rounded-full bg-ink-magenta transition-transform duration-500"
+                          style={{ transform: `scaleX(${percent / 100})` }}
                         />
                       </div>
                     </div>

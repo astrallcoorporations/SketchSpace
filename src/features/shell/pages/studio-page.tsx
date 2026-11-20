@@ -75,10 +75,14 @@ export function StudioPage() {
                 <span className="text-muted-foreground">Lvl</span>
                 <span className="font-code tabular-nums">{level}</span>
                 <span className="h-1.5 w-14 overflow-hidden rounded-full bg-muted">
+                  {/* Animate scaleX (compositor-only), never width directly -- a width
+                   *  transition reflows the layout every frame and visibly smears
+                   *  neighboring text for its whole duration. */}
                   <motion.span
-                    className="block h-full rounded-full bg-brand"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${xpIntoLevel}%` }}
+                    className="block h-full origin-left rounded-full bg-brand"
+                    style={{ width: `${xpIntoLevel}%` }}
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
                     transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                   />
                 </span>
