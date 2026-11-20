@@ -21,7 +21,8 @@ export default defineConfig({
         codeSplitting: {
           groups: [
             { name: 'vendor-three', test: /node_modules[/](three|@react-three)[/]/, priority: 30 },
-            { name: 'vendor-motion', test: /node_modules[/](framer-motion|motion-dom|motion-utils|gsap|lenis)[/]/, priority: 20 },
+            { name: 'vendor-gsap', test: /node_modules[/](gsap|lenis)[/]/, priority: 25 },
+            { name: 'vendor-motion', test: /node_modules[/](framer-motion|motion-dom|motion-utils)[/]/, priority: 20 },
             { name: 'vendor-supabase', test: /node_modules[/]@supabase[/]/, priority: 20 },
             { name: 'vendor-react', test: /node_modules[/](react|react-dom|scheduler|react-router|react-router-dom)[/]/, priority: 20 },
           ],
