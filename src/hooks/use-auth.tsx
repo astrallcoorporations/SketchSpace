@@ -2,6 +2,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from 'react'
@@ -44,13 +45,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.subscription.unsubscribe()
   }, [])
 
-  return (
-    <AuthContext.Provider
-      value={{ session, user: session?.user ?? null, loading, isPasswordRecovery }}
-    >
-      {children}
-    </AuthContext.Provider>
+  // Stable reference: without this, every AuthProvider re-render (for any reason,
+  // not just a real session change) hands consumers a brand-new object, which
+  // retriggers any effect/useCallback keyed on `user` far more than the session
+  // actually changes.
+  const value = useMemo<AuthContextValue>(
+    () => ({ session, user: session?.user ?? null, loading, isPasswordRecovery }),
+    [session, loading, isPasswordRecovery],
   )
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
