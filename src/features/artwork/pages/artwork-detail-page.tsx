@@ -26,6 +26,9 @@ import {
   uploadArtworkImage,
 } from '@/features/artwork/api'
 import { EditArtworkDialog } from '@/features/artwork/components/edit-artwork-dialog'
+import { CritiqueOverlay } from '@/features/critique/components/critique-overlay'
+import { CritiqueThreadList } from '@/features/critique/components/critique-thread-list'
+import { useCritique } from '@/features/critique/use-critique'
 import type { Artwork, ArtworkWithOwner } from '@/features/artwork/types'
 import type { Tables } from '@/types/database'
 import { sanitizeImageUrl } from '@/lib/image-url'
@@ -50,7 +53,10 @@ export function ArtworkDetailPage() {
   const [lightboxIndex, setLightboxIndex] = useState(0)
   const [addingVersion, setAddingVersion] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [pinMode, setPinMode] = useState(false)
+  const [activeThread, setActiveThread] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const critique = useCritique(id ?? '')
 
   const load = useCallback(async () => {
     if (!id) return
@@ -152,15 +158,16 @@ export function ArtworkDetailPage() {
       </Link>
 
       <Reveal className="mt-6">
-        <div className="overflow-hidden rounded-md border-2 border-border bg-muted">
+        <div className="relative overflow-hidden rounded-md border-2 border-border bg-muted">
           {sanitizeImageUrl(artwork.cover_image_url) && (
             <button
               type="button"
               onClick={() => {
+                if (pinMode) return
                 setLightboxIndex(0)
                 setLightboxOpen(true)
               }}
-              className="block w-full cursor-zoom-in"
+              className={pinMode ? 'block w-full' : 'block w-full cursor-zoom-in'}
               aria-label="Open full image"
             >
               <img
@@ -171,6 +178,14 @@ export function ArtworkDetailPage() {
               />
             </button>
           )}
+          <CritiqueOverlay
+            critique={critique}
+            currentUserId={user?.id}
+            pinMode={pinMode}
+            onPinModeChange={setPinMode}
+            activeThread={activeThread}
+            onActiveThreadChange={setActiveThread}
+          />
         </div>
 
         <div className="mt-6 flex flex-wrap items-start justify-between gap-4">
@@ -280,6 +295,14 @@ export function ArtworkDetailPage() {
             ))}
           </div>
         </div>
+
+        <CritiqueThreadList
+          critique={critique}
+          currentUserId={user?.id}
+          pinMode={pinMode}
+          onPinModeChange={setPinMode}
+          activeThread={activeThread}
+        />
       </Reveal>
 
       <EditArtworkDialog

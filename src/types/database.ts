@@ -13,7 +13,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.18"
   }
   public: {
     Tables: {
@@ -214,25 +214,34 @@ export type Database = {
       }
       comments: {
         Row: {
+          anchor_x: number | null
+          anchor_y: number | null
           artwork_id: string
           author_id: string
           body: string
           created_at: string
           id: string
+          parent_id: string | null
         }
         Insert: {
+          anchor_x?: number | null
+          anchor_y?: number | null
           artwork_id: string
           author_id: string
           body: string
           created_at?: string
           id?: string
+          parent_id?: string | null
         }
         Update: {
+          anchor_x?: number | null
+          anchor_y?: number | null
           artwork_id?: string
           author_id?: string
           body?: string
           created_at?: string
           id?: string
+          parent_id?: string | null
         }
         Relationships: [
           {
@@ -247,6 +256,13 @@ export type Database = {
             columns: ["author_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
             referencedColumns: ["id"]
           },
         ]
@@ -509,41 +525,47 @@ export type Database = {
           },
         ]
       }
-      shared_files: {
+      payments: {
         Row: {
+          amount_paise: number
           created_at: string
+          currency: string
           id: string
-          mime_type: string
-          name: string
-          owner_id: string
-          path: string
-          size: number
-          visibility: string
+          paid_at: string | null
+          provider: string
+          provider_order_id: string
+          provider_payment_id: string | null
+          status: string
+          user_id: string
         }
         Insert: {
+          amount_paise: number
           created_at?: string
+          currency?: string
           id?: string
-          mime_type?: string
-          name: string
-          owner_id: string
-          path: string
-          size?: number
-          visibility?: string
+          paid_at?: string | null
+          provider?: string
+          provider_order_id: string
+          provider_payment_id?: string | null
+          status?: string
+          user_id: string
         }
         Update: {
+          amount_paise?: number
           created_at?: string
+          currency?: string
           id?: string
-          mime_type?: string
-          name?: string
-          owner_id?: string
-          path?: string
-          size?: number
-          visibility?: string
+          paid_at?: string | null
+          provider?: string
+          provider_order_id?: string
+          provider_payment_id?: string | null
+          status?: string
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "shared_files_owner_id_fkey"
-            columns: ["owner_id"]
+            foreignKeyName: "payments_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -597,6 +619,42 @@ export type Database = {
           xp?: number
         }
         Relationships: []
+      }
+      project_credits: {
+        Row: {
+          created_at: string
+          id: string
+          payment_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          payment_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          payment_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_credits_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: true
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_credits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_members: {
         Row: {
@@ -753,6 +811,47 @@ export type Database = {
         }
         Relationships: []
       }
+      shared_files: {
+        Row: {
+          created_at: string
+          id: string
+          mime_type: string
+          name: string
+          owner_id: string
+          path: string
+          size: number
+          visibility: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mime_type?: string
+          name: string
+          owner_id: string
+          path: string
+          size?: number
+          visibility?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mime_type?: string
+          name?: string
+          owner_id?: string
+          path?: string
+          size?: number
+          visibility?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shared_files_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tasks: {
         Row: {
           assignee_id: string | null
@@ -842,7 +941,15 @@ export type Database = {
     }
     Functions: {
       complete_lesson: { Args: { p_lesson_id: string }; Returns: undefined }
-      my_project_quota: { Args: Record<string, never>; Returns: Json }
+      fulfill_payment: {
+        Args: {
+          p_amount_paise: number
+          p_order_id: string
+          p_payment_id: string
+        }
+        Returns: boolean
+      }
+      my_project_quota: { Args: never; Returns: Json }
     }
     Enums: {
       [_ in never]: never
@@ -861,12 +968,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -890,11 +997,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -915,11 +1022,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -940,11 +1047,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -957,11 +1064,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
