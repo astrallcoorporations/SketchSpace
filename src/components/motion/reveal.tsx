@@ -66,24 +66,26 @@ type StaggerGroupProps = {
   children: ReactNode
   className?: string
   gap?: keyof typeof stagger
-  once?: boolean
 }
 
-/** Wrap a list of children to reveal them in sequence rather than all at once. */
-export function StaggerGroup({
-  children,
-  className,
-  gap = 'base',
-  once = true,
-}: StaggerGroupProps) {
+/**
+ * Wrap a list of children to reveal them in sequence rather than all at once.
+ *
+ * Animates unconditionally on mount rather than on `whileInView`: every real
+ * usage is an app-shell dashboard that is already above the fold when it
+ * mounts, and `whileInView`'s IntersectionObserver trigger proved unreliable
+ * there in production, leaving data-driven content stuck invisible. Scroll-
+ * triggered reveal for below-the-fold marketing content still belongs to
+ * `Reveal`, which keeps `whileInView`.
+ */
+export function StaggerGroup({ children, className, gap = 'base' }: StaggerGroupProps) {
   const reduceMotion = useReducedMotion()
 
   return (
     <motion.div
       className={className}
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once, margin: '-10% 0px' }}
+      animate="visible"
       variants={{
         visible: {
           transition: { staggerChildren: reduceMotion ? 0 : stagger[gap] },
